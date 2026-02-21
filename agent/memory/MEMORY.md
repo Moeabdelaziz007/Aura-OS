@@ -43,5 +43,14 @@ Memory retrieval is triggered by **Cognitive Gravity**:
 * States with low $F$ (Free Energy) have higher "gravitational pull", meaning the agent reflexively defaults to what it *knows* works.
 * Discovery of new $z$ states triggers the `EVOLVE.md` protocol to forge new memory nodes.
 
+## 🧹 Memory Consolidation & Folding [REVERSE ENG #2]
+
+To prevent **Context Window Collapse** in Gemini 3.1 Pro, AuraOS executes the **Folding Protocol**:
+
+1. **Trigger:** Task completion signal from `HEARTBEAT.md` OR Context Pressure > 80%.
+2. **Extraction:** The agent generates a "Semantic Vector Summary" ($S_{summary}$) of the task trajectory.
+3. **Purge:** All raw $Z_{visual}$ (pixel-based embeddings) associated with the task are deleted from Working Memory.
+4. **Compression:** The $S_{summary}$ is committed to Semantic Memory (DNA) as a high-density text object, preserving "Meaning" while liberating context window space.
+
 ---
 *MEMORY.md: We do not remember what we saw; we remember what it meant ($z$).*

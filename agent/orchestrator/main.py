@@ -59,7 +59,26 @@ class AetherCoreOrchestrator:
                         payload = message[1:]
                         
                         if header == 0x01: # Visual Delta
-                            await gemini.stream_input(payload, mime_type="image/jpeg")
+                            # Parse Hardened Packet: [4 bytes metadata_len][metadata][jpeg]
+                            metadata_len = int.from_bytes(payload[0:4], "little")
+                            metadata_raw = payload[4:4+metadata_len]
+                            jpeg_payload = payload[4+metadata_len:]
+                            
+                            metadata = json.loads(metadata_raw.decode("utf-8"))
+                            # REVERSE ENG #3: Hybrid Accessibility Check
+                            # If metadata has nodes, we can potentially bypass heavy CV
+                            
+                            # REVERSE ENG: Temporal Anchoring
+                            import time
+                            metadata["timestamp_orchestrator"] = time.time_ns()
+                            # Check for drift if timestamp was sent from Edge
+                            if "timestamp_edge" in metadata:
+                                drift = (metadata["timestamp_orchestrator"] - metadata["timestamp_edge"]) / 1_000_000
+                                if drift > 500:
+                                    print(f"⚠️ Perceptual Drift Detected: {drift}ms. Dropping stale frame.")
+                                    continue
+
+                            await gemini.stream_input(jpeg_payload, mime_type="image/jpeg")
                         elif header == 0x02: # Audio Chunk
                             await gemini.stream_input(payload, mime_type="audio/pcm")
                     else:

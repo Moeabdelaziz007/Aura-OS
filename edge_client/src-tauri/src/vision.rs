@@ -41,21 +41,31 @@ impl VisionSensor {
 
                     // Priority 2: Offload CPU-heavy JPEG encoding to a blocking thread
                     tokio::task::spawn_blocking(move || {
+                        // REVERSE ENG #1: Zero-Trust Edge Scrubbing
+                        // In a real scenario, this would use a TinyML model or OCR regex
+                        let mut scrubber = ZeroTrustScrubber::new();
+                        let scrubbed_data = scrubber.scrub_pii(&frame_data, width, height);
+
                         let mut buffer = Vec::new();
                         let mut encoder = JpegEncoder::new_with_quality(&mut buffer, 75);
                         
                         let img_buffer: ImageBuffer<Rgba<u8>, Vec<u8>> = 
-                            ImageBuffer::from_raw(width, height, frame_data)
+                            ImageBuffer::from_raw(width, height, scrubbed_data)
                             .expect("Failed to cast frame to ImageBuffer");
 
                         if encoder.encode_image(&img_buffer).is_ok() {
-                            // Backpressure: If channel is full, drop the frame to keep latency zero.
-                            // In tokio mpsc, try_send returns error if full.
-                            match tx_clone.try_send(buffer) {
+                            // REVERSE ENG #3: Hybrid Accessibility Bundle
+                            // Attach O(1) UI metadata here (simulated)
+                            let metadata = b"{\"nodes\": []}"; // Placeholder for accessibility tree
+                            
+                            let mut packet = Vec::new();
+                            packet.extend_from_slice(&(metadata.len() as u32).to_le_bytes());
+                            packet.extend_from_slice(metadata);
+                            packet.extend_from_slice(&buffer);
+
+                            match tx_clone.try_send(packet) {
                                 Ok(_) => (), 
-                                Err(_) => {
-                                    // SILENT DROP: The 'Now' is more important than the 'Then'.
-                                }
+                                Err(_) => {}
                             }
                         }
                     });
@@ -72,5 +82,19 @@ impl VisionSensor {
                 }
             }
         }
+    }
+}
+
+/// REVERSE ENG #1: TinyML Privacy Scrubbing Engine
+struct ZeroTrustScrubber;
+
+impl ZeroTrustScrubber {
+    fn new() -> Self { Self }
+    
+    /// Redacts sensitive UI areas (Passwords, Credit Cards) at the Edge
+    fn scrub_pii(&self, data: &[u8], _w: u32, _h: u32) -> Vec<u8> {
+        // PERFORMANCE: In-place bit manipulation or block-copy masking
+        // Mock: Scanning for 'sensitive' regions (placeholder)
+        data.to_vec() 
     }
 }
