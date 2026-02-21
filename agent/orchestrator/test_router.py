@@ -8,6 +8,23 @@ sys.path.append(os.getcwd())
 from agent.orchestrator.memory_parser import AuraNavigator
 from agent.orchestrator.cognitive_router import HyperMindRouter
 
+class MockSwarmNode:
+    """Deterministic mock for swarm node used in CI (Shadow Mode)."""
+    def __init__(self, latent_state: str, objective: str):
+        self.state = latent_state
+        self.objective = objective
+
+    def run(self):
+        # return fixed EFE based on latent_state string length
+        efe = min(1.0, len(self.state) * 0.01)
+        return {
+            "trajectory_id": "mock-0",
+            "success": True,
+            "free_energy_cost": efe,
+            "action_sequence": ["MOCK_CLICK"]
+        }
+
+
 async def main():
     bridge = AuraNavigator()
     router = HyperMindRouter(bridge)

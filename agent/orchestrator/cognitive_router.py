@@ -47,27 +47,59 @@ class HyperMindRouter:
         return g_score
     
     async def update_cognitive_weights(self, feedback: float, lr: float = 0.01):
-        """Adjusts the cognitive weights by a simple gradient step based on feedback.
+        """Adjusts the cognitive weights by a bounded gradient step based on feedback.
 
         `feedback` is a reward signal (positive for good policies, negative for bad).
-        We nudge both epistemic and pragmatic weights as well as complexity bias.
+        Updates are clamped to a maximum percentage change relative to the
+        original baseline stored in SOUL.md to avoid catastrophic identity drift.
+        A cooldown period (default 60s) prevents continuous violent updates.
         """
         dna = await self.bridge.load_dna_async(force=False)
         weights = dna.inference.setdefault("cognitive_weights", {})
-        # initialize if missing
-        weights.setdefault("epistemic_curiosity (info)", 0.5)
-        weights.setdefault("pragmatic_utility (pref)", 0.5)
-        weights.setdefault("surprise_threshold (tau)", 0.15)
-        # simple gradient update (reinforcement-like)
-        weights["epistemic_curiosity (info)"] += lr * feedback
-        weights["pragmatic_utility (pref)"] += lr * feedback
-        # keep in [0,1]
-        weights["epistemic_curiosity (info)"] = min(max(weights["epistemic_curiosity (info)"],0),1)
-        weights["pragmatic_utility (pref)"] = min(max(weights["pragmatic_utility (pref)"],0),1)
-        # update complexity bias separately
-        dna.inference["complexity_bias"] = dna.inference.get("complexity_bias",0.05) + lr * (-feedback)
-        # write back the dna cache (note: file persists via AuraNavigator later)
+        # baselines are stored separately to compute percentage change
+        baselines = dna.inference.setdefault("cognitive_baselines", {})
+        timestamp = dna.inference.setdefault("cognitive_last_update", 0)
+        now = asyncio.get_event_loop().time()
+
+        # cooldown: at least 60 seconds between updates ("Cognitive Sleep")
+        if now - timestamp < 60:
+            return
+
+        # initialize if missing; baseline read from SOUL.md if available
+        soul = dna.soul
+        for key, init in [("epistemic_curiosity (info)", 0.5),
+                          ("pragmatic_utility (pref)", 0.5),
+                          ("surprise_threshold (tau)", 0.15)]:
+            weights.setdefault(key, init)
+            # baseline either already stored or taken from SOUL defaults
+            if key not in baselines:
+                baselines[key] = soul.get("defaults", {}).get(key, weights[key])
+
+        # compute proposed new values
+        for key in ["epistemic_curiosity (info)", "pragmatic_utility (pref)"]:
+            current = weights[key]
+            updated = current + lr * feedback
+            # clamp deviation to ±10% of baseline value (SOUL-derived)
+            base = baselines[key]
+            max_delta = 0.1 * base
+            delta = updated - current
+            if delta > max_delta:
+                updated = current + max_delta
+            elif delta < -max_delta:
+                updated = current - max_delta
+            # keep in [0,1]
+            weights[key] = min(max(updated, 0), 1)
+        # complexity bias remains bounded but not tied to baseline
+        bias = dna.inference.get("complexity_bias", 0.05)
+        bias += lr * (-feedback)
+        dna.inference["complexity_bias"] = min(max(bias, 0.0), 1.0)
+
+        # record timestamp; note: do NOT write to disk until AuraEvolve batch run
+        dna.inference["cognitive_last_update"] = now
         self.bridge.dna_cache = dna
+
+        # NOTE: actual file persistence should be handled offline by AuraEvolve
+        # during idle periods (`Cognitive Sleep`).
 
     async def route_action(self, context: Dict[str, Any]) -> str:
         """
