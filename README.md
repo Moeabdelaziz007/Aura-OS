@@ -41,23 +41,23 @@ Current "Computer-using Agents" suffer from three fatal flaws:
 
 ---
 
-## 🎯 The Solution / الحل: Quantopology Architecture (هندسة الطوبولوجيا الكمية)
+## 🎯 The Solution / الحل: Quantum VisionFlow Architecture
 
 ### 🇬🇧 English
 
-**AuraOS** is an ultra-modern agentic architecture built on the emerging principles of **Quantum Topology (Quantopology)**. By treating AI agents not as isolated scripts, but as "entangled nodes" within a shifting topological swarm, we achieve massive scale with zero complex engineering:
+**AuraOS** is an ultra-modern agentic architecture built on the emerging principles of **Quantum Topology (Quantopology)**. By treating AI agents not as isolated scripts, but as "entangled nodes" within a shifting topological swarm, we achieve massive scale with zero complex engineering. We specifically target the **Live Agents** and **UI Navigator** tracks for the Gemini Live API Challenge by merging multi-agent collaboration with raw visual perception:
 
-1. **Edge-Optimized Perception (Tauri):** A hyper-lightweight Rust client captures screen dynamics via WebRTC.
-2. **Topological Swarm Execution (Cloud Run Jobs):** AuraOS breaks free from linear code execution. The Cognitive Brain (Google ADK) dynamically shapes the "Network Topology" on-the-fly, spawning parallel **Serverless Cloud Run Jobs** (like independent quantum states) to test multiple paths simultaneously (e.g., UI fixes). The winning deterministic `Exit Code` collapses the swarm back into a single truth.
-3. **Entangled "Heartbeat" Matrix:** AuraOS doesn't rely on slow databases. All spawned nodes instantly share context via an "Entangled State Memory" (our Markdown Neural Matrix). The Heartbeat loop continuously checks this state, executing proactive workflows autonomously.
+1. **Edge-Optimized Bidi-Perception (Tauri):** A hyper-lightweight Rust client captures screen dynamics via WebRTC and accepts natural voice commands with barge-in support.
+2. **Topological Swarm Execution (Cloud Run Jobs):** AuraOS breaks free from linear code execution. The Cognitive Brain (Google ADK) dynamically shapes the "Network Topology" on-the-fly, spawning parallel **Serverless Cloud Run Jobs** (like independent quantum states). Each node attempts a different visual interpretation of the UI (e.g., clicking a button via OCR, clicking based on visual grounding, or using a DOM fallback).
+3. **Entangled "Heartbeat" Matrix:** The winning deterministic `Exit Code` collapses the swarm back into a single truth. All spawned nodes instantly share context via an "Entangled State Memory" (our Markdown Neural Matrix hosted in Firestore), guaranteeing zero-latency successful UI navigation without slow backtracking.
 
 ### 🇦🇪 العربية
 
-مشروع **AuraOS** يقدم معمارية مبتكرة مبنية على أسس **الطوبولوجيا الكمية (Quantopology)**:
+مشروع **AuraOS** يقدم معمارية مبتكرة مبنية على أسس **الطوبولوجيا الكمية للرؤية (Quantum VisionFlow)**، مستهدفاً مسارات التفاعل المباشر (Live Agents) والملاحة البصرية (UI Navigator):
 
-1. **الإدراك عبر الحافة (Tauri Client):** تطبيق فائقة الخفة يرسل الشاشة والصوت لشبكة الذكاء الاصطناعي.
-2. **سرب التنفيذ الطوبولوجي (Cloud Run Jobs):** العقل المدبر يشكل "الشبكة" ديناميكياً لتشغيل مهام سحابية مؤقتة تعمل بالتوازي كحالات كمية مستقلة. بمجرد نجاح إحداها، تتلاشى البقية.
-3. **نبض القلب المترابط (Entangled Heartbeat):** الوكيل يمتلك نبضاً مستمراً يراقب بيئتك بناءً على ذاكرة مركزية (Neural Matrix) متصلة بكل العقد السحابية في ذات اللحظة دون قواعد بيانات معقدة!
+1. **الإدراك عبر الحافة (Tauri Client):** تطبيق فائق الخفة يرسل الشاشة والصوت (مع دعم المقاطعة الطبيعية) لشبكة الذكاء الاصطناعي في الوقت الفعلي.
+2. **سرب التنفيذ الطوبولوجي (Cloud Run Jobs):** العقل المدبر يستغني عن التنفيذ الخطي البطيء. بدلاً من ذلك، يقوم بتشغيل مهام سحابية مؤقتة تعمل بالتوازي كحالات كمية مستقلة. كل وكيل في هذا السرب يحاول تفسير الواجهة البصرية بشكل مختلف وفي نفس اللحظة!
+3. **نبض القلب المترابط (Entangled Heartbeat):** بمجرد نجاح إحدى العقد في تنفيذ المهمة على الواجهة (مثلاً: إيجاد زر الدخول الحقيقي)، تتلاشى بقية العقد. يتم تخزين حالة النجاح فوراً في ذاكرة مركزية متصلة بكل العقد السحابية في ذات اللحظة.
 
 ---
 
@@ -97,35 +97,38 @@ AuraOS drops traditional databases. It derives its soul, identity, and memory en
 
 ### Phase 1: Edge Client Perception Layer (Tauri + Rust + React)
 
+* [x] Scaffold initial Vite + React structure.
+* [x] Establish strict Root `.gitignore`.
 * [ ] Initialize Tauri (Rust) backend with minimal permissions (Screen & Mic only).
+* [ ] Build WebRTC signaling client to stream compressed chunks (Video + Bidi Audio) to the backend.
 
-* [ ] Build WebRTC signaling client to stream compressed chunks to Cloud Run.
+### Phase 2: Quantum Shared Memory (Firebase/Firestore)
 
-### Phase 2: Zero-Trust Cloud Infrastructure (Terraform)
+* [ ] Integrate Firestore as the Entangled State Memory hub (replacing slow local markdown for cloud-scale synchronization).
 
-* [ ] Provision `google_artifact_registry` and `google_cloud_run_v2_job` template for the Ephemeral swarm.
+### Phase 3: Zero-Trust Cloud Infrastructure (Terraform)
 
-### Phase 3: The Ephemeral Execution Swarm (Docker Sandbox)
+* [ ] Provision `google_artifact_registry` and `google_cloud_run_v2_job` template for the Ephemeral Quantum Swarm.
 
-* [ ] Write `swarm/Dockerfile` based on `ubuntu:latest` (Non-root `aura` user) preloaded with Playwright.
+### Phase 4: The Ephemeral Execution Swarm (Docker Sandbox)
 
-* [ ] Write `swarm/runner.py`: A strict Python wrapper executing Bash via `subprocess`.
+* [ ] Write `swarm/Dockerfile` based on `ubuntu:latest` (Non-root `aura` user) preloaded with Playwright and necessary CV libraries.
+* [ ] Write `swarm/quantum_node.py`: A Python worker capable of visual grounding and UI manipulation.
 
-### Phase 4: Cognitive Orchestrator (Google ADK + Live API)
+### Phase 5: Cognitive Orchestrator (Google ADK + Live API)
 
-* [ ] Scaffold `agent/main.py` using FastAPI as the Cloud Run web server.
+* [ ] Scaffold `agent/main.py` using FastAPI as the Cloud Run web server for WebSocket communication.
+* [ ] Build `AuraRootAgent` using Google GenAI SDK. Implementing the Supervisor pattern to spawn Swarm jobs.
+* [ ] Connect the agent to the `agent/memory/` Neural Matrix (`AURA_CORE.md`, `AURA_SUPERPOWERS.md`).
 
-* [ ] Build `AuraRootAgent` reading from the Neural Matrix (`AURA_CORE.md`, `AURA_SUPERPOWERS.md`).
+### Phase 6: Skills Framework (VisionFlow integration)
 
-### Phase 5: Anti-MCP Skills Framework (Markdown Native)
-
-* [ ] Author `skills/visual_qa.md`: Teach Aura how to run Playwright tests.
-
+* [ ] Author `skills/vision_flow.py`: Teach Aura the "Observe -> Ground -> Act" loop using Gemini's visual capabilities.
 * [ ] Author `skills/git_deploy.md`: Teach Aura how to push code to GitHub.
 
-### Phase 6: Devpost Finalization & Launch
+### Phase 7: Devpost Finalization & Launch
 
-* [ ] Record a 3-minute flawless voice-interaction demo video.
+* [ ] Record a 3-minute flawless voice-interaction demo video executing a complex UI navigation task using the Quantum Swarm.
 
 ---
 
