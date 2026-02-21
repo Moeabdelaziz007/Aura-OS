@@ -30,7 +30,7 @@ async def run_mission():
         context.update(frame)
         action = await router.route_action(context)
         print(f"Frame {frame}: routed to {action}")
-        time.sleep(0.2)
+        await asyncio.sleep(0.2)
 
     # now user interrupts via audio change
     print("User interruption: change destination to Tokyo")

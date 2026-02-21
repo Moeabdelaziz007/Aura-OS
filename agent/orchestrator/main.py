@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import websockets
 from typing import Any
 from .memory_parser import AuraNavigator

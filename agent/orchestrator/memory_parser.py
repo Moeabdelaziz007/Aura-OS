@@ -41,9 +41,19 @@ class AuraNavigator:
         self.nexus_file = "NEXUS.md"
 
     def _get_mmap(self, filename: str) -> mmap.mmap:
-        """Returns or creates a persistent mmap for a memory file (DNA or Nexus)."""
+        """Returns or creates a persistent mmap for a memory file (DNA or Nexus).
+
+        If the file does not exist, it is created as an empty markdown document so
+        that the rest of the system can operate without crashing.
+        """
         if filename not in self._mmaps:
             path = os.path.join(self.memory_path, filename)
+            # ensure directory exists
+            os.makedirs(self.memory_path, exist_ok=True)
+            if not os.path.exists(path):
+                # create empty file
+                with open(path, "w") as f:
+                    f.write("\n")
             f = open(path, "r+b")
             mm = mmap.mmap(f.fileno(), 0)
             self._file_handles[filename] = f
@@ -131,11 +141,26 @@ class AuraNavigator:
             return self.nexus_cache or []
 
     def search_nexus(self, query: Dict[str, Any], top_k: int = 3) -> list[Dict[str, Any]]:
-        """Naive similarity search over the loaded nexus nodes."""
+        """Naive similarity search over the loaded nexus nodes.
+
+        If the nexus has not yet been loaded, this method will attempt a
+        synchronous fallback load (not expected in performance-critical loops).
+        """
         if not self.nexus_cache:
-            # Load synchronously if not yet available
-            # (caller assumed to have called load_nexus_async earlier)
-            return []
+            try:
+                # perform synchronous load (blocking) if necessary
+                # note: this assumes the file is small
+                mm = self._get_mmap(self.nexus_file)
+                mm.seek(0)
+                raw = mm.read().decode("utf-8")
+                if "```yaml" in raw:
+                    block = raw.split("```yaml")[1].split("```")[0]
+                    parsed = yaml.safe_load(block) or {}
+                    self.nexus_cache = parsed.get("synapses", [])
+                else:
+                    self.nexus_cache = []
+            except Exception:
+                self.nexus_cache = []
         # placeholder: return first k entries for now
         return self.nexus_cache[:top_k]
 
