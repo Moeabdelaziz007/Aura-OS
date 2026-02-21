@@ -20,13 +20,16 @@ NeuroSage uses the **do-calculus** operator $P(y | do(x))$ to simulate determini
 
 ```yaml
 causal_interventions:
-  CRITICAL_ACTION:
-    nodes: [s_focus, s_trust, s_gate]
+  EXECUTE_UI_ACTION:
+    nodes: [s_focus, s_reflex, s_trust]
     logic: |
-      do(ACTION) IS PERMITTED ONLY IF:
-      - node(s_trust) == 1.0 (Verified via SOUL.md)
-      - node(s_gate) == 1.0 (Verified via INFERENCE.md)
-      - PARRENT(ACTION) contains {Verification_Node}
+      P(s_reflex | do(execute_ui_action))
+      Condition: VFE < tau AND trust_verified(SOUL.md)
+  TRIGGER_QUANTUM_SWARM:
+    nodes: [s_complexity, s_reflection, s_discovery]
+    logic: |
+      P(s_discovery | do(trigger_quantum_swarm))
+      Condition: VFE >= tau OR explicit_query == TRUE
 ```
 
 ## 🔍 Counterfactual Reasoning

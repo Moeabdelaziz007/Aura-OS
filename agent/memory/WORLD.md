@@ -53,5 +53,19 @@ latent_contract:
 
 ## 🌳 Action Space Mapping
 
+The Action Space $\mathcal{A}$ is quantized by the DNA toolset:
+
+```yaml
+action_quantization:
+  - id: A_REFLEX
+    tool: execute_ui_action
+    latency_target: <150ms
+    vfe_cost: low
+  - id: A_SWARM
+    tool: trigger_quantum_swarm
+    latency_target: <5000ms
+    vfe_cost: high (Precision-driven)
+```
+
 ---
 *WORLD.md allows the agent to "dream" of the UI state before the Edge Client even renders it.*
