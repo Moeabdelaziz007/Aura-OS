@@ -4,6 +4,7 @@ import websockets
 from typing import Any
 from .memory_parser import PersistentMemoryBridge
 from .cognitive_router import HyperMindRouter
+from .gemini_live_client import GeminiLiveClient
 
 class AetherCoreOrchestrator:
     """
@@ -16,6 +17,7 @@ class AetherCoreOrchestrator:
         self.bridge = PersistentMemoryBridge()
         self.router = HyperMindRouter(self.bridge)
         self.is_running = False
+        self.api_key = os.getenv("GEMINI_API_KEY")
 
     async def boot_sequence(self):
         """Initializes DNA and validates Persona logic."""
@@ -31,8 +33,6 @@ class AetherCoreOrchestrator:
         """Cognitive Pacemaker: Detects deadlocks and zombie connections."""
         print("💓 Pulse Engine: Monitoring Neural Synchronicity...")
         while True:
-            # In a real scenario, we'd check timestamps of last seen frames/pings
-            # and compare vs DNA thresholds (e.g. deadlock_defibrillator: 1500ms)
             await asyncio.sleep(interval)
 
     async def handle_optic_nerve(self, websocket):
@@ -40,30 +40,38 @@ class AetherCoreOrchestrator:
         remote_addr = websocket.remote_address
         print(f"🛰️ Synaptic Bridge: Connection established from {remote_addr}")
         
+        # Initialize Gemini Live Session
+        gemini = GeminiLiveClient(self.bridge, self.api_key)
+        await gemini.connect()
+
+        async def listen_to_gemini():
+            async for response in gemini.listen():
+                # Route AI voice/text back to Edge
+                await websocket.send(json.dumps(response))
+
+        asyncio.create_task(listen_to_gemini())
+
         try:
             async for message in websocket:
-                # Update Pulse/Heartbeat here
                 try:
                     if isinstance(message, bytes):
                         header = message[0]
                         payload = message[1:]
                         
                         if header == 0x01: # Visual Delta
-                            # High-speed processing
-                            pass
+                            await gemini.stream_input(payload, mime_type="image/jpeg")
                         elif header == 0x02: # Audio Chunk
-                            pass
+                            await gemini.stream_input(payload, mime_type="audio/pcm")
                     else:
                         data = json.loads(message)
-                        # Routing Logic (Active Inference)
+                        # Gating Logic (Active Inference)
                         mode = await self.router.route_action(data.get("data", {}))
-                        response = {"cmd": "EXECUTE" if mode == "SYSTEM_1_REFLEX" else "SWITCH_SYSTEM", "mode": mode}
-                        await websocket.send(json.dumps(response))
-
+                        # Intercept/Enrich here
                 except Exception as e:
                     print(f"⚠️ Neural Anomaly: {e}")
         
         finally:
+            await gemini.close()
             print(f"💀 Synaptic Bridge: Connection severed for {remote_addr}")
 
     async def run_server(self):

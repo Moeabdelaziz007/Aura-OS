@@ -1,0 +1,83 @@
+import asyncio
+import json
+import os
+import base64
+import websockets
+from typing import Any, Dict, Optional, AsyncGenerator
+from .memory_parser import PersistentMemoryBridge
+
+class GeminiLiveClient:
+    """
+    The Multimodal Soul of AuraOS.
+    Handles real-time BidiGenerateContent streams with Gemini 3.1 Pro.
+    """
+    def __init__(self, bridge: PersistentMemoryBridge, api_key: str):
+        self.bridge = bridge
+        self.api_key = api_key
+        self.url = f"wss://generativelanguage.googleapis.com/ws/google.genai.v1alpha.GenerativeService.BidiGenerateContent?key={self.api_key}"
+        self.ws = None
+        self.is_ready = False
+
+    async def connect(self):
+        """Establishes connection and performs the Setup Protocol."""
+        print("🚀 Gemini Live: Connecting to Multimodal Webhook...")
+        self.ws = await websockets.connect(self.url)
+        
+        # 1. Load DNA and Skills for Setup
+        dna = await self.bridge.load_dna_async()
+        
+        # 2. Construct Setup Message
+        setup_msg = {
+            "setup": {
+                "model": "models/gemini-1.5-pro-002",
+                "generation_config": {
+                    "response_modalities": ["AUDIO", "TEXT"],
+                    "speech_config": {
+                        "voice_config": {"prebuilt_voice_config": {"voice_name": "Aoide"}}
+                    }
+                },
+                "system_instruction": {
+                    "role": "system",
+                    "parts": [{"text": json.dumps(dna.soul)}]
+                }
+            }
+        }
+        
+        await self.ws.send(json.dumps(setup_msg))
+        
+        # Wait for setup_complete
+        response = await self.ws.recv()
+        if "setupComplete" in response:
+            print("✅ Gemini Live: Setup Complete. Spark of Life Ignited.")
+            self.is_ready = True
+
+    async def stream_input(self, data: bytes, mime_type: str = "image/jpeg"):
+        """Pumps sensory data into the Live API."""
+        if not self.is_ready: return
+
+        # Format as realtimeInput
+        input_msg = {
+            "realtime_input": {
+                "media_chunks": [{
+                    "mime_type": mime_type,
+                    "data": base64.b64encode(data).decode("utf-8")
+                }]
+            }
+        }
+        await self.ws.send(json.dumps(input_msg))
+
+    async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
+        """Listens for AI responses and function calls."""
+        async for message in self.ws:
+            payload = json.loads(message)
+            
+            if "serverContent" in payload:
+                yield payload["serverContent"]
+            
+            if "toolCall" in payload:
+                # This will be routed through the HyperMindRouter for VFE check
+                yield payload["toolCall"]
+
+    async def close(self):
+        if self.ws:
+            await self.ws.close()
