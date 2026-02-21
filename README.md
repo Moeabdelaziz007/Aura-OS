@@ -131,18 +131,18 @@ graph TD
     classDef cloud fill:#4285f4,stroke:#fff,stroke-width:2px,color:#fff;
     classDef brain fill:#9c27b0,stroke:#fff,stroke-width:2px,color:#fff;
 
-    A[Tauri Edge Client<br/>🎤 Voice + 🖥️ Screen]:::edge -->|Bidi WebSocket| B(HyperMind Router<br/>AetherCore ADK):::brain
-    B -->|Active Inference| C{Prometheus World Model<br/>Predicts UI State}:::brain
+    A[Tauri Edge Client<br>🎤 Voice + 🖥️ Screen]:::edge -->|Bidi WebSocket| B(HyperMind Router<br>AetherCore ADK):::brain
+    B -->|Active Inference| C{Prometheus World Model<br>Predicts UI State}:::brain
     
-    C -->|Spawns Swarm| D1[Cloud Run Job 1<br/>DOM Selector]:::cloud
-    C -->|Spawns Swarm| D2[Cloud Run Job 2<br/>Vision OCR]:::cloud
-    C -->|Spawns Swarm| D3[Cloud Run Job 3<br/>AlphaMind MCTS]:::cloud
+    C -->|Spawns Swarm| D1[Cloud Run Job 1<br>DOM Selector]:::cloud
+    C -->|Spawns Swarm| D2[Cloud Run Job 2<br>Vision OCR]:::cloud
+    C -->|Spawns Swarm| D3[Cloud Run Job 3<br>AlphaMind MCTS]:::cloud
     
     D1 -.->|Verification| E{NeuroSage Validator}:::brain
     D2 -.->|Verification| E
     D3 -.->|Verification| E
     
-    E -->|Success (Exit Code 0)| F((QuantumWeaver Collapse<br/>Terminate Others)):::cloud
+    E -->|Success (Exit Code 0)| F((QuantumWeaver Collapse<br>Terminate Others)):::cloud
     F -->|Execution Result| A
 ```
 
