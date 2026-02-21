@@ -30,7 +30,7 @@ To maintain **Zero-Latency** and **Deterministic Agency**, any agent (Human or A
    - Use `asyncio.to_thread` for legacy sync libraries or `spawn_blocking` in Rust.
 
 2. **Memory Consistency:**
-   - The `PersistentMemoryBridge` uses `mmap`. Do not unmap or close file descriptors during runtime.
+   - The `AuraNavigator` uses `mmap`. Do not unmap or close file descriptors during runtime.
    - DNA updates must be incremental and hash-verified.
 
 3. **Causal Integrity:**

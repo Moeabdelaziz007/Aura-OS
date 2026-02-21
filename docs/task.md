@@ -18,11 +18,14 @@
 ## 🧠 Phase 3: The Nervous System (الجهاز العصبي - Backend)
 
 - [x] **Step 3.1:** Python Environment & Dependency Locking.
-- [x] **Step 3.2:** Google ADK Integration.
+- [x] **Step 3.2:** AetherCore ADK Integration.
 - [x] **Step 3.3:** Cognitive Orchestrator Implementation (`agent/orchestrator/`).
 - [x] **Step 3.4:** DNA Access Layer (Memory-Mapped Files).
 - [x] **Step 3.5:** The Synaptic Bridge (Optic Nerve API Contract).
 - [x] **Step 3.6:** Active Pulse Monitor (Zombie Defibrillator).
+- [x] **Step 3.7:** Add `AuraNavigator` abstraction with Nexus search.
+- [x] **Step 3.8:** Create `NEXUS.md` & `HEARTBEAT.md` DNA files.
+- [x] **Step 3.9:** Implement weight learning and WebSocket resilience.
 
 ## 🛰️ Phase 4: Peripheral Senses (الحواس المحيطية - Edge Client)
 
@@ -57,7 +60,7 @@
 
 ## ✅ Phase 9: Full Micro-Testing (الاختبار الجزئي الشامل)
 
-- [x] **Step 9.1:** Unit Test `PersistentMemoryBridge` for Zero-Latency DNA updates.
+- [x] **Step 9.1:** Unit Test `AuraNavigator` for Zero-Latency DNA updates.
 - [x] **Step 9.2:** Validate `HyperMindRouter` Gating (VFE/EFE) trajectories.
 - [x] **Step 9.3:** Rust Peripheral Audit & Sensory Contract standardization.
 

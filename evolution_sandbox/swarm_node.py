@@ -37,10 +37,21 @@ class QuantumWeaverNode:
             # 2. Execute Policy Search (Simplified for Refactor Phase)
             # In production: This selects actions from SKILLS.md to minimize G
             try:
+                # rudimentary EFE approximation using SKILLS
+                skills_path = os.path.join(os.getcwd(), "agent/memory/SKILLS.md")
+                efe = 1.0
+                if os.path.exists(skills_path):
+                    with open(skills_path, "r") as f:
+                        text = f.read()
+                    if "function_declaration" in text:
+                        # reward more skills -> lower free energy
+                        count = text.count("name:")
+                        efe = max(0.0, 1.0 - count * 0.01)
+                self.results["free_energy_cost"] = efe
+
                 # Simulated Interaction
                 await page.screenshot(path=f"sim_{self.results['trajectory_id']}.png")
                 self.results["success"] = True
-                self.results["free_energy_cost"] = 0.12 # Calculated EFE
                 self.results["action_sequence"] = ["GOTO", "WAIT", "EXTRACT"]
             except Exception as e:
                 print(f"⚠️ Simulation Failure: {e}")

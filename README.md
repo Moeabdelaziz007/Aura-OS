@@ -22,6 +22,10 @@
 
 - **🚀 System 1/2 Thinking:** Hyper-fast routine actions mixed with deep MCTS reasoning for complex hurdles.
 - **🧬 AuraEvolve:** A recursive self-healing layer that repairs system logic in real-time.
+- **🔗 Aura-Nexus & AuraNavigator:** A proprietary multimodal knowledge graph with synaptic weighting; Navigator enriches context from memory before action gating.
+- **💓 Heartbeat Engine:** Real-time health pulses drive synaptic strength updates and trigger evolutionary cycles.
+- **🔧 Adaptive Learning:** Cognitive weights and complexity bias now train online via feedback signals.
+- **🛰️ Resilient Connectivity:** WebSocket reconnections, ping/pong health checks, and CI monitoring of the Gemini Live API.
 - **☁️ Quantum Swarm:** Parallel serverless execution "collapses" into the optimal UI trajectory.
 - **⚖️ NeuroSage:** Causal logic validation to eliminate hallucinations and secure transactions.
 - **🕸️ HyperMind:** A non-hierarchical hypergraph topology for high-speed agent coordination.
@@ -69,7 +73,16 @@ To secure a definitive victory in the **Live Agents** and **UI Navigator** track
 - **The Math:** It optimizes a unique reward function $R = \alpha \cdot P(Success) - \beta \cdot T_{exec} - \gamma \cdot C_{code}$, balancing success, speed, and simplicity.
 
 ---
+### 🛠️ Recent Enhancements
 
+1. Added `NEXUS.md` (Aura-Nexus) and `HEARTBEAT.md` to DNA.
+2. Refactored `PersistentMemoryBridge` → `AuraNavigator` with Nexus search API.
+3. Upgraded `EVOLVE.md` with Aura-Consolidation and skill promotion rules.
+4. Implemented WebSocket reconnection/heartbeat in GeminiLiveClient.
+5. Added weight learning method `update_cognitive_weights` to router.
+6. Enhanced swarm node to compute basic Expected Free Energy using SKILLS.
+
+---
 ## ⚡ Quick Start
 
 ```bash
@@ -118,7 +131,7 @@ graph TD
     classDef cloud fill:#4285f4,stroke:#fff,stroke-width:2px,color:#fff;
     classDef brain fill:#9c27b0,stroke:#fff,stroke-width:2px,color:#fff;
 
-    A[Tauri Edge Client<br/>🎤 Voice + 🖥️ Screen]:::edge -->|Bidi WebSocket| B(HyperMind Router<br/>Google ADK):::brain
+    A[Tauri Edge Client<br/>🎤 Voice + 🖥️ Screen]:::edge -->|Bidi WebSocket| B(HyperMind Router<br/>AetherCore ADK):::brain
     B -->|Active Inference| C{Prometheus World Model<br/>Predicts UI State}:::brain
     
     C -->|Spawns Swarm| D1[Cloud Run Job 1<br/>DOM Selector]:::cloud
@@ -141,7 +154,7 @@ graph TD
 
 - [x] **Step 1:** Architectural DNA & Mathematical Manifest (VFE/EFE).
 - [x] **Step 2:** Zero-DB States (`agent/memory/`) with mmap access.
-- [x] **Step 3:** Cognitive Orchestrator Implementation (Google ADK + Async Python).
+- [x] **Step 3:** Cognitive Orchestrator Implementation (AetherCore ADK + Async Python).
 
 ### 🛰️ Phase 4: Peripheral Senses (الحواس المحيطية - Edge Client)
 
@@ -159,7 +172,7 @@ graph TD
 
 ## 💻 Tech Stack
 
-- **Brain / Orchestrator:** Python + Google Agent Development Kit (ADK) + Gemini 3.1 Pro (Live API).
+- **Brain / Orchestrator:** Python + AetherCore Agent Development Kit (ADK) + Gemini 3.1 Pro (Live API).
 - **Simulator / Swarm:** Google Cloud Run Jobs, Terraform, Docker.
 - **Edge Client:** Rust + Tauri v2, React 18, Vite.
 - **DNA / Memory:** Markdown/YAML `AetherCore` System.

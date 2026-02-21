@@ -5,14 +5,14 @@ import os
 # Add the project root to path
 sys.path.append(os.getcwd())
 
-from agent.orchestrator.memory_parser import PersistentMemoryBridge
+from agent.orchestrator.memory_parser import AuraNavigator
 from agent.orchestrator.cognitive_router import HyperMindRouter
 
 async def main():
-    bridge = PersistentMemoryBridge()
+    bridge = AuraNavigator()
     router = HyperMindRouter(bridge)
     
-    print("🔬 Testing HyperMindRouter Gating Logic...")
+    print("🔬 Testing HyperMindRouter Gating Logic and AuraNavigator...")
     
     # Test Case 1: Low Anomaly (Reflexive)
     print("\nCase 1: Low Anomaly (Expected outcome: SYSTEM_1_REFLEX)")
@@ -30,6 +30,11 @@ async def main():
     print("\nCase 3: Calculating EFE (G)...")
     g_score = await router.calculate_efe(ctx_high)
     print(f"EFE (G-Score): {g_score:.4f}")
+
+    # Test nexus search (should gracefully return list)
+    print("\nCase 4: Nexus Search")
+    hits = router.bridge.search_nexus({"dummy": True})
+    print(f"Nexus hits: {hits}")
 
     bridge.close()
 

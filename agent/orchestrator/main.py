@@ -2,7 +2,7 @@ import asyncio
 import json
 import websockets
 from typing import Any
-from .memory_parser import PersistentMemoryBridge
+from .memory_parser import AuraNavigator
 from .cognitive_router import HyperMindRouter
 from .gemini_live_client import GeminiLiveClient
 
@@ -14,7 +14,7 @@ class AetherCoreOrchestrator:
     def __init__(self, host: str = "127.0.0.1", port: int = 8000):
         self.host = host
         self.port = port
-        self.bridge = PersistentMemoryBridge()
+        self.bridge = AuraNavigator()
         self.router = HyperMindRouter(self.bridge)
         self.is_running = False
         self.api_key = os.getenv("GEMINI_API_KEY")

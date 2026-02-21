@@ -17,7 +17,7 @@ AuraOS/
 │   │   ├── WORLD.md        <-- Generative UI State Model
 │   │   ├── INFERENCE.md    <-- ΔF > τ Surprise Logic
 │   │   └── EVOLVE.md       <-- R = αP - βT - γC Objective Function
-│   └── orchestrator/       <-- The Cognitive Engine (Google ADK)
+│   └── orchestrator/       <-- The Cognitive Engine (AetherCore ADK)
 ├── edge_client/            <-- Perception Layer (Rust + Tauri)
 └── swarm_infrastructure/   <-- Cloud Swarm (Terraform + Docker)
 ```
@@ -43,7 +43,7 @@ AuraOS/
 
 | Connection | Protocol | Priority |
 | :--- | :--- | :--- |
-| **Edge ↔ Swarm** | Bi-directional WebSockets | CRITICAL (Real-time) |
+| **Edge ↔ Swarm** | Bi-directional WebSockets | CRITICAL (real-time) |
 | **DNA ↔ RAM** | Memory-Mapped (mmap) | HIGH (Low Latency) |
 | **Agent ↔ UI** | Shadow DOM Simulation | MEDIUM (Safety First) |
 

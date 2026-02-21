@@ -5,5 +5,5 @@ pydantic
 mmap
 asyncio
 websockets
-# Required for Google ADK functionality (conceptual/mocked if private, or specific packages if public)
+# Required for AetherCore ADK functionality (conceptual/mocked if private, or specific packages if public)
 # google-adk (assuming current dev environment availability)

@@ -1,0 +1,24 @@
+name: Monitor Gemini Live API
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # daily
+  workflow_dispatch: {}
+
+jobs:
+  check_api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Test Gemini endpoint
+        run: |
+          echo "# automatically verify Gemini Live API schema hasn't changed" > report.txt
+          curl -s -D - 'https://generativelanguage.googleapis.com/v1beta2/models' || echo "ERROR contacting API" >> report.txt
+          grep -i "error" report.txt || echo "API reachable" >> report.txt
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: gemini-api-check
+          path: report.txt

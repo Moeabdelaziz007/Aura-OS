@@ -20,10 +20,10 @@ class DNABelief:
     memory: dict[str, Any]
     version: str
 
-class PersistentMemoryBridge:
+class AuraNavigator:
     """
-    Priority 0 Refactor: Zero-Latency DNA Bridge.
-    Keeps mmaps open and provides non-blocking async refreshes.
+    Priority 0 Refactor: AuraNavigator (formerly PersistentMemoryBridge).
+    Navigates the DNA and the new Aura-Nexus graph in zero latency.
     """
     def __init__(self, memory_path: str = "agent/memory/"):
         self.memory_path = memory_path
@@ -31,15 +31,17 @@ class PersistentMemoryBridge:
         self._file_handles: Dict[str, Any] = {}
         self._hashes: Dict[str, str] = {}
         self.dna_cache: Optional[DNABelief] = None
+        self.nexus_cache: Optional[list[Dict[str, Any]]] = None
         self._lock = asyncio.Lock()
         self.dna_files = [
             "SOUL.md", "WORLD.md", "INFERENCE.md", "AGENTS.md", 
             "CAUSAL.md", "EVOLVE.md", "PULSE.md", "SKILLS.md", 
             "TOPOLOGY.md", "MEMORY.md"
         ]
+        self.nexus_file = "NEXUS.md"
 
     def _get_mmap(self, filename: str) -> mmap.mmap:
-        """Returns or creates a persistent mmap for a DNA file."""
+        """Returns or creates a persistent mmap for a memory file (DNA or Nexus)."""
         if filename not in self._mmaps:
             path = os.path.join(self.memory_path, filename)
             f = open(path, "r+b")
@@ -106,10 +108,43 @@ class PersistentMemoryBridge:
         for f in self._file_handles.values():
             f.close()
 
+    # --- Nexus helpers --------------------------------------------------
+    async def load_nexus_async(self, force: bool = False) -> list[Dict[str, Any]]:
+        """Loads the Aura-Nexus graph from NEXUS.md."""
+        async with self._lock:
+            needs_update = False
+            mm = self._get_mmap(self.nexus_file)
+            mm.seek(0)
+            content_bytes = mm.read()
+            current_hash = self._calculate_hash(content_bytes)
+
+            if force or current_hash != self._hashes.get(self.nexus_file):
+                self._hashes[self.nexus_file] = current_hash
+                raw = content_bytes.decode("utf-8")
+                parsed = {}
+                if "```yaml" in raw:
+                    block = raw.split("```yaml")[1].split("```")[0]
+                    parsed = yaml.safe_load(block) or {}
+                self.nexus_cache = parsed.get("synapses", [])
+                needs_update = True
+
+            return self.nexus_cache or []
+
+    def search_nexus(self, query: Dict[str, Any], top_k: int = 3) -> list[Dict[str, Any]]:
+        """Naive similarity search over the loaded nexus nodes."""
+        if not self.nexus_cache:
+            # Load synchronously if not yet available
+            # (caller assumed to have called load_nexus_async earlier)
+            return []
+        # placeholder: return first k entries for now
+        return self.nexus_cache[:top_k]
+
 if __name__ == "__main__":
-    # Test boot
-    bridge = PersistentMemoryBridge()
+    # Quick sanity check
+    navigator = AuraNavigator()
     async def test():
-        dna = await bridge.load_dna_async()
-        print(f"⚡ Persistent DNA Bridge Active (v{dna.version})")
+        dna = await navigator.load_dna_async()
+        print(f"⚡ AuraNavigator Active (v{dna.version})")
+        nexus = await navigator.load_nexus_async()
+        print(f"🔗 Nexus nodes: {len(nexus)}")
     asyncio.run(test())

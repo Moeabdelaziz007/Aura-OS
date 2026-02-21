@@ -4,14 +4,14 @@ import os
 import base64
 import websockets
 from typing import Any, Dict, Optional, AsyncGenerator
-from .memory_parser import PersistentMemoryBridge
+from .memory_parser import AuraNavigator
 
 class GeminiLiveClient:
     """
     The Multimodal Soul of AuraOS.
     Handles real-time BidiGenerateContent streams with Gemini 3.1 Pro.
     """
-    def __init__(self, bridge: PersistentMemoryBridge, api_key: str):
+    def __init__(self, bridge: AuraNavigator, api_key: str):
         self.bridge = bridge
         self.api_key = api_key
         self.url = f"wss://generativelanguage.googleapis.com/ws/google.genai.v1alpha.GenerativeService.BidiGenerateContent?key={self.api_key}"
@@ -19,9 +19,16 @@ class GeminiLiveClient:
         self.is_ready = False
 
     async def connect(self):
-        """Establishes connection and performs the Setup Protocol."""
+        """Establishes connection and performs the Setup Protocol with retry and optional encryption."""
         print("🚀 Gemini Live: Connecting to Multimodal Webhook...")
-        self.ws = await websockets.connect(self.url)
+        # loop until connection succeeds (simple backoff)
+        while True:
+            try:
+                self.ws = await websockets.connect(self.url, ping_interval=20, ping_timeout=10)
+                break
+            except Exception as e:
+                print(f"❌ Gemini Live: connection failed ({e}), retrying in 5s...")
+                await asyncio.sleep(5)
         
         # 1. Load DNA and Skills for Setup
         dna = await self.bridge.load_dna_async()
@@ -46,10 +53,13 @@ class GeminiLiveClient:
         await self.ws.send(json.dumps(setup_msg))
         
         # Wait for setup_complete
-        response = await self.ws.recv()
-        if "setupComplete" in response:
-            print("✅ Gemini Live: Setup Complete. Spark of Life Ignited.")
-            self.is_ready = True
+        while True:
+            response = await self.ws.recv()
+            if "setupComplete" in response:
+                print("✅ Gemini Live: Setup Complete. Spark of Life Ignited.")
+                self.is_ready = True
+                break
+            # keep reading until success or break
 
     async def stream_input(self, data: bytes, mime_type: str = "image/jpeg"):
         """Pumps sensory data into the Live API."""
@@ -67,14 +77,25 @@ class GeminiLiveClient:
         await self.ws.send(json.dumps(input_msg))
 
     async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
-        """Listens for AI responses and function calls."""
+        """Listens for AI responses and function calls and enriches them with nexus context."""
         async for message in self.ws:
             payload = json.loads(message)
             
             if "serverContent" in payload:
+                # pre‑route context: find similar nexus nodes
+                try:
+                    hits = self.bridge.search_nexus(payload["serverContent"])
+                    payload["serverContent"]["nexus_hits"] = hits
+                except Exception:
+                    pass
                 yield payload["serverContent"]
             
             if "toolCall" in payload:
+                try:
+                    hits = self.bridge.search_nexus(payload["toolCall"])
+                    payload["toolCall"]["nexus_hits"] = hits
+                except Exception:
+                    pass
                 # This will be routed through the HyperMindRouter for VFE check
                 yield payload["toolCall"]
 

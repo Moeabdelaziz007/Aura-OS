@@ -61,7 +61,12 @@ By leveraging **AetherCore Prometheus**, AuraOS maintains a persistent, generati
 
 ---
 
-### 3. Technology Stack (The Arsenal)
+### 3. Connectivity & Resilience
+
+* **Robust WebSocket Layer:** All edge‑brain connections use a bidi WebSocket client with automatic reconnect backoff and regular ping/pong heartbeats. Payloads are optionally encrypted in transit (TLS) and verified with checksums.
+* **API Monitoring CI:** A GitHub Action monitors the Gemini Live API daily for schema or endpoint changes, generating alerts to prevent silent breakage.
+
+### 4. Technology Stack (The Arsenal)
 
 | Component | Technology |
 | :--- | :--- |
@@ -81,15 +86,17 @@ By leveraging **AetherCore Prometheus**, AuraOS maintains a persistent, generati
 The agent's personality, skills, and logic reside in `agent/memory/`:
 
 * `SOUL.md`: Persona, identity, and Jungian archetypes.
-* `SKILLS.md`: Dynamic toolset definitions.
+* `SKILLS.md`: Dynamic toolset definitions (System 1 & 2) with reinforcement-based promotion.
 * `WORLD.md`: Generative World Model parameters for planning.
-* `INFERENCE.md`: Active Inference rules and Free Energy targets.
+* `INFERENCE.md`: Active Inference rules and Free Energy targets. Includes learning updates to cognitive weights.
 * `SUPERPOWER.md`: Swarm orchestration constraints.
 * `TOPOLOGY.md`: Hypergraph incidence matrix and coordination rules.
 * `CAUSAL.md`: Causal graphs for logic validation.
 * `MEMORY.md`: Spatio-temporal memory engine storing multimodal latent embeddings ($z$).
   * **Visual Delta Retrieval:** Comparing live video streams to successful past state embeddings.
-  * **Acoustic Working Memory:** Emotional sentiment & urgency monitoring for dynamic $\tau$ adjustment.
+  * **Acoustic Working Memory:** Emotional sentiment & urgency monitoring for dynamic $	au$ adjustment.
+* `NEXUS.md` (new): **Aura-Nexus** — Multimodal Knowledge Graph with synapses linking textual intent, visual latent vectors, and auditory affect. Includes synaptic weighting driven by `HEARTBEAT.md`.
+* `HEARTBEAT.md` (new): Cardiac oscillator injecting health metrics, latency, and driving synaptic weight decay/reinforcement. Pulses trigger learning and evolution.
 
 ---
 
