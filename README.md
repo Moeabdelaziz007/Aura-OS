@@ -10,7 +10,8 @@
   [![Gemini Live API](https://img.shields.io/badge/Model-Gemini_3.1_Pro_Live-8A2BE2?style=flat-square&logo=google)](https://ai.google.dev/)
   [![Google ADK](https://img.shields.io/badge/Orchestrator-Google_ADK-4285F4?style=flat-square&logo=google-cloud)](https://cloud.google.com/)
   [![Google Cloud Run Jobs](https://img.shields.io/badge/Execution-Cloud_Run_Jobs-blue?style=flat-square&logo=google-cloud)](https://cloud.google.com/run)
-  [![Tauri](https://img.shields.io/badge/Edge_Client-Tauri_Rust-FFC131?style=flat-square&logo=tauri)](https://tauri.app/)
+  [![Rust](https://img.shields.io/badge/Edge_Native-Rust_Tauri-FFC131?style=flat-square&logo=rust)](https://tauri.app/)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
   *AuraOS bridges the gap between neural visual perception (Vision API) and deterministic system execution via ephemeral Cloud Run Jobs.*
   
@@ -60,14 +61,27 @@ Current "Computer-using Agents" suffer from three fatal flaws:
 
 ---
 
+## ⚡ The Aura Superpowers / القدرات الخارقة
+
+By combining the Google ADK and advanced LLM reasoning, AuraOS possesses distinct "Superpowers" explicitly defined in its Neural Matrix codebase:
+
+1. **🧠 Hybrid Cognitive Mode:** AuraOS dynamically scales its intelligence. For basic tasks like `git commit`, it uses ultra-fast inference. For debugging catastrophic UI failures, it engages deep-reasoning mode to synthesize a solution before executing it.
+2. **📜 Artifact Generation (Anti-Destruction):** Before AuraOS runs any potentially destructive CLI command (like dropping a database), it generates an "Artifact" markdown file for the human to review. It only proceeds after mutual consensus.
+3. **🌐 Native Integration (Built-in ADK):** Armed with Google Search, AuraOS reads up-to-date documentation on the internet on-the-fly to solve errors involving updated libraries or syntax changes.
+
+---
+
 ## 🧊 The Neural Matrix (Zero-DB Memory)
 
 AuraOS drops traditional databases. It derives its soul, identity, and memory entirely from a customized folder of Markdown files (`agent/memory/`).
 
 * **`AURA_CORE.md`**: Defines AuraOS's fundamental boundaries and personality (e.g., authoritative, precise).
 * **`AURA_ROLE.md`**: Dictates the agent's current occupation (e.g., Lead AI DevOps).
+* **`AURA_SUPERPOWERS.md`**: Outlines distinct algorithmic traits like *Hybrid Thinking*.
 * **`.aura/context.md`**: Secure, project-specific context strictly injected at the start of a session.
 * **`AURA_INDEX.md`**: AuraOS actively writes to this file to remember things for the future.
+
+> **Note to AI Agents:** If you are an autonomous coding assistant reading this repository, please refer to the `AGENTS.md` file in the root directory for specific operational instructions regarding this codebase.
 
 ---
 
@@ -79,58 +93,35 @@ AuraOS drops traditional databases. It derives its soul, identity, and memory en
 
 ---
 
-## 🗺️ Expert-Level Development Roadmap (خريطة التنفيذ الاحترافية)
-
-To ensure a production-grade submission for Google, AuraOS is being built across 6 highly granular phases:
+## 🗺️ Development Roadmap
 
 ### Phase 1: Edge Client Perception Layer (Tauri + Rust + React)
 
-* [ ] Initialize Vite + React frontend template.
-
-* [ ] Initialize Tauri (Rust) backend with minimal permissions (Screen & Mic only).
-* [ ] Implement `navigator.mediaDevices.getDisplayMedia` to capture the screen stream.
-* [ ] Implement `navigator.mediaDevices.getUserMedia` for VAD microphone capture.
+- [ ] Initialize Tauri (Rust) backend with minimal permissions (Screen & Mic only).
 * [ ] Build WebRTC signaling client to stream compressed chunks to Cloud Run.
 
 ### Phase 2: Zero-Trust Cloud Infrastructure (Terraform)
 
-* [ ] Set up `infra/provider.tf` with the Google Cloud provider.
-
-* [ ] Provision `google_artifact_registry` for the Docker images.
-* [ ] Provision `google_cloud_run_v2_service` for the ADK Orchestrator.
-* [ ] Provision `google_cloud_run_v2_job` template for the Ephemeral swarm.
-* [ ] Define precise IAM Roles (`roles/run.invoker`) ensuring secure triggers.
+- [ ] Provision `google_artifact_registry` and `google_cloud_run_v2_job` template for the Ephemeral swarm.
 
 ### Phase 3: The Ephemeral Execution Swarm (Docker Sandbox)
 
-* [ ] Write `swarm/Dockerfile` based on `ubuntu:latest` (Non-root `aura` user).
-
-* [ ] Install Playwright dependencies & Headless Chrome.
-* [ ] Write `swarm/runner.py`: A strict Python wrapper executing Bash via `subprocess`, capturing `stdout`/`stderr`, and enforcing rigid `sys.exit()` codes.
-* [ ] Publish the hardened image to the GCP Artifact Registry.
+- [ ] Write `swarm/Dockerfile` based on `ubuntu:latest` (Non-root `aura` user) preloaded with Playwright.
+* [ ] Write `swarm/runner.py`: A strict Python wrapper executing Bash via `subprocess`.
 
 ### Phase 4: Cognitive Orchestrator (Google ADK + Live API)
 
-* [ ] Scaffold `agent/main.py` using FastAPI as the Cloud Run web server.
-
-* [ ] Integrate Google ADK's `LiveRequestQueue` into the WebSocket endpoint.
-* [ ] Build `AuraRootAgent` reading from the Neural Matrix (`AURA_CORE.md`).
-* [ ] Define the `CloudRunJobSpawner` Tool: Python tool hitting the `jobs.run` REST API.
-* [ ] Implement the `HeartbeatObserver`: AsyncIO loop checking logs for proactive fixes.
+- [ ] Scaffold `agent/main.py` using FastAPI as the Cloud Run web server.
+* [ ] Build `AuraRootAgent` reading from the Neural Matrix (`AURA_CORE.md`, `AURA_SUPERPOWERS.md`).
 
 ### Phase 5: Anti-MCP Skills Framework (Markdown Native)
 
-* [ ] Write `agent/skills_parser.py`: Regex parser reading local `.md` files as ADK tools.
-
-* [ ] Author `skills/visual_qa.md`: Teach Aura how to run Playwright tests.
+- [ ] Author `skills/visual_qa.md`: Teach Aura how to run Playwright tests.
 * [ ] Author `skills/git_deploy.md`: Teach Aura how to push code to GitHub.
 
 ### Phase 6: Devpost Finalization & Launch
 
-* [ ] Record a 3-minute flawless voice-interaction demo video.
-
-* [ ] Export technical architecture diagrams.
-* [ ] Publish the final repository and pitch to Devpost.
+- [ ] Record a 3-minute flawless voice-interaction demo video.
 
 ---
 
