@@ -1,136 +1,126 @@
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop" width="100%" height="300" style="object-fit: cover; border-radius: 12px; margin-bottom: 20px;">
+  <img src="assets/architecture.png" width="100%" height="auto" style="object-fit: contain; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px 0 rgba(0,118,255,0.39);">
 
-# 🌌 AuraOS: The "Zero-UI" DevOps & Growth Automaton
+# 🌌 AuraOS: The "Zero-UI" Serverless Automaton
 
 ### **نظام التشغيل الصوتي المستقل لمعالجة الواجهات وأتمتة المهام المعقدة**
 
   **Built for the [Gemini Live Agents Challenge](https://geminiliveagentchallenge.devpost.com/)**
 
   [![Gemini Live API](https://img.shields.io/badge/Model-Gemini_3.1_Pro_Live-8A2BE2?style=flat-square&logo=google)](https://ai.google.dev/)
-  [![Google ADK](https://img.shields.io/badge/SDK-Google_ADK-4285F4?style=flat-square&logo=google-cloud)](https://cloud.google.com/)
-  [![Google Cloud Run](https://img.shields.io/badge/Hosting-Cloud_Run-blue?style=flat-square&logo=google-cloud)](https://cloud.google.com/run)
-  [![Security](https://img.shields.io/badge/Security-Docker_Sandbox-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
+  [![Google ADK](https://img.shields.io/badge/Orchestrator-Google_ADK-4285F4?style=flat-square&logo=google-cloud)](https://cloud.google.com/)
+  [![Google Cloud Run Jobs](https://img.shields.io/badge/Execution-Cloud_Run_Jobs-blue?style=flat-square&logo=google-cloud)](https://cloud.google.com/run)
+  [![Tauri](https://img.shields.io/badge/Edge_Client-Tauri_Rust-FFC131?style=flat-square&logo=tauri)](https://tauri.app/)
 
-  *AuraOS bridges the gap between neural visual perception (Vision API) and deterministic system execution (CLI/Playwright CDP).*
-  *يقوم AuraOS بسد الفجوة بين الإدراك البصري العصبي (عبر Gemini Vision API) والتنفيذ الحتمي للأنظمة (عبر بروتوكول CDP لمتصفح Playwright وأوامر سطر الأوامر)، مما يتيح لك إدارة أنظمة حية بمجرد التحدث والمقاطعة الصوتية المستمرة.*
+  *AuraOS bridges the gap between neural visual perception (Vision API) and deterministic system execution via ephemeral Cloud Run Jobs. Inspired by OpenClaw's proactive architecture.*
+  
+  *يقوم AuraOS بسد الفجوة بين الإدراك البصري العصبي (عبر Gemini Vision API) والتنفيذ الحتمي عن طريق استدعاء بيئات سحابية مؤقتة (Cloud Run Jobs) برمجياً، مما يتيح لك إدارة أنظمة حية بمجرد التحدث المستمر.*
 
 </div>
 
 ---
 
-## 🛑 The Problem / المشكلة: هشاشة وكلاء الواجهات (UI Navigators Fragility)
+## 🛑 The Problem / المشكلة: وكلاء سلبيون وهشون
 
 ### 🇬🇧 English
 
-Current "Computer-using Agents" try to imitate human behavior by visually tracking coordinates and simulating mouse clicks (`X, Y` mapping). This creates fragile, unreliable workflows that instantly break if a website changes a button color, repositions a div, or alters screen resolution. In enterprise environments, **this fragility is unacceptable.**
+Current "Computer-using Agents" suffer from three fatal flaws:
+
+1. **Fragility:** They immitate human clicks (`X, Y` mapping), breaking instantly on UI changes.
+2. **Resource Hogging:** They stream non-stop desktop video to the cloud, wasting incredible bandwidth.
+3. **Reactivity:** They are passive chatbots waiting for a prompt, not active colleagues.
 
 ### 🇦🇪 العربية
 
-الوكلاء الآليون الحاليون الذين يستخدمون الحواسيب يعتمدون على تقليد السلوك البشري عبر محاكاة النقرات الرسومية وتتبع الإحداثيات البصرية (نظام X,Y). هذا النهج يخلق سير عمل شديد الهشاشة؛ إذ ينهار النظام فوراً إذا قام الموقع بتغيير لون زر، أو تحريك عنصر، أو حتى تغيير دقة الشاشة. في بيئات الشركات الكبرى والأتمتة المعقدة، **هذه الهشاشة تعتبر كارثة هندسية.**
+الوكلاء الآليون الحاليون يعانون من عيوب قاتلة:
+
+1. **الهشاشة:** يعتمدون على النقر بالإحداثيات، وينهارون بمجرد تغير شكل الموقع.
+2. **استهلاك الموارد:** يبثون فيديو مستمر ومكلف إلى السحابة للبحث عن التغييرات.
+3. **السلبية:** هم مجرد روبوتات محادثة (Chatbots) تنتظر الأوامر، وليسوا زملاء عمل استباقيين.
 
 ---
 
-## 🎯 The Solution / الحل: معمارية الإدراك المفصول (Neuro-Symbolic Architecture)
+## 🎯 The Solution / الحل: معمارية الحافة والسرب السحابي (Edge-to-Cloud Swarm)
 
 ### 🇬🇧 English
 
-**AuraOS** completely abandons the "click-simulation" approach. Instead, it utilizes a **Neuro-Symbolic Architecture**:
+**AuraOS** is an ultra-modern, production-grade agentic architecture built on cutting-edge principles (highly inspired by OpenClaw's success):
 
-1. **Perception (Neural):** AuraOS *sees* the screen via the Gemini Live API, leveraging its massive context window and reasoning capabilities to understand the state of the application.
-2. **Execution (Symbolic):** Instead of clicking blindly, AuraOS translates its visual understanding into precise, error-resistant **Command Line Interface (CLI)** commands (e.g., executing Playwright CDP scripts for guaranteed browser interactions, or modifying Code via sed/grep) inside an isolated Docker sandbox.
+1. **Edge-Optimized Perception (Tauri):** We use a hyper-lightweight Tauri (Rust) desktop client. It creates a WebRTC connection to Gemini Live, capturing screen dynamics with zero-overhead only when action is required.
+2. **Ephemeral Cloud Execution (Cloud Run Jobs):** Instead of fragile CLI sandboxes on your local machine, AuraOS's Cognitive Brain (Google ADK) programmatically spawns **Serverless Cloud Run Jobs** on-the-fly via the Google Cloud API. The spawned MicroVM executes the CLI/Playwright command with zero-trust security, returns the `Exit Code`, and destroys itself.
+3. **Proactive "Heartbeat" Lane Queue:** AuraOS doesn't just listen; it observes. Utilizing a background cron-like heartbeat, it continuously checks your system state (logs, active windows) and executes routine ADK workflows (like clearing crash logs) *autonomously*, speaking to you only when necessary.
 
 ### 🇦🇪 العربية
 
-يتخلى مشروع **AuraOS** تماماً عن نهج "محاكاة النقرات". وبدلاً من ذلك، يستخدم **معمارية هجينة (عصبية-رمزية)**:
+مشروع **AuraOS** يقدم معمارية حديثة استلهمت أقوى ميزات مشروع (OpenClaw) المفتوح المصدر لتقديم حل نهائي:
 
-1. **الإدراك (الجانب العصبي/Neural):** يرى AuraOS الشاشة عبر واجهة Gemini Live API، مستفيداً من الرؤية المتقدمة ونافذة السياق الضخمة لفهم "الحالة" الفعلية للمشروع أو النظام.
-2. **التنفيذ (الجانب الرمزي/Symbolic):** بدلاً من النقر العشوائي، يترجم النظام فهمه البصري إلى أوامر سطر أوامر (CLI) دقيقة وصارمة — مثل تنفيذ أوامر بروتوكول (Chrome DevTools Protocol - CDP) الموثوق للتفاعل مع المتصفح، أو أوامر `bash` لتعديل الملفات بدقة داخل بيئة (Docker) المعزولة، مما يمنع الأخطاء تماماً.
-
----
-
-## 🧠 Architectural Blueprint / المخطط المعماري
-
-The diagram below illustrates how AuraOS manages Voice, Vision, Orchestration, and Secure Execution.
-(الرسم البياني التالي يوضح تدفق البيانات بين الإدراك الصوتي والبصري، والأوركسترا السحابية، ثم التنفيذ الحتمي الآمن).
-
-```mermaid
-graph TD
-    %% Styling
-    classDef client fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef cloud fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef exec fill:#bfb,stroke:#333,stroke-width:2px;
-    
-    subgraph Client [1. Perception Layer / طبقة الإدراك]
-        A[🎤 Voice / صوت] --> |Gemini Live Bidi-Stream| W(WebSocket Gateway)
-        B[📺 Screen / صورة] --> |Gemini Live Bidi-Stream| W
-    end
-    
-    subgraph Cloud [2. Cognitive Layer / العقل المدبر - Google ADK]
-        W --> |Intent & Vision| R(Root Agent)
-        R <--> M(Memory & Session Agent)
-        R --> S(Skill Dispatcher Agent)
-    end
-    
-    subgraph Sandbox [3. Execution Layer / محرك التنفيذ الآمن]
-        S --> |Secure CLI Payload| D{Isolated Docker Sandbox}
-        D --> |CDP Actions| P[Playwright Browser]
-        D --> |Terminal Tools| T[Git / Bash Tools]
-    end
-    
-    subgraph Feedback [4. Self-Healing Loop / التصحيح الذاتي]
-        D -.-> |Exit Code / StdErr| R
-        R -.-> |Fix & Retry| S
-    end
-
-    class Client client
-    class Cloud cloud
-    class Sandbox exec
-```
-
-### 1. 🧠 The Cognitive Brain: Google ADK / العقل المدبر
-
-We employ the **Agent Development Kit (ADK)** on Google Cloud Run to orchestrate a hierarchy of specialized agents. The Root Agent listens to your voice and manages the `LiveRequestQueue`.
-نستخدم حزمة **Google ADK** المستضافة على Cloud Run لبناء هرم من الوكلاء المتخصصين. يقوم "الوكيل الرئيسي" (Root Agent) بالاستماع إلى صوتك وإدارة طابور الطلبات الحية.
-
-### 2. 🦾 The Muscle: Deterministic CLI Sandboxing / محرك التنفيذ
-
-Skills are defined in flat `SKILL.md` files (inspired by OpenClaw). This gives the Gemini model huge native affinity. Every bash command is executed inside an ephemeral Docker container for Zero-Trust security.
-يتم تعريف مهارات الوكيل في ملفات نصية مسطحة `SKILL.md` (مستلهمة من نجاح OpenClaw المفتوح المصدر). وهذا يقلل الحمولة (Tokens) الهائلة لبروتوكولات مثل (MCP). يتم تنفيذ أي أمر داخل بيئة Docker معزولة تماماً لضمان الأمان الأقصى.
+1. **الإدراك عبر الحافة (Tauri Client):** تطبيق سطح مكتب فائق الخفة مبرمج بـ Rust يرسل الشاشة والصوت عبر WebRTC إلى سحابة Google.
+2. **التنفيذ السحابي المؤقت (Cloud Run Jobs):** بدلاً من البيئات المحلية، يقوم العقل المدبر باستدعاء API لخلق "مهمة سحابية مؤقتة" (Serverless). تنفذ المهمة، ترجع النتيجة السليمة، ثم تتدمر فوراً لضمان أقصى درجات الأمان.
+3. **نبض القلب الاستباقي (Proactive Heartbeat):** الوكيل لا ينتظرك لتتحدث. إنه يمتلك نبضاً مستمراً (Heartbeat) يراقب بيئتك. إذا وجد خطأ برمجي في شاشتك، يقاطعك صوتياً ليقترح حلاً ويطلب إذنك بتشغيل كود الإصلاح في السحابة!
 
 ---
 
-## 🏆 Hackathon Tracks Targeted / المسارات المستهدفة في التحدي
+## 🏆 Hackathon Tracks & Bonus Points / مسارات التحدي
 
-Our project heavily targets two tracks to maximize impact:
-يستهدف هذا المشروع مسارين رئيسيين بقوة واضحة:
-
-1. **UI Navigator (ملاح الواجهة):** The agent parses browser DOMs visually and programmatically using the ultra-reliable CDP protocol instead of X,Y coordinates. (يحلل الوكيل شاشات الويب بصرياً وبرمجياً عبر بروتوكول CDP لتجنب هشاشة الإحداثيات).
-2. **Live Agents (الوكلاء المباشرون):** Natively utilizes Gemini's `Bidi-streaming` to allow you to **interrupt** the agent mid-task. (يستخدم التدفق المباشر ليسمح للمستخدم بمقاطعة الوكيل صوتياً وتوجيهه أثناء التنفيذ).
+* **UI Navigator:** Visual Execution + Headless CDP Tests.
+* **Live Agents:** Bidi-streaming and Voice Activity Detection (VAD) interruption.
+* **Bonus Points Unlocked:** Using Terraform (IaC) to define the Ephemeral Cloud Run Jobs setup seamlessly fulfills the Google Cloud Deployment bonus requirement!
 
 ---
 
-## 🚀 Scenario / Demo Walkthrough (سيناريو العرض)
+## 🗺️ Expert-Level Development Roadmap (خريطة التنفيذ الاحترافية)
 
-Imagine launching the `AuraOS` terminal in split-screen next to a staging deployment of your website:
-تخيل تشغيل نافذة `AuraOS` السوداء بجوار متصفح يعرض مشروعك:
+To ensure a production-grade submission for Google, AuraOS is being built across 6 highly granular phases:
 
-1. **The Command (الأمر):** You say: *"Aura, run a visual check on the new checkout flow. If the button looks misaligned, fix the CSS and deploy."*
-*(بصوتك: "أورا، افحصي عملية الدفع بصرياً. إذا كان زر الموافقة غير متناسق، أصلحي ملف الـ CSS وارفعي التحديث").*
-2. **The Perception (الإدراك):** Aura tracks your browser. It uses Playwright via CLI to trigger the flow and pipes the visual screenshots backward to Gemini Live.
-*(تستخدم أورا متصفح Playwright لتشغيل التدفق وترسل الصور اللحظية إلى واجهة Gemini ليتم تحليلها بصرياً).*
-3. **The Interruption (المقاطعة الحية عبر VAD):** While Aura is executing, you say: *"Actually, pause the checkout check. Just change the brand color to Deep Blue everywhere."*
-*(أثناء عمل الوكيل، تقاطعه صوتياً: "لحظة يا أورا، ألغي فحص الدفع، وقومي بتغيير لون العلامة التجارية إلى الأزرق الداكن في جميع الملفات").*
-4. **The Execution (التنفيذ الفوري):** Aura immediately interrupts its process, uses CLI tools (`grep`, `sed`) to rewrite your Tailwind config locally, rebuilds the Node application, and verbally confirms the success over your headphones.
-*(تتوقف أورا فوراً، تدخل لبيئة Docker، تستخدم أدوات مثل grep و sed بتوجيه من نموذج اللغات، تعدل الألوان، وتقول لك صوتياً: "تم تعديل اللون بنجاح وبناء المشروع من جديد").*
+### Phase 1: Edge Client Perception Layer (Tauri + Rust + React)
+
+- [ ] Initialize Vite + React frontend template.
+* [ ] Initialize Tauri (Rust) backend with minimal permissions (Screen & Mic only).
+* [ ] Implement `navigator.mediaDevices.getDisplayMedia` to capture the screen stream.
+* [ ] Implement `navigator.mediaDevices.getUserMedia` for VAD microphone capture.
+* [ ] Build WebRTC signaling client to stream compressed chunks to Cloud Run.
+
+### Phase 2: Zero-Trust Cloud Infrastructure (Terraform)
+
+- [ ] Set up `infra/provider.tf` with the Google Cloud provider.
+* [ ] Provision `google_artifact_registry` for the Docker images.
+* [ ] Provision `google_cloud_run_v2_service` for the ADK Orchestrator.
+* [ ] Provision `google_cloud_run_v2_job` template for the Ephemeral swarm.
+* [ ] Define precise IAM Roles (`roles/run.invoker`) ensuring secure triggers.
+
+### Phase 3: The Ephemeral Execution Swarm (Docker Sandbox)
+
+- [ ] Write `swarm/Dockerfile` based on `ubuntu:latest` (Non-root `aura` user).
+* [ ] Install Playwright dependencies & Headless Chrome.
+* [ ] Write `swarm/runner.py`: A strict Python wrapper executing Bash via `subprocess`, capturing `stdout`/`stderr`, and enforcing rigid `sys.exit()` codes.
+* [ ] Publish the hardened image to the GCP Artifact Registry.
+
+### Phase 4: Cognitive Orchestrator (Google ADK + Live API)
+
+- [ ] Scaffold `agent/main.py` using FastAPI as the Cloud Run web server.
+* [ ] Integrate Google ADK's `LiveRequestQueue` into the WebSocket endpoint.
+* [ ] Build `AuraRootAgent` with Intent Classification via the ADK framework.
+* [ ] Define the `CloudRunJobSpawner` Tool: Python tool hitting the `jobs.run` REST API.
+* [ ] Implement the `HeartbeatObserver`: AsyncIO loop checking logs for proactive fixes.
+
+### Phase 5: Anti-MCP Skills Framework (Markdown Native)
+
+- [ ] Write `agent/skills_parser.py`: Regex parser reading local `.md` files as ADK tools.
+* [ ] Author `skills/devops_qa.md`: Teach Aura how to run Playwright tests.
+* [ ] Author `skills/git_deploy.md`: Teach Aura how to push code to GitHub.
+
+### Phase 6: Devpost Finalization & Launch
+
+- [ ] Record a 3-minute flawless voice-interaction demo video.
+* [ ] Export technical architecture diagrams.
+* [ ] Publish the final repository and pitch to Devpost.
 
 ---
 
-## 💻 Tech Stack / التقنيات المستخدمة
+## 💻 Tech Stack / التقنيات
 
-* **LLM Engine:** Gemini 3.1 Pro (Live API, Vision & Multimodal)
+* **LLM Engine:** Gemini 3.1 Pro (Live API, Vision & Bidi-Streaming)
 * **Agent Orchestration:** Google Agent Development Kit (ADK)
-* **Backend Infrastructure:** Google Cloud Run (Containerized GCP backend)
-* **State Persistence:** Google Firestore (Session Cloud Memory)
-* **Browser Automation:** Playwright / Chrome DevTools Protocol (CDP)
-* **Security Layer:** Docker SDK (Ephemeral CLI Command Execution Sandbox)
+* **Edge Client:** Tauri (Rust/React) for WebRTC capturing
+* **Ephemeral Execution:** Google Cloud Run Jobs (REST API trigger)
+* **Infrastructure as Code:** Terraform
