@@ -1,43 +1,50 @@
 # 🌍 WORLD.md: Generative World Simulator & State Schema
 
 ```yaml
-version: 0.1.0
+version: 0.1.1
 pillar: Prometheus (World Model)
-schema_type: Hierarchical_V-DOM
+math_model: Partially_Observable_Markov_Decision_Process (POMDP)
 ```
+
+## � Generative Model Specification ($m$)
+
+The world is modeled via the following categorical matrices (A, B, C, D):
+
+| Matrix | Name | Functional Definition |
+| :--- | :--- | :--- |
+| **A** | Likelihood | $P(o_t \| s_t)$: Observation probability given state. |
+| **B** | Transition | $P(s_{t+1} \| s_t, a_t)$: State change given action. |
+| **C** | Preferences | $P(o)$: Prior preferences over outcomes. |
+| **D** | Initial Prior | $P(s_1)$: Initial belief about the UI state. |
 
 ## 🛰️ UI State Representation (Contract)
 
-The Edge Client MUST stream state using the following JSON/YAML format. WORLD.md translates this into a "Generative Belief State" $s_t$:
+The Edge Client streams state $o_t$. WORLD.md computes the hidden state $s_t$:
 
 ```yaml
 state_contract:
   perception_id: UUID
-  timestamp: ISO-8601
   modality: [VISUAL, DOM, AUDIO]
   content:
     visual_hash: SHA-256
-    dom_tree_summary: 
-      depth: integer
-      interactive_elements_count: integer
-      active_node_xpath: string
-    audio_sentiment: float [-1.0, 1.0]
-  spatial_mapping:
-    resolution: [width, height]
-    focus_point: [x, y]
+    dom_entropy: float (Complexity score)
+    active_node: string (XPath/ID)
 ```
 
-## 🕯️ Generative Simulation Parameters
+## 🛠️ Belief Update Protocol
 
-* **Temporal Horizon:** 5 actions ahead.
-* **Confidence Threshold (P):** 0.85 (Actionable)
-* **Drift Sensitivity:** High. Trigger re-scan if $s_{t+1}$ deviates > 15% from prediction.
+1. **Receive:** Capture observation $o_t$ from Edge.
+2. **Infer:** Update hidden state $q(s_t)$ by minimizing VFE (see INFERENCE.md).
+3. **Predict:** Use Matrix B to project $s_{t+1}$ based on proposed policy $\pi$.
+4. **Evaluate:** Calculate expected surprise in $s_{t+1}$.
+
+---
+*WORLD.md is the probabilistic arena where AlphaMind plays its games.*
 
 ## 🌳 Action Space Mapping
 
 * **Navigation:** [SCROLL, CLICK, HOVER, INPUT]
 * **Reasoning:** [ALPHA_MCTS_SEARCH, CAUSAL_CHECK, SWARM_SIM]
-* **Evolution:** [MUTATE_LOGIC, UPDATE_SKILL]
 
 ---
 *WORLD.md allows the agent to "dream" of the UI state before the Edge Client even renders it.*

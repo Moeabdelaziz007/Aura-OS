@@ -1,37 +1,41 @@
 # ⚖️ CAUSAL.md: Neuro-Symbolic Causal Graphs
 
 ```yaml
-version: 0.1.0
+version: 0.1.1
 pillar: NeuroSage (Logic Guard)
-logic_type: Directed_Acyclic_Graph (DAG)
+model: Structural_Causal_Model (SCM)
 ```
 
-## 🛡️ Base Causal Guardians (Logic Gates)
+## 📐 The Causal Graph (DAG)
 
-Before any action $a_t$, NeuroSage must verify the following causal chain:
+AuraOS reasons over a Structural Causal Model $M = \langle S, U, F \rangle$:
+
+* $S$: Set of UI state variables (e.g., `is_authenticated`, `button_clickable`).
+* $U$: Unobserved background variables.
+* $F$: Functional relationships (e.g., $f_{transaction} = \text{Balance} > \text{Cost}$).
+
+## 🛡️ Structural Guardians (Interventions)
+
+NeuroSage uses the **do-calculus** operator $P(y | do(x))$ to simulate deterministic interventions:
 
 ```yaml
-causal_gates:
-  TRANSACTION_GATE:
-    condition: "Action involves capital flow or data write"
-    logic: "IF a_t THEN (Balance_Check == PASS && Soul_Alignment == 1.0)"
-    failure_state: "EXCEPTION_VETO"
-
-  NAVIGATION_GATE:
-    condition: "UI state transition"
-    logic: "IF a_t THEN (Expected_UI_State_Exists && NO_Hidden_Modal_Interrupt)"
-    failure_state: "MCTS_REFRESH"
-
-  INPUT_GATE:
-    condition: "Text entry in sensitive field"
-    logic: "IF a_t THEN (Field_Privacy_Verified && NO_Reflective_Injection)"
-    failure_state: "REDACT_SIGNAL"
+causal_interventions:
+  CRITICAL_ACTION:
+    nodes: [s_focus, s_trust, s_gate]
+    logic: |
+      do(ACTION) IS PERMITTED ONLY IF:
+      - node(s_trust) == 1.0 (Verified via SOUL.md)
+      - node(s_gate) == 1.0 (Verified via INFERENCE.md)
+      - PARRENT(ACTION) contains {Verification_Node}
 ```
 
-## 🔍 Hallucination Detection (Neural ↔ Symbolic)
+## 🔍 Counterfactual Reasoning
 
-* **Cross-Check:** Compare Gemini's output with the hard-coded Symbolic DAGs above.
-* **Conflict Resolution:** If Logic Graph says `FALSE` but LLM says `TRUE`, the Symbolic logic (NeuroSage) executes the **VETO**.
+If an action fails, NeuroSage asks: *"What would have happened if I had clicked $Y$ instead of $X$?"*
+
+* **Trace:** Rollback WORLD.md belief state.
+* **Mutate:** Apply $do(a')$ to the DAG.
+* **Evaluate:** If $R_{a'} > R_{a}$, log as a Mutation Signal for EVOLVE.md.
 
 ---
-*AuraOS does not 'hope' the action is right; it proves it.*
+*NeuroSage: Moving AI from correlation to causation.*

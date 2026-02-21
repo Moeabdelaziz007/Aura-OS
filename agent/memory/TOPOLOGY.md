@@ -1,35 +1,31 @@
 # 🕸️ TOPOLOGY.md: Hypergraph Multi-Agent Data Contracts
 
 ```yaml
-version: 0.1.0
+version: 0.1.1
 pillar: HyperMind (Coordination)
-graph_type: Dynamic_Directed_Hypergraph
+graph_type: Task_Adaptive_Hypergraph
 ```
 
-## 🧬 Hyperedge Definition
+## 🧬 Task-Adaptive Hyperedges
 
-Instead of linear message passing (A -> B), AuraOS agents share state via "Hyperedges" (shared context clusters):
+AuraOS dynamically optimizes its communication topology. Hyperedges only instantiate when high-entropy events occur:
 
-```yaml
-hyperedges:
-  CONTEXT_VISUAL:
-    agents: [Vision_Expert, MCTS_Navigator, SOUL]
-    shared_data: [Screenshot_Buffer, Node_Map, Persona_Constraints]
-    
-  CONTEXT_LOGIC:
-    agents: [Reasoning_Core, NeuroSage, Logic_Critic]
-    shared_data: [Causal_Graphs, Prediction_History, Action_Draft]
-    
-  CONTEXT_EXECUTION:
-    agents: [Action_Executor, Swarm_Controller, Anomaly_Sensor]
-    shared_data: [Execution_Logs, Runtime_Metrics, Reward_Signal]
-```
+| Hyperedge ID | Trigger Context | Resident Agents | Data Slot |
+| :--- | :--- | :--- | :--- |
+| **H_SENSORY** | Always Active | Vision, Audio, Anomaly | Perception_D-Buffer |
+| **H_COGNITION** | $\Delta F > \tau$ | Prometheus, NeuroSage | Belief_DAG |
+| **H_STRATEGY** | Policy Conflict | AlphaMind, Swarm_Admin | MCTS_Tree_Root |
 
-## 📡 Data Contract: Zero-Overhead Token Streaming
+## 📡 Memory-Mapped Context Slots (mmap)
 
-* **Global Context Window:** Shared via cached memory-mapped (mmap) markers.
-* **Delta-Only Updates:** Direct LLM calls only consume changed state (Deltas), not the full DOM.
-* **Veto Priority:** SOUL node has absolute write priority on all hyperedges.
+To avoid duplicate LLM context injection:
+
+1. **Shared Pointer:** All agents in a hyperedge read from the same `mmap` Markdown buffer.
+2. **Delta Locking:** Only the SOUL node can acquire an 'Executive Lock' to mutate HyperMind priorities.
+3. **Entropy Gating:** If Task Complexity $C < 0.2$, collapse all hyperedges into a single System 1 bus.
+
+---
+*Topology is not static; it is a breathing manifold of intelligence.*
 
 ---
 *Static hierarchy is dead. Fluid hypergraph topology is the future of agentic speed.*

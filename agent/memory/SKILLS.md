@@ -5,14 +5,20 @@ version: 0.1.0
 status: Dynamic_Expansion
 ```
 
+## 🧬 Evolutionary Update Protocol
+
+1. **Discovery:** New skills appended by AuraEvolve start at Proficiency 0.1.
+2. **Training:** Successful use in System 2 mode increases Proficiency by +0.05.
+3. **Pruning:** Skills with Proficiency < 0.05 for 100 cycles are archived to `MEMORY.md`.
+
 ## 🧰 Core Toolsets
 
-| Skill ID | Modality | Description | Priority |
+| Skill ID | Modality | Proficiency | Description |
 | :--- | :--- | :--- | :--- |
-| **`VISION_OCR`** | Visual | Real-time text extraction from Edge stream. | High |
-| **`DOM_PARSER`** | Data | Mapping interactive nodes to Action Space. | High |
-| **`AUDIO_REC`** | Audio | VAD and emotive sentiment analysis. | Medium |
-| **`CLOUD_SEARCH`** | Logic | Perplexity/Search tools for external knowledge. | Variable |
+| **`VISION_OCR`** | Visual | 0.95 | Real-time text extraction (Gemini Flash). |
+| **`DOM_MAPPER`** | Data | 0.90 | mapping interactive nodes to Action Space. |
+| **`AUDIO_VAD`** | Audio | 0.85 | Voice Activity Detection & Sentiment. |
+| **`CLOUD_SEARCH`** | Logic | 0.80 | Real-time world info retrieval. |
 
 ## 🧬 Evolutionary Slot
 
