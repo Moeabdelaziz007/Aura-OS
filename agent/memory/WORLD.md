@@ -12,16 +12,16 @@ compression: Variational_Autoencoder_Style
 To prevent **State Space Explosion**, mathematical inference does not operate on raw DOM/Pixels. It operates on a compressed latent vector $z_t \in \mathbb{R}^n$ where $n \ll \text{dim}(o_t)$.
 
 * **Encoder ($E_\phi$):** $z_t \approx q_\phi(z_t | o_t)$. Maps raw UI observations (pixels/text) to a deterministic low-dimensional manifold.
-* **Decoder ($D_\theta$):** $\hat{o}_t \approx p_\theta(o_t | z_t)$. Used by System 2 to "imagine" and visualize predicted outcomes.
+* **Decoder ($D_\theta$):** $\hat{o}_{t:t+k} \approx p_\theta(o_{t:t+k} | z_t)$. Used by System 2 to "imagine" and visualize predicted **multi-frame video trajectories** (Spatio-Temporal Futures).
 
 ## 📐 Latent-space Categorical Matrices
 
-Matrices now map transitions and likelihoods within the compressed space:
+Matrices now map transitions and likelihoods within the compressed spatio-temporal space:
 
 | Matrix | Mapping | functional_definition |
 | :--- | :--- | :--- |
 | **A** | $P(z_t \| s_t)$ | Likelihood: Maps hidden beliefs to latent coordinates. |
-| **B** | $P(s_{t+1} \| s_t, a_t)$ | Transition: The "Physics" of the UI in latent space. |
+| **B** | $P(z_{t+k} \| z_t, a_t)$ | Transition: Predictive video simulation (The "Physics" of the UI). |
 | **C** | $P(z^*)$ | Preference: Target "Reward" coordinates in latent space. |
 | **D** | $P(s_1)$ | Initial Prior: Starting belief on cold boot. |
 

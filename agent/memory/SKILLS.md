@@ -132,5 +132,86 @@ function_declaration:
     required: [query]
 ```
 
+### 📽️ `analyze_temporal_video_delta` (System 2)
+
+Analyzes a sequence of frames to understand temporal actions (e.g., animations, drag-and-drop).
+
+```yaml
+function_declaration:
+  name: analyze_temporal_video_delta
+  description: Analyzes multiple video frames to detect motion, state transitions, or temporal UI patterns.
+  parameters:
+    type: object
+    properties:
+      frames_count:
+        type: integer
+        description: Number of recent frames to analyze (max 30).
+      objective:
+        type: string
+        description: Specifically what to look for (e.g., 'detect drag completion').
+    required: [frames_count]
+```
+
+### 🎯 `visual_coordinate_click` (System 1)
+
+Precision interaction based strictly on visual computer-vision bounding boxes.
+
+```yaml
+function_declaration:
+  name: visual_coordinate_click
+  description: Executes a click based on visual semantic analysis, bypassing DOM tree complexity.
+  parameters:
+    type: object
+    properties:
+      target_description:
+        type: string
+        description: Semantic description of the element to click (e.g., 'the blue submit button').
+      visual_context:
+        type: string
+        description: Descriptive context of the surrounding area to ensure precision.
+    required: [target_description]
+```
+
+### 🗣️ `extract_vocal_sentiment` (System 1)
+
+Real-time analysis of the user's emotional tone to adjust cognitive gating.
+
+```yaml
+function_declaration:
+  name: extract_vocal_sentiment
+  description: Analyzes raw PCM audio to determine user sentiment, urgency, and frustration.
+  parameters:
+    type: object
+    properties:
+      audio_segment_id:
+        type: string
+        description: Reference to the buffered audio chunk.
+    required: [audio_segment_id]
+```
+
+### 🎙️ `synthesize_contextual_voice` (System 1)
+
+Generates an audio response with specific emotional inflection.
+
+```yaml
+function_declaration:
+  name: synthesize_contextual_voice
+  description: Replies to the user with a synthesized voice mirroring their current state.
+  parameters:
+    type: object
+    properties:
+      text:
+        type: string
+        description: The content to speak.
+      emotion:
+        type: string
+        enum: [CALM, URGENT, EMPATHETIC, PROFESSIONAL]
+        description: The emotional tone of the voice.
+      speed:
+        type: number
+        description: Playback speed (0.8 to 1.5).
+    required: [text, emotion]
+```
+
 ---
 *SKILLS.md is the executable muscle of the AetherCore.*

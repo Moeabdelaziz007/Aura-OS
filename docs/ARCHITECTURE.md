@@ -87,7 +87,9 @@ The agent's personality, skills, and logic reside in `agent/memory/`:
 * `SUPERPOWER.md`: Swarm orchestration constraints.
 * `TOPOLOGY.md`: Hypergraph incidence matrix and coordination rules.
 * `CAUSAL.md`: Causal graphs for logic validation.
-* `MEMORY.md`: Multi-layer cognitive memory (Working, Episodic, Semantic).
+* `MEMORY.md`: Spatio-temporal memory engine storing multimodal latent embeddings ($z$).
+  * **Visual Delta Retrieval:** Comparing live video streams to successful past state embeddings.
+  * **Acoustic Working Memory:** Emotional sentiment & urgency monitoring for dynamic $\tau$ adjustment.
 
 ---
 

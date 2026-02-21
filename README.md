@@ -20,13 +20,22 @@
 
 ---
 
-## ✨ Key Features
-
 - **🚀 System 1/2 Thinking:** Hyper-fast routine actions mixed with deep MCTS reasoning for complex hurdles.
 - **🧬 AuraEvolve:** A recursive self-healing layer that repairs system logic in real-time.
 - **☁️ Quantum Swarm:** Parallel serverless execution "collapses" into the optimal UI trajectory.
 - **⚖️ NeuroSage:** Causal logic validation to eliminate hallucinations and secure transactions.
 - **🕸️ HyperMind:** A non-hierarchical hypergraph topology for high-speed agent coordination.
+- **👁️ Multimodal Smart Brain:** Native processing of Video, Audio, and Text as a unified latent stream.
+
+---
+
+## 👁️ The Pipeline of Multimodal Consciousness
+
+AuraOS has evolved beyond text-only processing. It now utilizes a **Spatio-Temporal Memory Engine**:
+
+1. **Visual Latent Compression:** Raw 60FPS video is compressed into 128-dimensional vectors ($z_t$) for zero-latency retrieval.
+2. **Acoustic Sentiment Tuning:** Real-time analysis of the user's vocal urgency dynamically adjusts the surprise threshold ($\tau$), allowing the agent to react faster in high-stress scenarios.
+3. **Generative Video Prediction:** The world model ($WORLD.md$) "imagines" multi-frame futures, predicting UI animations and state transitions before they manifest.
 
 ---
 
