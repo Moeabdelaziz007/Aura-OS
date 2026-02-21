@@ -21,8 +21,9 @@ class HyperMindRouter:
         # In this scale, higher anomaly = lower accuracy = higher surprise
         surprise_signal = float(context.get("anomaly", 0.0))
         
-        # Complexity: The cost of updating beliefs (simulated as entropy bias)
-        complexity_bias = 0.05 
+        # Complexity: The cost of updating beliefs (entropy bias) pulled from DNA
+        dna = await self.bridge.load_dna_async()
+        complexity_bias = dna.inference.get("complexity_bias", 0.05)
         
         vfe = complexity_bias + surprise_signal
         return vfe

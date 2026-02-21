@@ -20,6 +20,9 @@ class GeminiLiveClient:
 
     async def connect(self):
         """Establishes connection and performs the Setup Protocol with retry and optional encryption."""
+        if not self.api_key:
+            raise ValueError("GeminiLiveClient requires GEMINI_API_KEY environment variable")
+
         print("🚀 Gemini Live: Connecting to Multimodal Webhook...")
         # loop until connection succeeds (simple backoff)
         while True:
@@ -79,7 +82,11 @@ class GeminiLiveClient:
     async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listens for AI responses and function calls and enriches them with nexus context."""
         async for message in self.ws:
-            payload = json.loads(message)
+            try:
+                payload = json.loads(message)
+            except Exception:
+                # invalid JSON, skip
+                continue
             
             if "serverContent" in payload:
                 # pre‑route context: find similar nexus nodes
