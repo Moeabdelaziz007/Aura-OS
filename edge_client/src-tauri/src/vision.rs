@@ -1,13 +1,12 @@
-// 🖼️ vision_sensor.rs: Zero-Copy Native Screen Capture
+// 🖼️ vision_sensor.rs: Zero-Copy Native Screen Capture (V2 - Unblocked)
 // Pillar: Peripheral Senses (Eyes)
-// OS: macOS (using scrap/CoreGraphics)
 
 use scrap::{Display, Capturer};
 use std::io::ErrorKind;
 use std::time::Duration;
 use tokio::time::sleep;
 use image::{ImageBuffer, Rgba, codeck::jpeg::JpegEncoder};
-use std::io::Cursor;
+use tokio::sync::mpsc;
 
 pub struct VisionSensor {
     capturer: Capturer,
@@ -29,35 +28,48 @@ impl VisionSensor {
         })
     }
 
-    pub async fn capture_frame_compressed(&mut self) -> Result<Vec<u8>, String> {
+    /// Primary Sensory Loop with Backpressure Management
+    pub async fn start_stream(mut self, tx: mpsc::Sender<Vec<u8>>) {
         loop {
             match self.capturer.frame() {
                 Ok(frame) => {
-                    // Vision: Zero-Copy Buffer Access
-                    // frame is a Frame object wrapping the raw pixel data.
-                    // On macOS, it's usually BGRA or RGBA.
-                    
-                    let mut buffer = Vec::new();
-                    let mut encoder = JpegEncoder::new_with_quality(&mut buffer, 75);
-                    
-                    // Convert raw frame to ImageBuffer for compression
-                    // Wrap existing slice without deep copy if possible, but JpegEncoder needs a slice.
-                    // scrap's frame derefs to [u8].
-                    
-                    let img_buffer: ImageBuffer<Rgba<u8>, &[u8]> = 
-                        ImageBuffer::from_raw(self.width as u32, self.height as u32, &*frame)
-                        .ok_or("Failed to create image buffer")?;
+                    // Vision: Direct Buffer Access
+                    let frame_data = frame.to_vec(); // Required for thread handover
+                    let width = self.width as u32;
+                    let height = self.height as u32;
+                    let tx_clone = tx.clone();
 
-                    encoder.encode_image(&img_buffer).map_err(|e| e.to_string())?;
-                    
-                    return Ok(buffer);
+                    // Priority 2: Offload CPU-heavy JPEG encoding to a blocking thread
+                    tokio::task::spawn_blocking(move || {
+                        let mut buffer = Vec::new();
+                        let mut encoder = JpegEncoder::new_with_quality(&mut buffer, 75);
+                        
+                        let img_buffer: ImageBuffer<Rgba<u8>, Vec<u8>> = 
+                            ImageBuffer::from_raw(width, height, frame_data)
+                            .expect("Failed to cast frame to ImageBuffer");
+
+                        if encoder.encode_image(&img_buffer).is_ok() {
+                            // Backpressure: If channel is full, drop the frame to keep latency zero.
+                            // In tokio mpsc, try_send returns error if full.
+                            match tx_clone.try_send(buffer) {
+                                Ok(_) => (), 
+                                Err(_) => {
+                                    // SILENT DROP: The 'Now' is more important than the 'Then'.
+                                }
+                            }
+                        }
+                    });
+
+                    // Target ~10 FPS adaptive (AetherCore standard)
+                    sleep(Duration::from_millis(100)).await;
                 }
                 Err(ref e) if e.kind() == ErrorKind::WouldBlock => {
-                    // Wait for the next VSync/Frame match
                     sleep(Duration::from_millis(16)).await;
-                    continue;
                 }
-                Err(e) => return Err(e.to_string()),
+                Err(e) => {
+                    eprintln!("⚠️ Vision Sensor Anomaly: {}", e);
+                    sleep(Duration::from_secs(2)).await;
+                }
             }
         }
     }

@@ -41,17 +41,21 @@ fn main() {
 
             let _handle = app.handle().clone();
 
-            // 👁️ Visual Sensory Loop
+            // 👁️ Visual Sensory Loop (Unblocked v0.1.1)
+            let (vtx, mut vrx) = mpsc::channel::<Vec<u8>>(2); // Backpressure Capacity: 2
             tauri::async_runtime::spawn(async move {
-                if let Ok(mut sensor) = VisionSensor::new() {
-                    loop {
-                        if let Ok(frame) = sensor.capture_frame_compressed().await {
-                            let mut payload = vec![0x01]; // Header: Visual Delta
-                            payload.extend(frame);
-                            let _ = tx_vision.send(Message::Binary(payload));
-                        }
-                        tokio::time::sleep(Duration::from_millis(200)).await; // ~5 FPS
-                    }
+                if let Ok(sensor) = VisionSensor::new() {
+                    sensor.start_stream(vtx).await;
+                }
+            });
+
+            // Pipe vision to WS
+            let tx_vision_bridge = tx.clone();
+            tauri::async_runtime::spawn(async move {
+                while let Some(frame) = vrx.recv().await {
+                    let mut payload = vec![0x01]; 
+                    payload.extend(frame);
+                    let _ = tx_vision_bridge.send(Message::Binary(payload));
                 }
             });
 
