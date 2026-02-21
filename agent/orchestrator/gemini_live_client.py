@@ -87,6 +87,9 @@ class GeminiLiveClient:
 
     async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listens for AI responses and function calls and enriches them with nexus context."""
+        if self.ws is None:
+            return
+
         async for message in self.ws:
             try:
                 payload = json.loads(message)
