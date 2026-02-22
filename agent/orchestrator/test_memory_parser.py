@@ -65,17 +65,17 @@ class TestMemoryParser(unittest.IsolatedAsyncioTestCase):
             nodes = await self.navigator.load_nexus_async(force=True)
             assert nodes == [{"id": 1}]
 
-    def test_get_mmap_creates_file(self):
+    async def test_get_mmap_creates_file(self):
         filename = "NEW_FILE.md"
         filepath = os.path.join(self.temp_memory_path, filename)
         self.assertFalse(os.path.exists(filepath))
 
-        mm = self.navigator._get_mmap(filename)
+        mm = await self.navigator._get_mmap_async(filename)
         self.assertTrue(os.path.exists(filepath))
         self.assertIsInstance(mm, mmap.mmap)
 
         # Verify reuse
-        mm2 = self.navigator._get_mmap(filename)
+        mm2 = await self.navigator._get_mmap_async(filename)
         self.assertIs(mm, mm2)
 
         # Verify content (empty file created with \n)
@@ -111,7 +111,7 @@ class TestMemoryParser(unittest.IsolatedAsyncioTestCase):
 
     async def test_close_clean_resources(self):
         filename = "TEST.md"
-        self.navigator._get_mmap(filename)
+        await self.navigator._get_mmap_async(filename)
         self.assertEqual(len(self.navigator._mmaps), 1)
         self.assertEqual(len(self.navigator._file_handles), 1)
 

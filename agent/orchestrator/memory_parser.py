@@ -76,7 +76,19 @@ class AuraNavigator:
         ]
         self.nexus_file = "NEXUS.md"
 
-    def _get_mmap(self, filename: str) -> mmap.mmap:
+    def _create_mmap_blocking(self, path: str):
+        """Helper to perform blocking file I/O in a thread."""
+        # ensure directory exists
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        if not os.path.exists(path):
+            # create empty file
+            with open(path, "w") as f:
+                f.write("\n")
+        f = open(path, "r+b")
+        mm = mmap.mmap(f.fileno(), 0)
+        return f, mm
+
+    async def _get_mmap_async(self, filename: str) -> mmap.mmap:
         """Returns or creates a persistent mmap for a memory file (DNA or Nexus).
 
         If the file does not exist, it is created as an empty markdown document so
@@ -84,14 +96,10 @@ class AuraNavigator:
         """
         if filename not in self._mmaps:
             path = os.path.join(self.memory_path, filename)
-            # ensure directory exists
-            os.makedirs(self.memory_path, exist_ok=True)
-            if not os.path.exists(path):
-                # create empty file
-                with open(path, "w") as f:
-                    f.write("\n")
-            f = open(path, "r+b")
-            mm = mmap.mmap(f.fileno(), 0)
+
+            # Offload blocking file operations to a thread
+            f, mm = await asyncio.to_thread(self._create_mmap_blocking, path)
+
             self._file_handles[filename] = f
             self._mmaps[filename] = mm
         return self._mmaps[filename]
@@ -106,7 +114,7 @@ class AuraNavigator:
             raw_contents = {}
 
             for dna_file in self.dna_files:
-                mm = self._get_mmap(dna_file)
+                mm = await self._get_mmap_async(dna_file)
                 mm.seek(0)
                 content_bytes = mm.read()
                 current_hash = self._calculate_hash(content_bytes)
@@ -197,7 +205,7 @@ class AuraNavigator:
         """Loads the Aura-Nexus graph from NEXUS.md."""
         async with self._lock:
             needs_update = False
-            mm = self._get_mmap(self.nexus_file)
+            mm = await self._get_mmap_async(self.nexus_file)
             mm.seek(0)
             content_bytes = mm.read()
             current_hash = self._calculate_hash(content_bytes)
