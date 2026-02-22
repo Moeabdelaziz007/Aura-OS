@@ -22,7 +22,7 @@ class GeminiLiveClient:
     def __init__(self, bridge: AuraNavigator, api_key: str):
         self.bridge = bridge
         self.api_key = api_key
-        self.url = f"wss://generativelanguage.googleapis.com/ws/google.genai.v1alpha.GenerativeService.BidiGenerateContent?key={self.api_key}"
+        self.url = "wss://generativelanguage.googleapis.com/ws/google.genai.v1alpha.GenerativeService.BidiGenerateContent"
         self.ws = None
         self.is_ready = False
 
@@ -35,7 +35,12 @@ class GeminiLiveClient:
         # Retry loop with exponential backoff
         for attempt in range(self.MAX_RETRIES):
             try:
-                self.ws = await websockets.connect(self.url, ping_interval=20, ping_timeout=10)
+                self.ws = await websockets.connect(
+                    self.url,
+                    ping_interval=20,
+                    ping_timeout=10,
+                    extra_headers={"x-goog-api-key": self.api_key}
+                )
                 print(f"✅ Gemini Live: Connection established on attempt {attempt + 1}")
                 break
             except Exception as e:
