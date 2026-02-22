@@ -123,6 +123,23 @@ class GeminiLiveClient:
         }
         await self.ws.send(json.dumps(input_msg))
 
+    async def send_text(self, text: str):
+        """Sends text input to the Live API (as a user turn)."""
+        if not self.is_ready: return
+
+        msg = {
+            "client_content": {
+                "turns": [
+                    {
+                        "role": "user",
+                        "parts": [{"text": text}]
+                    }
+                ],
+                "turn_complete": True
+            }
+        }
+        await self.ws.send(json.dumps(msg))
+
     async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listens for AI responses and function calls and enriches them with nexus context."""
         if self.ws is None:

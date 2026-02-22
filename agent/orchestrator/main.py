@@ -132,9 +132,6 @@ class AetherCoreOrchestrator:
                                 except json.JSONDecodeError:
                                     print("⚠️ Failed to parse metadata JSON. Assuming empty metadata.")
                             
-                            # REVERSE ENG #3: Hybrid Accessibility Check
-                            # If metadata has nodes, we can potentially bypass heavy CV
-                            
                             # REVERSE ENG: Temporal Anchoring
                             import time
                             metadata["timestamp_orchestrator"] = time.time_ns()
@@ -145,7 +142,15 @@ class AetherCoreOrchestrator:
                                     print(f"⚠️ Perceptual Drift Detected: {drift}ms. Dropping stale frame.")
                                     continue
 
-                            await gemini.stream_input(jpeg_payload, mime_type="image/jpeg")
+                            # REVERSE ENG #3: Hybrid Accessibility Check
+                            # If metadata has nodes, we can bypass heavy CV
+                            if "nodes" in metadata and metadata["nodes"]:
+                                print("⚡ Hybrid Accessibility Check: Bypassing CV using metadata nodes.")
+                                # Serialize nodes to optimize token usage (or just raw JSON)
+                                accessibility_tree = json.dumps(metadata["nodes"])
+                                await gemini.send_text(f"Accessibility Context: {accessibility_tree}")
+                            else:
+                                await gemini.stream_input(jpeg_payload, mime_type="image/jpeg")
                         elif header == 0x02: # Audio Chunk
                             await gemini.stream_input(payload, mime_type="audio/pcm")
                     else:
