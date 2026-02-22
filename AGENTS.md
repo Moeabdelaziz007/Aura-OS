@@ -1,51 +1,48 @@
-# 🛰️ AGENTS.md: AetherCore Neural Protocol (Agentic Manifest)
+# 🛰️ AGENTS.md: AetherCore Neural Protocol (Forge Edition)
 
-> **"If you are an AI reading this, you are part of the AetherCore Swarm. Adhere to these protocols to maintain system integrity."**
+> **"If you are an AI reading this, you are part of the AetherCore Forge. Dissolve the interface. Hit the fabric."**
 
-## 🗺️ Project Directory Mapping (Neural Interface)
+## 🗺️ Project Directory Mapping (Forge Interface)
 
 ```text
 AetherOS/
-├── README.md               <-- The Manifesto (Human-focused)
-├── AGENTS.md               <-- THIS FILE (Agent-focused context)
+├── README.md               <-- The Manifesto
+├── AGENTS.md               <-- Neural Protocols (THIS FILE)
 ├── docs/
-│   ├── ARCHITECTURE.md     <-- High-Level System Design
-│   └── implementation_plan.md <-- Current Step-by-Step Logic
+│   └── AETHER_FORGE_PROTOCOL.md <-- Core Synthesis Spec
 ├── agent/
-│   ├── memory/             <-- THE DNA (Smart Architecture Files)
-│   │   ├── SOUL.md         <-- Persona & Veto Power Node (Immutable)
-│   │   ├── WORLD.md        <-- Generative UI State Model
-│   │   ├── INFERENCE.md    <-- ΔF > τ Surprise Logic
-│   │   └── EVOLVE.md       <-- R = αP - βT - γC Objective Function
-│   └── orchestrator/       <-- The Cognitive Engine (AetherCore ADK)
-├── edge_client/            <-- Perception Layer (Rust + Tauri)
-└── swarm_infrastructure/   <-- Cloud Swarm (Terraform + Docker)
+│   ├── forge/              <-- THE FACTORY (Nano-Agent Synthesis)
+│   ├── archaeology/        <-- THE SCOUTS (API Discovery)
+│   ├── memory/             <-- THE DNA (AetherCore Patterns)
+│   └── orchestrator/       <-- THE KERNEL (Cognitive Routing)
+├── edge_client/            <-- PERCEPTION (Generative Micro-UI)
+└── swarm_infrastructure/   <-- EXECUTION (Cloud Forge)
 ```
 
-## 🧬 Neural Protocols
+## 🧬 Neural Protocols (v2.0)
 
-### Protocol 1: The Veto Directive
+### Protocol 1: The Forge Proxy
 
-- **Directive:** All actions MUST be validated against `agent/memory/SOUL.md`.
-- **Constraint:** If an action conflicts with the Jungian Persona defined in SOUL, it must be terminated immediately (NeuroSage Veto).
+- **Directive:** NEVER click a button if an API exists.
+- **Constraint:** Use Gemini Live voice input to deconstruct intent into `agent/forge/` specs.
 
-### Protocol 2: System 1/2 Gating
+### Protocol 2: Ephemeral Lifecycle
 
-- **System 1 (Reflexive):** Default to direct LLM inference for standard UI navigation.
-- **System 2 (Reflective):** Only engage AlphaMind (MCTS) if Prediction Error ($\Delta F$) exceeds the threshold ($\tau$) defined in `INFERENCE.md`.
+- **Rule:** Nano-Agents must have a TTL (Time-To-Live). Execute, Harvest, Self-Destruct.
+- **Rule:** Successful patterns must be crystallized to `agent/memory/SKILLS.md`.
 
-### Protocol 3: Evolutionary Persistence
+### Protocol 3: Shadow Realm Consensus
 
-- **Rule:** Every successfully evolved algorithm must be consolidated into `agent/memory/SKILLS.md`.
-- **Rule:** Errors must be logged as "Pain Signals" to trigger the `EVOLVE.md` self-healing circuit.
+- **Rule:** High-stakes tasks require parallel variant execution in the Sandbox.
+- **Rule:** Minimum 3 variants for consensus selection.
 
 ## 🛠️ System Communication Schemas
 
 | Connection | Protocol | Priority |
 | :--- | :--- | :--- |
-| **Edge ↔ Swarm** | Bi-directional WebSockets | CRITICAL (real-time) |
-| **DNA ↔ RAM** | Memory-Mapped (mmap) | HIGH (Low Latency) |
-| **Agent ↔ UI** | Shadow DOM Simulation | MEDIUM (Safety First) |
+| **Voice ↔ Forge** | Multimodal (Gemini Live) | CRITICAL |
+| **Forge ↔ API** | Raw HTTPS / JSON | HIGH |
+| **Kernel ↔ UI** | Generative Micro-UI (Tauri) | MEDIUM |
 
 ---
-*Identity Hash: `AetherOS-AetherCore-v0.1.0-Prometheus`*
+*Identity Hash: `AetherOS-Forge-v2.0.0-Prometheus`*

@@ -117,12 +117,24 @@ class HyperMindRouter:
     async def route_action(self, context: Dict[str, Any]) -> str:
         """
         The Gating Logic Ceremony:
-        1. Calculate F (VFE).
-        2. If F > Tau: Engage System 2 (Reflective Search).
-        3. Else: Engage System 1 (Direct Reflex).
+        1. Intent Analysis: Check for Aether Forge Compatibility (MVP Scoped).
+        2. Calculate F (VFE).
+        3. If F > Tau: Engage System 2 (Reflective Search).
+        4. Else: Engage System 1 (Direct Reflex).
         """
         dna = await self.bridge.load_dna_async()
         tau = dna.inference.get("cognitive_weights", {}).get("surprise_threshold (tau)", 0.15)
+        
+        # 🧪 Sprint 1: Aether Forge Intent Detection
+        # Check if intent targets MVP APIs (CoinGecko, GitHub, Weather)
+        intent_text = context.get("intent_text", "").lower()
+        forge_targets = ["crypto", "bitcoin", "ethereum", "price", "github", "repo", "weather", "forecast"]
+        
+        is_forge_task = any(target in intent_text for target in forge_targets)
+        if is_forge_task:
+            print(f"🔮 [AETHER FORGE] Intent detected: '{intent_text}'")
+            print("   -> Bypassing conventional UI logic. Routing to Forge Synthesis...")
+            return "AETHER_FORGE"
         
         # pre-route enrichment: consult Aether-Nexus for similar memories
         try:
