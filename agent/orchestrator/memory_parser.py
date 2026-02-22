@@ -110,14 +110,22 @@ class AuraNavigator:
             return self.dna_cache
 
     def _parse_blocks(self, raw_data: Dict[str, str]) -> Dict[str, Dict[str, Any]]:
-        """Synchronous YAML extractor."""
+        """Synchronous YAML extractor. Merges all YAML blocks found in a file."""
         results = {}
         for filename, content in raw_data.items():
-            if "```yaml" in content:
-                block = content.split("```yaml")[1].split("```")[0]
-                results[filename] = yaml.safe_load(block) or {}
-            else:
-                results[filename] = {}
+            merged_data = {}
+            parts = content.split("```yaml")
+            # Skip the first part as it's before the first yaml block
+            for part in parts[1:]:
+                if "```" in part:
+                    block = part.split("```")[0]
+                    try:
+                        data = yaml.safe_load(block)
+                        if isinstance(data, dict):
+                            merged_data.update(data)
+                    except Exception:
+                        pass
+            results[filename] = merged_data
         return results
 
     def close(self):

@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import websockets
 from typing import Any
 from .memory_parser import AuraNavigator
@@ -59,12 +60,23 @@ class AetherCoreOrchestrator:
                         payload = message[1:]
                         
                         if header == 0x01: # Visual Delta
-                            # Parse Hardened Packet: [4 bytes metadata_len][metadata][jpeg]
-                            metadata_len = int.from_bytes(payload[0:4], "little")
-                            metadata_raw = payload[4:4+metadata_len]
-                            jpeg_payload = payload[4+metadata_len:]
+                            metadata = {}
+                            jpeg_payload = b""
+
+                            # Check if it's raw JPEG (starts with FF D8) or has metadata header
+                            if len(payload) > 1 and payload[0] == 0xFF and payload[1] == 0xD8:
+                                # Raw JPEG without metadata (Rust client behavior)
+                                jpeg_payload = payload
+                            else:
+                                # Parse Hardened Packet: [4 bytes metadata_len][metadata][jpeg]
+                                metadata_len = int.from_bytes(payload[0:4], "little")
+                                metadata_raw = payload[4:4+metadata_len]
+                                jpeg_payload = payload[4+metadata_len:]
+                                try:
+                                    metadata = json.loads(metadata_raw.decode("utf-8"))
+                                except json.JSONDecodeError:
+                                    print("⚠️ Failed to parse metadata JSON. Assuming empty metadata.")
                             
-                            metadata = json.loads(metadata_raw.decode("utf-8"))
                             # REVERSE ENG #3: Hybrid Accessibility Check
                             # If metadata has nodes, we can potentially bypass heavy CV
                             
