@@ -96,5 +96,45 @@ class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
         args, _ = gemini_instance.stream_input.call_args
         self.assertEqual(args[0], jpeg_data)
 
+    @patch('agent.orchestrator.main.GeminiLiveClient')
+    async def test_handle_optic_nerve_drift_detected(self, MockGemini):
+        # Set a small drift threshold for testing
+        self.orchestrator.drift_threshold_ms = 100.0
+
+        # Mock WebSocket
+        websocket = AsyncMock()
+        websocket.remote_address = ("127.0.0.1", 12345)
+
+        # Create metadata payload with old timestamp to simulate drift
+        # 200ms drift (which is > 100ms threshold)
+        old_time = time.time_ns() - 200 * 1_000_000
+        metadata = {"timestamp_edge": old_time}
+        metadata_bytes = json.dumps(metadata).encode("utf-8")
+        metadata_len = len(metadata_bytes).to_bytes(4, "little")
+        jpeg_data = b'\xFF\xD8\xFF\xE0'
+
+        # Construct message: header (0x01) + len + metadata + jpeg
+        message = b'\x01' + metadata_len + metadata_bytes + jpeg_data
+
+        # Setup websocket
+        websocket.__aiter__.return_value = [message]
+
+        # Mock Gemini client instance
+        gemini_instance = MockGemini.return_value
+        gemini_instance.connect = AsyncMock()
+        gemini_instance.listen = MagicMock()
+        gemini_instance.listen.return_value.__aiter__.return_value = []
+        gemini_instance.stream_input = AsyncMock()
+        gemini_instance.close = AsyncMock()
+
+        # Run handle_optic_nerve
+        try:
+            await asyncio.wait_for(self.orchestrator.handle_optic_nerve(websocket), timeout=1.0)
+        except asyncio.TimeoutError:
+            pass
+
+        # Verify stream_input was NOT called due to drift
+        gemini_instance.stream_input.assert_not_called()
+
 if __name__ == '__main__':
     unittest.main()

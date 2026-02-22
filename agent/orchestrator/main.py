@@ -30,9 +30,10 @@ class AetherCoreOrchestrator:
     The main asynchronous event loop for AuraOS.
     Bridges the Edge Client (Sensory) via WebSockets to the DNA Brain.
     """
-    def __init__(self, host: str = "127.0.0.1", port: int = 8000):
+    def __init__(self, host: str = "127.0.0.1", port: int = 8000, drift_threshold_ms: float = 500.0):
         self.host = host
         self.port = port
+        self.drift_threshold_ms = drift_threshold_ms
         self.bridge = AuraNavigator()
         self.router = HyperMindRouter(self.bridge)
         self.is_running = False
@@ -140,7 +141,7 @@ class AetherCoreOrchestrator:
                             # Check for drift if timestamp was sent from Edge
                             if "timestamp_edge" in metadata:
                                 drift = (metadata["timestamp_orchestrator"] - metadata["timestamp_edge"]) / 1_000_000
-                                if drift > 500:
+                                if drift > self.drift_threshold_ms:
                                     print(f"⚠️ Perceptual Drift Detected: {drift}ms. Dropping stale frame.")
                                     continue
 
