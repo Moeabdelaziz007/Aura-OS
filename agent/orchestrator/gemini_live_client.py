@@ -31,6 +31,9 @@ class GeminiLiveClient:
         if not self.api_key:
             raise ValueError("GeminiLiveClient requires GEMINI_API_KEY environment variable")
 
+        if websockets is None:
+            raise ImportError("Gemini Live requires the 'websockets' library. Please install it with `pip install websockets`.")
+
         print("🚀 Gemini Live: Connecting to Multimodal Webhook...")
         # Retry loop with exponential backoff
         for attempt in range(self.MAX_RETRIES):
