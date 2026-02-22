@@ -49,7 +49,8 @@ class AetherCoreOrchestrator:
         self.is_running = True
         
         # Priority 3: Start Active Pulse Monitor
-        asyncio.create_task(self.pulse_monitor())
+        pulse_task = asyncio.create_task(self.pulse_monitor(), name="pulse_monitor")
+        self._cleanup_tasks.add(pulse_task)
 
     async def pulse_monitor(self, interval: float = 1.0):
         """Cognitive Pacemaker: Detects deadlocks and zombie connections."""

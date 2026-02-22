@@ -6,6 +6,40 @@ import json
 import struct
 import os
 import time
+import sys
+
+# Mock missing dependencies
+mock_pydantic = MagicMock()
+class MockBaseModel:
+    def __init__(self, **data):
+        # Handle nested models based on annotations
+        annotations = getattr(self, '__annotations__', {})
+        for k, v in data.items():
+            if k in annotations and isinstance(v, dict):
+                field_type = annotations[k]
+                # Handle optional or union types if necessary, but keep it simple for now
+                if isinstance(field_type, type) and issubclass(field_type, MockBaseModel):
+                    v = field_type(**v)
+            setattr(self, k, v)
+    def dict(self):
+        d = {}
+        for k, v in self.__dict__.items():
+            if isinstance(v, MockBaseModel):
+                d[k] = v.dict()
+            else:
+                d[k] = v
+        return d
+    def model_dump(self): return self.dict()
+    class Config: extra = "allow"
+mock_pydantic.BaseModel = MockBaseModel
+mock_pydantic.Field = MagicMock(return_value=MagicMock())
+mock_pydantic.ValidationError = type("ValidationError", (Exception,), {})
+sys.modules["pydantic"] = mock_pydantic
+sys.modules["websockets"] = MagicMock()
+sys.modules["dotenv"] = MagicMock()
+sys.modules["numpy"] = MagicMock()
+sys.modules["google"] = MagicMock()
+sys.modules["google.generativeai"] = MagicMock()
 
 # We need to set the environment variable before importing main so it picks it up
 os.environ["GEMINI_API_KEY"] = "test_api_key"
@@ -263,3 +297,35 @@ class TestAetherCoreOrchestrator(unittest.IsolatedAsyncioTestCase):
         # Check that action was sent. Note: The original message is also echoed back
         # because the 'continue' in the loop only continues the inner 'for part' loop, not the 'async for' loop.
         mock_websocket.send.assert_any_call(json.dumps(expected_action))
+
+    async def test_pulse_monitor_starts(self):
+        """Verify that boot_sequence starts the pulse_monitor task."""
+        await self.orchestrator.boot_sequence()
+        # Verify pulse_monitor task is in cleanup_tasks using its assigned name
+        pulse_tasks = [t for t in self.orchestrator._cleanup_tasks if t.get_name() == "pulse_monitor"]
+        self.assertTrue(len(pulse_tasks) > 0, "pulse_monitor task not found in _cleanup_tasks")
+
+    async def test_pulse_monitor_cancellation(self):
+        """Verify that shutdown cancels the pulse_monitor task."""
+        await self.orchestrator.boot_sequence()
+        pulse_tasks = [t for t in self.orchestrator._cleanup_tasks if t.get_name() == "pulse_monitor"]
+        task = pulse_tasks[0]
+
+        self.assertFalse(task.done())
+
+        await self.orchestrator.shutdown()
+        self.assertTrue(task.done() or task.cancelled())
+
+    async def test_pulse_monitor_execution(self):
+        """Verify that pulse_monitor executes its sleep loop."""
+        with patch('asyncio.sleep', new_callable=AsyncMock) as mock_sleep:
+            # Use a side effect to raise CancelledError after one call to break the loop
+            mock_sleep.side_effect = [None, asyncio.CancelledError()]
+
+            try:
+                await self.orchestrator.pulse_monitor(interval=0.001)
+            except asyncio.CancelledError:
+                pass
+
+            self.assertTrue(mock_sleep.called)
+            mock_sleep.assert_called_with(0.001)

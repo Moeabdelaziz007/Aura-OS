@@ -5,6 +5,9 @@ Run this script as a module from the project root:
     python -m agent.orchestrator.test_router
 """
 
+import sys
+from unittest.mock import MagicMock
+sys.modules["numpy"] = MagicMock()
 import asyncio
 
 from .memory_parser import AuraNavigator

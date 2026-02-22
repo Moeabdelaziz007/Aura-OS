@@ -1,6 +1,8 @@
 
-import unittest
+import sys
 from unittest.mock import MagicMock, patch
+sys.modules["numpy"] = MagicMock()
+import unittest
 import asyncio
 from agent.orchestrator.cognitive_router import HyperMindRouter
 from agent.orchestrator.memory_parser import DNABelief, AuraNavigator

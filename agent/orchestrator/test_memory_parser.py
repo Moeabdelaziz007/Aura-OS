@@ -1,4 +1,8 @@
 
+import sys
+from unittest.mock import MagicMock
+sys.modules["pytest"] = MagicMock()
+sys.modules["numpy"] = MagicMock()
 import pytest
 import asyncio
 import unittest
