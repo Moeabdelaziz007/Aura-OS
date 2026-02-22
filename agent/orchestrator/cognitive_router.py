@@ -115,7 +115,7 @@ class HyperMindRouter:
         
         # pre-route enrichment: consult Aura-Nexus for similar memories
         try:
-            hits = self.bridge.search_nexus(context)
+            hits = await self.bridge.search_nexus(context)
             context["nexus_hits"] = hits
             if hits:
                 print(f"🔗 Nexus context: {len(hits)} nodes retrieved")

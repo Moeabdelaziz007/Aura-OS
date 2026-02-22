@@ -100,7 +100,7 @@ class GeminiLiveClient:
             if "serverContent" in payload:
                 # pre‑route context: find similar nexus nodes
                 try:
-                    hits = self.bridge.search_nexus(payload["serverContent"])
+                    hits = await self.bridge.search_nexus(payload["serverContent"])
                     payload["serverContent"]["nexus_hits"] = hits
                 except Exception:
                     pass
@@ -108,7 +108,7 @@ class GeminiLiveClient:
             
             if "toolCall" in payload:
                 try:
-                    hits = self.bridge.search_nexus(payload["toolCall"])
+                    hits = await self.bridge.search_nexus(payload["toolCall"])
                     payload["toolCall"]["nexus_hits"] = hits
                 except Exception:
                     pass

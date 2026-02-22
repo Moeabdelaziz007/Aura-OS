@@ -109,15 +109,18 @@ class AuraNavigator:
             
             return self.dna_cache
 
+    def _parse_single_block(self, content: str) -> Dict[str, Any]:
+        """Synchronous YAML extractor for a single block."""
+        if "```yaml" in content:
+            block = content.split("```yaml")[1].split("```")[0]
+            return yaml.safe_load(block) or {}
+        return {}
+
     def _parse_blocks(self, raw_data: Dict[str, str]) -> Dict[str, Dict[str, Any]]:
         """Synchronous YAML extractor."""
         results = {}
         for filename, content in raw_data.items():
-            if "```yaml" in content:
-                block = content.split("```yaml")[1].split("```")[0]
-                results[filename] = yaml.safe_load(block) or {}
-            else:
-                results[filename] = {}
+            results[filename] = self._parse_single_block(content)
         return results
 
     def close(self):
@@ -140,38 +143,24 @@ class AuraNavigator:
             if force or current_hash != self._hashes.get(self.nexus_file):
                 self._hashes[self.nexus_file] = current_hash
                 raw = content_bytes.decode("utf-8")
-                parsed = {}
-                if "```yaml" in raw:
-                    block = raw.split("```yaml")[1].split("```")[0]
-                    parsed = yaml.safe_load(block) or {}
+                # Move blocking YAML parsing to a background thread
+                parsed = await asyncio.to_thread(self._parse_single_block, raw)
                 self.nexus_cache = parsed.get("synapses", [])
                 needs_update = True
 
             return self.nexus_cache or []
 
-    def search_nexus(self, query: Dict[str, Any], top_k: int = 3) -> list[Dict[str, Any]]:
+    async def search_nexus(self, query: Dict[str, Any], top_k: int = 3) -> list[Dict[str, Any]]:
         """Naive similarity search over the loaded nexus nodes.
 
-        If the nexus has not yet been loaded, this method will attempt a
-        synchronous fallback load (not expected in performance-critical loops).
+        If the nexus has not yet been loaded, this method will attempt an
+        asynchronous load to avoid blocking the event loop.
         """
-        if not self.nexus_cache:
-            try:
-                # perform synchronous load (blocking) if necessary
-                # note: this assumes the file is small
-                mm = self._get_mmap(self.nexus_file)
-                mm.seek(0)
-                raw = mm.read().decode("utf-8")
-                if "```yaml" in raw:
-                    block = raw.split("```yaml")[1].split("```")[0]
-                    parsed = yaml.safe_load(block) or {}
-                    self.nexus_cache = parsed.get("synapses", [])
-                else:
-                    self.nexus_cache = []
-            except Exception:
-                self.nexus_cache = []
+        if self.nexus_cache is None:
+            await self.load_nexus_async()
+
         # placeholder: return first k entries for now
-        return self.nexus_cache[:top_k]
+        return (self.nexus_cache or [])[:top_k]
 
 if __name__ == "__main__":
     # Quick sanity check

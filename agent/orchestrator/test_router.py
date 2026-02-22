@@ -50,7 +50,7 @@ async def main():
 
     # Test nexus search (should gracefully return list)
     print("\nCase 4: Nexus Search")
-    hits = router.bridge.search_nexus({"dummy": True})
+    hits = await router.bridge.search_nexus({"dummy": True})
     print(f"Nexus hits: {hits}")
 
     bridge.close()

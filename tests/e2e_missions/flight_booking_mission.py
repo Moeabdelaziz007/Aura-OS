@@ -40,7 +40,7 @@ async def run_mission():
     print(f"After interruption: routed to {action}")
 
     # verify nexus update attempt
-    nexus_hits = navigator.search_nexus(context)
+    nexus_hits = await navigator.search_nexus(context)
     print(f"Nexus context after interruption: {nexus_hits}")
 
     print("Mission complete.")
