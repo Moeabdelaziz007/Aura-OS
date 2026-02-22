@@ -58,18 +58,17 @@ async def run_cinematic_demo():
     print_slow("\n⚡ SCENE 2: The Aether Dissolution (The Sovereign Path)")
     print_slow("   \"AetherOS doesn't click. It communicates directly with the DNA of the web.\"")
     
-    forge = AetherForge()
-    
-    # Simulate Voice Trigger
-    print_slow("\n🎙️ [GEMINI LIVE] \"Hey Aether, Check Bitcoin price for me.\"")
-    
-    start_time = time.time()
-    intent = {"service": "coingecko", "params": {"coins": ["bitcoin"], "currencies": ["usd"]}}
-    result = await forge.forge_and_deploy(intent)
-    aether_time = (time.time() - start_time)
-    
-    print(result.display())
-    print(f"✅ AETHER LATENCY: {aether_time:.2f} seconds")
+    async with AetherForge() as forge:
+        # Simulate Voice Trigger
+        print_slow("\n🎙️ [GEMINI LIVE] \"Hey Aether, Check Bitcoin price for me.\"")
+        
+        start_time = time.time()
+        intent = {"service": "coingecko", "params": {"coins": ["bitcoin"], "currencies": ["usd"]}}
+        result = await forge.forge_and_deploy(intent)
+        aether_time = (time.time() - start_time)
+        
+        print(result.display())
+        print(f"✅ AETHER LATENCY: {aether_time:.2f} seconds")
     
     # Scene 3: The Impact
     print("\n" + "━"*64)

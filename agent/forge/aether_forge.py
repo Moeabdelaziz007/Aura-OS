@@ -89,8 +89,11 @@ class AetherNexus:
                 logger.warning("NEXUS DNA corrupted. Initializing blank slate.")
         return {}
 
-    def _save(self) -> None:
-        self.path.write_text(json.dumps(self._graph, indent=2, ensure_ascii=False))
+    async def _save(self) -> None:
+        """Async-safe save via background thread."""
+        def write():
+            self.path.write_text(json.dumps(self._graph, indent=2, ensure_ascii=False))
+        await asyncio.to_thread(write)
 
     def recall(self, service: str) -> Optional[Dict[str, Any]]:
         """Rapid Synaptic Recall (System 1)."""
@@ -100,7 +103,7 @@ class AetherNexus:
             return node.get("api_pattern")
         return None
 
-    def engrave(self, service: str, pattern: Dict[str, Any], success: bool, error_type: Optional[str] = None) -> None:
+    async def engrave(self, service: str, pattern: Dict[str, Any], success: bool, error_type: Optional[str] = None) -> None:
         """Update genetic fingerprint based on success/failure outcome."""
         node = self._graph.setdefault(service, {
             "service": service,
@@ -126,15 +129,14 @@ class AetherNexus:
             logger.warning(f"Darwinian Purge: [{service}] synapse dissolved due to failure.")
             del self._graph[service]
         
-        self._save()
+        await self._save()
 
-    def tidal_prune(self) -> int:
+    async def tidal_prune(self) -> int:
         """Low Tide: Dissolve weak synapses below 15% energy."""
-        initial = len(self._graph)
         dead = [k for k, v in self._graph.items() if v.get("energy_credits", 0) < 15]
         for k in dead:
             del self._graph[k]
-        self._save()
+        await self._save()
         return len(dead)
 
 class TemporalMemoryTides:
@@ -144,7 +146,7 @@ class TemporalMemoryTides:
 
     async def sleep(self):
         logger.info("🌊 Low Tide initiated. Pruning weak synapses...")
-        count = self.nexus.tidal_prune()
+        count = await self.nexus.tidal_prune()
         logger.info(f"🌊 Low Tide complete. {count} synapses dissolved.")
 
 # ─────────────────────────────────────────────
@@ -166,7 +168,20 @@ class AetherForge:
         self.tides = TemporalMemoryTides(self.nexus)
         self.metrics = ForgeMetrics()
         
+        # Pooled High-Performance Client
+        self.client = httpx.AsyncClient(
+            timeout=10.0,
+            limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
+            trust_env=False # Bypass slow proxy detection
+        )
+        
         self.agents_forged = 0
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.client.aclose()
 
     async def forge_and_deploy(self, intent_data: Dict[str, Any], max_retries: int = 3) -> ForgeResult:
         """Execute the 4-Phase Forge Loop with exponential backoff retry."""
@@ -202,11 +217,12 @@ class AetherForge:
         for attempt in range(max_retries):
             try:
                 logger.info(f"Nano-Agent {agent_id} deployed (Attempt {attempt+1})...")
-                data = await executor.execute(intent_data.get("params", {}))
+                # Injected Sovereign Client
+                data = await executor.execute(intent_data.get("params", {}), self.client)
                 ms = (time.time() - t0) * 1000
                 
                 # Phase 4: Harvest & Engrave
-                self.nexus.engrave(service, intent_data.get("params", {}), True)
+                await self.nexus.engrave(service, intent_data.get("params", {}), True)
                 
                 # Update Metrics
                 self.metrics.successful_requests += 1
@@ -250,27 +266,26 @@ async def run_demo():
     print("   Manus clicks buttons. AetherOS dissolves them.")
     print("━"*60 + "\n")
 
-    forge = AetherForge()
+    async with AetherForge() as forge:
+        # 1. Single Intent
+        print("🔬 [Test 1: Single Intent]")
+        intent1 = {"service": "coingecko", "params": {"coins": ["bitcoin"], "currencies": ["usd"]}}
+        res1 = await forge.forge_and_deploy(intent1)
+        print(res1.display())
 
-    # 1. Single Intent
-    print("🔬 [Test 1: Single Intent]")
-    intent1 = {"service": "coingecko", "params": {"coins": ["bitcoin"], "currencies": ["usd"]}}
-    res1 = await forge.forge_and_deploy(intent1)
-    print(res1.display())
+        # 2. Quantum Swarm (Parallel)
+        print("\n🌀 [Test 2: Quantum Swarm Execution]")
+        swarm = [
+            {"service": "github", "params": {"query": "AetherOS", "limit": 2}},
+            {"service": "coingecko", "params": {"coins": ["ethereum"], "currencies": ["usd"]}}
+        ]
+        results = await forge.swarm_execute(swarm)
+        for r in results:
+            print(r.display())
 
-    # 2. Quantum Swarm (Parallel)
-    print("\n🌀 [Test 2: Quantum Swarm Execution]")
-    swarm = [
-        {"service": "github", "params": {"query": "AetherOS", "limit": 2}},
-        {"service": "coingecko", "params": {"coins": ["ethereum"], "currencies": ["usd"]}}
-    ]
-    results = await forge.swarm_execute(swarm)
-    for r in results:
-        print(r.display())
-
-    # 3. Temporal Tides
-    print("\n🌊 [Test 3: Temporal Memory Tides]")
-    await forge.tides.sleep()
+        # 3. Temporal Tides
+        print("\n🌊 [Test 3: Temporal Memory Tides]")
+        await forge.tides.sleep()
 
 if __name__ == "__main__":
     asyncio.run(run_demo())

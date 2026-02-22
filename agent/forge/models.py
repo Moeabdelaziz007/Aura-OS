@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, Optional, Protocol
 import json
+import httpx
 
 @dataclass(frozen=True)
 class NanoAgent:
@@ -60,5 +61,5 @@ class AgentProposal:
 
 class NanoExecutor(Protocol):
     """Protocol for API-native executors (The Synaptic Bonds)."""
-    async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         ...

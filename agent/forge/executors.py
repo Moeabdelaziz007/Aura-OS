@@ -10,22 +10,21 @@ from typing import Any, Dict
 logger = logging.getLogger("AetherForge")
 
 class CoinGeckoExecutor:
-    async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         coins = params.get("coins", ["bitcoin", "ethereum", "solana"])
         currencies = params.get("currencies", ["usd"])
         
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(
-                "https://api.coingecko.com/api/v3/simple/price",
-                params={
-                    "ids": ",".join(coins),
-                    "vs_currencies": ",".join(currencies),
-                    "include_24hr_change": "true",
-                    "include_market_cap": "true"
-                }
-            )
-            resp.raise_for_status()
-            data = resp.json()
+        resp = await client.get(
+            "https://api.coingecko.com/api/v3/simple/price",
+            params={
+                "ids": ",".join(coins),
+                "vs_currencies": ",".join(currencies),
+                "include_24hr_change": "true",
+                "include_market_cap": "true"
+            }
+        )
+        resp.raise_for_status()
+        data = resp.json()
             
         refined = {}
         for coin, val in data.items():
@@ -38,7 +37,7 @@ class CoinGeckoExecutor:
         return refined
 
 class GitHubExecutor:
-    async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         query = params.get("query", "AI agent python")
         limit = params.get("limit", 3)
         headers = {"Accept": "application/vnd.github.v3+json"}
@@ -46,14 +45,13 @@ class GitHubExecutor:
         if token := os.environ.get("GITHUB_TOKEN"):
             headers["Authorization"] = f"Bearer {token}"
             
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(
-                "https://api.github.com/search/repositories",
-                params={"q": query, "sort": "stars", "per_page": limit},
-                headers=headers
-            )
-            resp.raise_for_status()
-            data = resp.json()
+        resp = await client.get(
+            "https://api.github.com/search/repositories",
+            params={"q": query, "sort": "stars", "per_page": limit},
+            headers=headers
+        )
+        resp.raise_for_status()
+        data = resp.json()
             
         return {
             "Query": query,
@@ -69,7 +67,7 @@ class GitHubExecutor:
         }
 
 class WeatherExecutor:
-    async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         city = params.get("city", "Cairo")
         # Placeholder for OpenWeather logic
         return {
