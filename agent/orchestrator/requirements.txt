@@ -4,5 +4,6 @@ python-dotenv
 pydantic
 PyYAML
 websockets
+numpy
 # Required for AetherCore ADK functionality (conceptual/mocked if private, or specific packages if public)
 # google-adk (assuming current dev environment availability)

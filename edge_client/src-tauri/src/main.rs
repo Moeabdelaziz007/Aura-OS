@@ -42,6 +42,13 @@ async fn stream_sensory_data(
     Ok(())
 }
 
+fn get_bridge_url() -> String {
+    std::env::var("AURA_BRIDGE_URL").unwrap_or_else(|_| {
+        println!("⚠️ Warning: AURA_BRIDGE_URL not set. Defaulting to insecure localhost.");
+        "ws://127.0.0.1:8000".to_string()
+    })
+}
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -87,11 +94,11 @@ fn main() {
 
             // 🛰️ Synaptic Bridge (WebSocket Client)
             tauri::async_runtime::spawn(async move {
-                let addr = "ws://127.0.0.1:8000";
+                let addr = get_bridge_url();
                 println!("🛰️ AuraOS: Establishing Synaptic Bridge to {}...", addr);
 
                 loop {
-                    match connect_async(addr).await {
+                    match connect_async(&addr).await {
                         Ok((mut ws_stream, _)) => {
                             println!("✅ Synaptic Bridge: ONLINE.");
                             
@@ -132,4 +139,40 @@ fn main() {
         .invoke_handler(tauri::generate_handler![stream_sensory_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::Mutex;
+
+    static ENV_LOCK: Mutex<()> = Mutex::new(());
+
+    #[test]
+    fn test_get_bridge_url_default() {
+        let _lock = ENV_LOCK.lock().unwrap();
+
+        let original = std::env::var("AURA_BRIDGE_URL");
+        std::env::remove_var("AURA_BRIDGE_URL");
+        assert_eq!(get_bridge_url(), "ws://127.0.0.1:8000");
+
+        if let Ok(val) = original {
+            std::env::set_var("AURA_BRIDGE_URL", val);
+        }
+    }
+
+    #[test]
+    fn test_get_bridge_url_env_set() {
+        let _lock = ENV_LOCK.lock().unwrap();
+
+        let original = std::env::var("AURA_BRIDGE_URL");
+        std::env::set_var("AURA_BRIDGE_URL", "wss://example.com:9000");
+        assert_eq!(get_bridge_url(), "wss://example.com:9000");
+
+        if let Ok(val) = original {
+            std::env::set_var("AURA_BRIDGE_URL", val);
+        } else {
+            std::env::remove_var("AURA_BRIDGE_URL");
+        }
+    }
 }
