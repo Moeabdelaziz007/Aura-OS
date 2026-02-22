@@ -9,6 +9,7 @@ use std::io::ErrorKind;
 use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
+use tauri::async_runtime;
 use tokio::sync::mpsc;
 // removed tokio sleep
 
@@ -71,7 +72,7 @@ impl VisionSensor {
                     let tx_clone = tx.clone();
                     let ocr_engine_clone = ocr_engine.clone();
 
-                    std::thread::spawn(move || {
+                    async_runtime::spawn_blocking(move || {
                         let scrubber = ZeroTrustScrubber::new(ocr_engine_clone);
                         let scrubbed_data = scrubber.scrub_pii(&frame_data, width, height);
 
