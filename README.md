@@ -7,29 +7,37 @@
 <div align="center">
   <img src="assets/aethercore_architecture.png" alt="AetherCore Architecture 5 Pillars Diagram | مخطط أعمدة AetherCore الخمسة" width="100%" height="auto" style="object-fit: contain; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px 0 rgba(0,118,255,0.39);">
 
-## **The Autonomous Self-Healing OS for the Gemini Live Era**
+  <h1>The Autonomous Self-Healing OS for the Gemini Live Era</h1>
+  <h1>نظام التشغيل المستقل ذاتياً لعصر Gemini Live</h1>
+  <h1>النظام الذاتي التعافي لحقبة جيميناي لايف</h1>
 
-## **نظام التشغيل المستقل ذاتياً لعصر Gemini Live**
+  <p>
+    <b>Built for the <a href="https://geminiliveagentchallenge.devpost.com/">Gemini Live Agents Challenge</a></b><br>
+    <b>تم بناؤه لتحدي <a href="https://geminiliveagentchallenge.devpost.com/">Gemini Live Agents</a></b>
+  </p>
 
-## **النظام الذاتي التعافي لحقبة جيميناي لايف**
+  <p>
+    <a href="https://cloud.google.com/run"><img src="https://img.shields.io/badge/Execution-Cloud_Run_Jobs-blue?style=flat-square&logo=google-cloud" alt="Google Cloud Run Jobs"></a>
+    <a href="https://banana.dev/"><img src="https://img.shields.io/badge/Serverless_GPU-Banana_Pro-FBB117?style=flat-square&logo=banana" alt="Banana Pro"></a>
+    <a href="https://tauri.app/"><img src="https://img.shields.io/badge/Edge_Native-Rust_Tauri-FFC131?style=flat-square&logo=rust" alt="Rust"></a>
+    <a href="https://deepmind.google/technologies/gemini/"><img src="https://img.shields.io/badge/Brain-Gemini_Live-9C27B0?style=flat-square&logo=google-gemini" alt="Gemini 2.0"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License"></a>
+    <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python" alt="Python"></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat-square&logo=typescript" alt="TypeScript"></a>
+  </p>
 
-  **Built for the [Gemini Live Agents Challenge](https://geminiliveagentchallenge.devpost.com/)**
-  **تم بناؤه لتحدي [Gemini Live Agents](https://geminiliveagentchallenge.devpost.com/)**
+  <p>
+    <a href="README.md">English</a> | <a href="docs/ARCHITECTURE.md">Architecture Report</a> | <a href="docs/API_CONTRACT.md">API Contract</a> | <a href="docs/implementation_plan.md">Implementation Plan</a><br>
+    <a href="README.md">الإنجليزية</a> | <a href="docs/ARCHITECTURE.md">تقرير البنية</a> | <a href="docs/API_CONTRACT.md">عقد API</a> | <a href="docs/implementation_plan.md">خطة التنفيذ</a>
+  </p>
 
-  [![Google Cloud Run Jobs](https://img.shields.io/badge/Execution-Cloud_Run_Jobs-blue?style=flat-square&logo=google-cloud)](https://cloud.google.com/run)
-  [![Banana Pro](https://img.shields.io/badge/Serverless_GPU-Banana_Pro-FBB117?style=flat-square&logo=banana)](https://banana.dev/)
-  [![Rust](https://img.shields.io/badge/Edge_Native-Rust_Tauri-FFC131?style=flat-square&logo=rust)](https://tauri.app/)
-  [![Gemini 2.0](https://img.shields.io/badge/Brain-Gemini_Live-9C27B0?style=flat-square&logo=google-gemini)](https://deepmind.google/technologies/gemini/)
-  [![License](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-  [![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python)](https://www.python.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+  <p>
+    <i>AuraOS is a paradigm shift. It discards stateless loops and isolated vector databases in favor of the <b>Aura-Nexus</b>—a persistent, multimodal Knowledge Graph that weaves visual latent states, text intent, and auditory affect into dynamic Synaptic Links. By synthesizing Active Inference, Quantum Swarm Execution, Banana Pro GPU acceleration, and Recursive Mathematical Evolution, AuraOS operates as an invincible, self-healing digital companion.</i>
+  </p>
 
-  [English](README.md) | [Architecture Report](docs/ARCHITECTURE.md) | [API Contract](docs/API_CONTRACT.md) | [Implementation Plan](docs/implementation_plan.md)
-  [الإنجليزية](README.md) | [تقرير البنية](docs/ARCHITECTURE.md) | [عقد API](docs/API_CONTRACT.md) | [خطة التنفيذ](docs/implementation_plan.md)
-
-  *AuraOS is a paradigm shift. It discards stateless loops and isolated vector databases in favor of the **Aura-Nexus**—a persistent, multimodal Knowledge Graph that weaves visual latent states, text intent, and auditory affect into dynamic Synaptic Links. By synthesizing Active Inference, Quantum Swarm Execution, Banana Pro GPU acceleration, and Recursive Mathematical Evolution, AuraOS operates as an invincible, self-healing digital companion.*
-
-  *نظام أورا هو نقلة نوعية. يتخلى عن قواعد البيانات الشعاعية المعزولة لصالح شبكة **أورا نكسوس (Aura-Nexus)** — شبكة معرفية متعددة الوسائط تربط الحالات البصرية، النوايا النصية، والتأثيرات الصوتية عبر روابط عصبية ديناميكية. من خلال دمج الاستدلال النشط، وتقنية التنفيذ الكمي، وتسريع معالجات الرسوميات السحابية من Banana Pro، يعمل AuraOS كرفيق رقمي حصين ذاتي التعافي.*
+  <p>
+    <i>نظام أورا هو نقلة نوعية. يتخلى عن قواعد البيانات الشعاعية المعزولة لصالح شبكة <b>أورا نكسوس (Aura-Nexus)</b> — شبكة معرفية متعددة الوسائط تربط الحالات البصرية، النوايا النصية، والتأثيرات الصوتية عبر روابط عصبية ديناميكية. من خلال دمج الاستدلال النشط، وتقنية التنفيذ الكمي، وتسريع معالجات الرسوميات السحابية من Banana Pro، يعمل AuraOS كرفيق رقمي حصين ذاتي التعافي.</i>
+  </p>
 
 </div>
 
@@ -116,6 +124,10 @@ By leveraging **AetherCore Prometheus**, AuraOS maintains a persistent, generati
 ---
 
 ## 🏗️ Architecture Overview | نظرة عامة على البنية
+
+<div align="center">
+  <img src="assets/architecture.png" alt="AuraOS High-Level Architecture | بنية AuraOS عالية المستوى" width="90%" style="border-radius: 8px; margin: 20px 0;">
+</div>
 
 ### The 5 Pillars of AetherCore | أعمدة AetherCore الخمسة
 
@@ -557,14 +569,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-## ⭐ Star Us on GitHub! | ⭐ قمنا على GitHub
+  <h2>⭐ Star Us on GitHub! | ⭐ قمنا على GitHub</h2>
 
-If you find AuraOS interesting or useful, please consider giving us a star on GitHub.
+  <p>If you find AuraOS interesting or useful, please consider giving us a star on GitHub.</p>
 
-إذا وجدت AuraOS مثيراً للاهتمام أو مفيداً، يرجى التفكير في إعطائنا نجمة على GitHub.
+  <p>إذا وجدت AuraOS مثيراً للاهتمام أو مفيداً، يرجى التفكير في إعطائنا نجمة على GitHub.</p>
 
-**Built with ❤️ for the Gemini Live Agents Challenge**
-
-**تم بناؤه بـ ❤️ لتحدي Gemini Live Agents**
+  <p>
+    <b>Built with ❤️ for the Gemini Live Agents Challenge</b><br>
+    <b>تم بناؤه بـ ❤️ لتحدي Gemini Live Agents</b>
+  </p>
 
 </div>
