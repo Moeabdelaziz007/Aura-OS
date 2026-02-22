@@ -1,4 +1,4 @@
-# 🌌 AuraOS: The AetherCore "God-Tier" Agent
+# 🌌 AuraOS: The Sovereign Agentic OS & Multimodal Knowledge Graph
 
 <div align="center">
   <img src="assets/aethercore_architecture.png" alt="AetherCore Architecture 5 Pillars Diagram" width="100%" height="auto" style="object-fit: contain; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px 0 rgba(0,118,255,0.39);">
@@ -14,8 +14,8 @@
 
   [English](README.md) | [العربية](README.md) | [Architecture Report](docs/ARCHITECTURE.md) | [Implementation Plan](docs/implementation_plan.md)
 
-  *AuraOS is not just an agent; it's a **Self-Healing Agentic OS**. By synthesizing **Active Inference**, **Quantum Swarm Execution**, and **Recursive Evolution**, it navigates complex UIs with mathematical precision and learns from every failure to become an invincible digital companion.*
-
+  *AuraOS is a paradigm shift. It discards stateless loops and isolated vector databases in favor of the **Aura-Nexus**—a persistent, multimodal Knowledge Graph that weaves visual latent states, text intent, and auditory affect into dynamic Synaptic Links. By synthesizing Active Inference, Quantum Swarm Execution, and Recursive Mathematical Evolution, AuraOS operates as an invincible, self-healing digital companion.*
+</div>
 </div>
 
 ---
@@ -33,13 +33,14 @@
 
 ---
 
-## 👁️ The Pipeline of Multimodal Consciousness
+## 👁️ The Pipeline of Multimodal Consciousness & Aura-Nexus
 
-AuraOS has evolved beyond text-only processing. It now utilizes a **Spatio-Temporal Memory Engine**:
+AuraOS has evolved beyond text-only processing and traditional RAG architectures. It utilizes the **Aura-Nexus Spatio-Temporal Memory Engine**:
 
-1. **Visual Latent Compression:** Raw 60FPS video is compressed into 128-dimensional vectors ($z_t$) for zero-latency retrieval.
-2. **Acoustic Sentiment Tuning:** Real-time analysis of the user's vocal urgency dynamically adjusts the surprise threshold ($\tau$), allowing the agent to react faster in high-stress scenarios.
-3. **Generative Video Prediction:** The world model ($WORLD.md$) "imagines" multi-frame futures, predicting UI animations and state transitions before they manifest.
+1. **Aura-Nexus Graph:** Instead of flat text retrieval, memory is stored as an interconnected Knowledge Graph in `NEXUS.md`. Nodes ("Essences") and Edges ("Synaptic Links") map relationships between what is seen, heard, and done.
+2. **Visual Latent Compression:** Raw 60FPS video is compressed into 128-dimensional vectors ($z_t$) for zero-latency retrieval within the Nexus.
+3. **Acoustic Sentiment Tuning:** Real-time analysis of the user's vocal urgency dynamically adjusts the surprise threshold ($\tau$), linking emotional state to the synaptic pathways.
+4. **Dynamic Synaptic Weighting:** The strength of relationships in the Nexus matrix decodes and reinforces itself autonomously based on success signals from the `HEARTBEAT.md` lifecycle hook.
 
 ---
 
@@ -73,6 +74,7 @@ To secure a definitive victory in the **Live Agents** and **UI Navigator** track
 - **The Math:** It optimizes a unique reward function $R = \alpha \cdot P(Success) - \beta \cdot T_{exec} - \gamma \cdot C_{code}$, balancing success, speed, and simplicity.
 
 ---
+
 ### 🛠️ Recent Enhancements
 
 1. Added `NEXUS.md` (Aura-Nexus) and `HEARTBEAT.md` to DNA.
@@ -83,17 +85,54 @@ To secure a definitive victory in the **Live Agents** and **UI Navigator** track
 6. Enhanced swarm node to compute basic Expected Free Energy using SKILLS.
 
 ---
-## ⚡ Quick Start
+
+## ⚡ Expert Setup & Initialization
+
+AuraOS is a distributed system requiring the orchestration of the Python Brain, Rust Edge Client, and Cloud Swarm.
+
+### 1. The Nervous System (Python Brain)
+
+Initialize the cognitive orchestrator and run the foundational DNA tests.
 
 ```bash
-# Clone the AetherCore DNA
+# Clone the repository
 git clone https://github.com/Moeabdelaziz007/Aura-OS.git
+cd Aura-OS
 
-# Initialize the Edge Client
-cd edge_client && npm install && npm run dev
+# Set up the Python virtual environment
+python3 -m venv venv
+source venv/bin/activate
 
-# Provision Cloud Swarm (Terraform)
-cd swarm_infrastructure/terraform && terraform init && terraform apply
+# Install AetherCore dependencies
+pip install -r agent/orchestrator/requirements.txt
+
+# Run the Aura-Nexus & Router unit tests (Crucial verification step)
+pytest tests/
+# OR run the monolithic sanity checks:
+python3 agent/orchestrator/memory_parser.py
+python3 agent/orchestrator/test_router.py
+```
+
+### 2. Peripheral Senses (Rust Edge Client)
+
+The Edge Client captures screen and audio data with native zero-latency performance.
+
+```bash
+cd edge_client
+npm install
+# Boot the Tauri application (Requires cargo and rustc)
+npm run dev
+```
+
+### 3. Evolutionary Sandbox (Cloud Swarm)
+
+Provision the serverless nodes that the Prometheus engine uses to "dream" in parallel.
+
+```bash
+# Provision Cloud Swarm via Terraform
+cd swarm_infrastructure/terraform
+terraform init
+terraform apply
 ```
 
 ---
