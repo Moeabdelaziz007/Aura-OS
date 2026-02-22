@@ -95,7 +95,6 @@ class AetherCoreOrchestrator:
                                         await websocket.send(json.dumps(action))
                                         continue
                                     elif "text" in data:
-                                        print(f"⌨️ AlphaMind Keyboard Action: {data['text']}")
                                         action = {"action": "TYPE", "text": data["text"]}
                                         await websocket.send(json.dumps(action))
                                         # Add small delay before pressing enter for realism
