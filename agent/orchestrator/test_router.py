@@ -38,7 +38,7 @@ async def main():
     hits = await router.bridge.search_nexus({"dummy": True})
     print(f"Nexus hits: {hits}")
 
-    bridge.close()
+    await bridge.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
