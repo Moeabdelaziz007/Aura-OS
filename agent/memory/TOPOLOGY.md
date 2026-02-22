@@ -1,7 +1,7 @@
 # 🕸️ TOPOLOGY.md: Hypergraph Multi-Agent Data Contracts
 
 ```yaml
-version: 0.1.1
+version: 0.2.0
 pillar: HyperMind (Coordination)
 graph_type: Task_Adaptive_Hypergraph
 ```

@@ -1,7 +1,7 @@
 # 🧬 EVOLVE.md: Recursive Self-Healing & Mutation Rules
 
 ```yaml
-version: 0.1.1
+version: 0.2.0
 pillar: AuraEvolve (Evolution Engine)
 strategy: VerMCTS (Verified MCTS) + GIF-MCTS
 ```

@@ -83,6 +83,7 @@ To secure a definitive victory in the **Live Agents** and **UI Navigator** track
 4. Implemented WebSocket reconnection/heartbeat in GeminiLiveClient.
 5. Added weight learning method `update_cognitive_weights` to router.
 6. Enhanced swarm node to compute basic Expected Free Energy using SKILLS.
+7. Bumped DNA versions for CAUSAL, TOPOLOGY, and EVOLVE to **0.2.0** for consistency.
 
 ---
 
@@ -111,6 +112,8 @@ pytest tests/
 # OR run the monolithic sanity checks:
 python3 agent/orchestrator/memory_parser.py
 python3 -m agent.orchestrator.test_router
+
+# Tip: use `pytest -k memory_parser` to target the new DNA continuity tests.
 ```
 
 ### 2. Peripheral Senses (Rust Edge Client)
@@ -147,14 +150,17 @@ terraform apply
 
 AuraOS operates without traditional, rigid databases. Its very identity, memory layers, and 5-pillar logic are codified into a specific folder of YAML/Markdown files (`agent/memory/`), representing the agent's genetic code:
 
+> **🧪 Note:** 🚧 A freshly added test suite (`tests/test_memory_parser.py`, `tests/test_main.py`) now verifies DNA continuity and router logic. Run `pytest tests/` regularly to catch regressions.
+
+
 | File | Function / Pillar | Key Tech | Version |
 | :--- | :--- | :--- | :--- |
 | **`SOUL.md`** | Persona & Identity | Bayesian Ethical Priors | 0.2.0 |
 | **`WORLD.md`** | Generative Simulator | POMDP + Latent Compression | 0.2.0 |
 | **`INFERENCE.md`** | Active Inference | VFE + Expected Free Energy ($G$) | 0.2.0 |
 | **`CAUSAL.md`** | Anti-Hallucination | Structural Causal Models (SCM) | 0.2.0 |
-| **`TOPOLOGY.md`** | Swarm Coordination | Task-Adaptive Hypergraphs | 0.1.1 |
-| **`EVOLVE.md`** | Self-Healing | VerMCTS + GIF-MCTS | 0.1.1 |
+| **`TOPOLOGY.md`** | Swarm Coordination | Task-Adaptive Hypergraphs | 0.2.0 |
+| **`EVOLVE.md`** | Self-Healing | VerMCTS + GIF-MCTS | 0.2.0 |
 | **`PULSE.md`** | Health Monitoring | Entropy & Latency Tracking | 1.0.0 |
 | **`SKILLS.md`** | Tool Registry | Proficiency Scaling | 0.1.1 |
 

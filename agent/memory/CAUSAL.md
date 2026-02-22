@@ -1,7 +1,7 @@
 # ⚖️ CAUSAL.md: Neuro-Symbolic Causal Graphs
 
 ```yaml
-version: 0.1.1
+version: 0.2.0
 pillar: NeuroSage (Logic Guard)
 model: Structural_Causal_Model (SCM)
 ```
