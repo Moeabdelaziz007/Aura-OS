@@ -1,8 +1,7 @@
 import asyncio
 import json
-import os
 import base64
-from typing import Any, Dict, Optional, AsyncGenerator
+from typing import Any, Dict, AsyncGenerator
 
 # Optional websockets import; allow repository tools to run without it
 try:
