@@ -22,6 +22,10 @@ lazy_static = "1.4"
 image = "0.24"
 bytemuck = "1.14"
 enigo = "0.1"
+ocrs = "0.12.1"
+rten = "0.24.0"
+rten-tensor = "0.24.0"
+rten-imageproc = "0.24.0"
 
 [lib]
 name = "aura_edge_lib"

@@ -161,8 +161,8 @@ class AetherCoreOrchestrator:
                         
                         # Phase 6.6: Neural Poison Neutralized (AlphaEvolve)
                         if context_dict.get("poison") == "NEURAL_POISON":
-                            print("💀 Neural Poison Detected! Neutralizing signal...")
-                            monitor.log_anomaly("Orchestrator", "NeuralPoison", "Poison signal detected and bypassed.")
+                            print("🛡️ Neural Poison Detected! Neutralizing signal and blocking execution.")
+                            monitor.log_anomaly("Orchestrator", "NeuralPoison", "Blocked malicious synaptic payload")
                             continue
 
                         mode = await self.router.route_action(context_dict)

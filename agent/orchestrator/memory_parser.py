@@ -2,8 +2,15 @@ import mmap
 import os
 import hashlib
 import asyncio
+import numpy as np
 from dataclasses import dataclass
-from typing import Any, Optional, Dict
+from typing import Any, Optional, Dict, List
+try:
+    from sentence_transformers import SentenceTransformer
+    import faiss
+except ImportError:
+    SentenceTransformer = None
+    faiss = None
 
 # Optional YAML import with graceful fallback (parses to empty dicts if missing)
 try:
@@ -29,6 +36,21 @@ class DNABelief:
     memory: dict[str, Any]
     version: str
 
+class VectorEncoder:
+    """Encodes text into 384-dimensional latent space using all-MiniLM-L6-v2."""
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+        if SentenceTransformer:
+            print(f"🧠 VectorNexus: Loading transformer model {model_name}...")
+            self.model = SentenceTransformer(model_name)
+        else:
+            print("⚠️ VectorNexus: sentence-transformers not found. Semantic memory disabled.")
+            self.model = None
+
+    def encode(self, text: str) -> np.ndarray:
+        if not self.model:
+            return np.zeros(384, dtype="float32")
+        return self.model.encode(text, convert_to_numpy=True).astype("float32")
+
 class AuraNavigator:
     """
     Priority 0 Refactor: AuraNavigator (formerly PersistentMemoryBridge).
@@ -42,6 +64,11 @@ class AuraNavigator:
         self.dna_cache: Optional[DNABelief] = None
         self.nexus_cache: Optional[list[Dict[str, Any]]] = None
         self._lock = asyncio.Lock()
+        
+        # Vector Nexus Init
+        self.encoder = VectorEncoder()
+        self.index: Optional[faiss.IndexFlatIP] = None  # Inner Product for Cosine Similarity
+        self.indexed_nodes: List[Dict[str, Any]] = []
         self.dna_files = [
             "SOUL.md", "WORLD.md", "INFERENCE.md", "AGENTS.md", 
             "CAUSAL.md", "EVOLVE.md", "PULSE.md", "SKILLS.md", 
@@ -181,21 +208,65 @@ class AuraNavigator:
                 # Move blocking YAML parsing to a background thread
                 parsed = await asyncio.to_thread(self._parse_single_block, raw)
                 self.nexus_cache = parsed.get("synapses", [])
+                
+                # Update Vector Index
+                if self.nexus_cache and self.encoder.model:
+                    await self._refresh_vector_index()
+                
                 needs_update = True
 
             return self.nexus_cache or []
 
-    async def search_nexus(self, query: Dict[str, Any], top_k: int = 3) -> list[Dict[str, Any]]:
-        """Naive similarity search over the loaded nexus nodes.
+    async def _refresh_vector_index(self):
+        """Builds a FAISS index from the metadata/descriptions in NEXUS.md."""
+        if not self.nexus_cache or not self.encoder.model:
+            return
 
-        If the nexus has not yet been loaded, this method will attempt an
-        asynchronous load to avoid blocking the event loop.
-        """
+        print(f"🔗 VectorNexus: Indexing {len(self.nexus_cache)} synapses...")
+        
+        texts = []
+        for node in self.nexus_cache:
+            # Create a rich text representation for embedding
+            meta = node.get("metadata", {})
+            desc = f"{node.get('id', '')} {meta.get('desc', '')} {meta.get('intent', '')}"
+            texts.append(desc)
+            
+        embeddings = await asyncio.to_thread(self.encoder.encode, texts)
+        
+        # FAISS normalization for Cosine Similarity (IP on normalized vectors)
+        faiss.normalize_L2(embeddings)
+        
+        d = embeddings.shape[1]
+        self.index = faiss.IndexFlatIP(d)
+        self.index.add(embeddings)
+        self.indexed_nodes = self.nexus_cache
+        print(f"✅ VectorNexus: FAISS Index synchronized ({len(self.indexed_nodes)} nodes)")
+
+    async def search_nexus(self, query_text: str, top_k: int = 3) -> list[Dict[str, Any]]:
+        """Semantic similarity search via FAISS and Latent Space encoding."""
         if self.nexus_cache is None:
             await self.load_nexus_async()
 
-        # placeholder: return first k entries for now
-        return (self.nexus_cache or [])[:top_k]
+        if not self.index or not self.encoder.model:
+            # Fallback to naive search if indexing failed
+            print("⚠️ VectorNexus: Semantic index missing, falling back to naive search.")
+            return (self.nexus_cache or [])[:top_k]
+
+        # Embed query
+        query_vec = await asyncio.to_thread(self.encoder.encode, [query_text])
+        faiss.normalize_L2(query_vec)
+        
+        # Search index
+        scores, indices = self.index.search(query_vec, top_k)
+        
+        results = []
+        for i, score in zip(indices[0], scores[0]):
+            if i != -1 and i < len(self.indexed_nodes):
+                node = self.indexed_nodes[i].copy()
+                node["_score"] = float(score)
+                results.append(node)
+        
+        return results
 
 if __name__ == "__main__":
     # Quick sanity check
