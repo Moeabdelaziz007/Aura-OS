@@ -8,8 +8,7 @@
   <img src="assets/aethercore_architecture.png" alt="AetherCore Architecture 5 Pillars Diagram | مخطط أعمدة AetherCore الخمسة" width="100%" height="auto" style="object-fit: contain; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 14px 0 rgba(0,118,255,0.39);">
 
   <h1>The Autonomous Self-Healing OS for the Gemini Live Era</h1>
-  <h1>نظام التشغيل المستقل ذاتياً لعصر Gemini Live</h1>
-  <h1>النظام الذاتي التعافي لحقبة جيميناي لايف</h1>
+  <h1>نظام التشغيل المستقل ذاتياً والذاتي التعافي لعصر Gemini Live</h1>
 
   <p>
     <b>Built for the <a href="https://geminiliveagentchallenge.devpost.com/">Gemini Live Agents Challenge</a></b><br>
@@ -40,6 +39,14 @@
   </p>
 
 </div>
+
+---
+
+## 💓 System Telemetry | القياسات الحية للنظام
+
+![Aura Pulse Live Telemetry](https://aura-os-pulse.vercel.app/api/pulse)
+
+> *The dashboard above reflects the real-time cognitive state of the AuraOS master branch. (Updates automatically upon refresh).*
 
 ---
 
@@ -143,8 +150,6 @@ By leveraging **AetherCore Prometheus**, AuraOS maintains a persistent, generati
 
 **العقل** - مستوحى من مبدأ الطاقة الحرة لكارل فريستون، يمتلك AuraOS "نموذج عالم" داخلي. بدلاً من النقر بشكل أعمى، فإنه *يتخيل* (يحلم) عواقب أفعاله لتقليل "الطاقة الحرة" (المفاجأة).
 
-**The Brain** - مستوحى من مبدأ الطاقة الحرة لكارل فريستون، يمتلك AuraOS "نموذج عالم" داخلي. بدلاً من النقر بشكل أعمى، فإنه *يتخيل* (يحلم) عواقب أفعاله لتقليل "الطاقة الحرة" (المفاجأة).
-
 - **System 1 (Reflexive)**: Direct Gemini 3.1 Pro inference for low-entropy, routine UI tasks
   **النظام 1 (انعكاسي)**: استدلال Gemini 3.1 Pro المباشر لمهام واجهة المستخدم الروتينية منخفضة الإنتروبيا
 - **System 2 (Reflective)**: Engages AlphaMind and NeuroSage only when Prediction Error ΔF > τ (Threshold)
@@ -199,7 +204,7 @@ By leveraging **AetherCore Prometheus**, AuraOS maintains a persistent, generati
 
 ### 5. 🌳 AlphaMind: MCTS UI Navigator
 
-### 5. 🌳 AlphaMind: ملاحح واجهة المستخدم MCTS
+### 5. 🌳 AlphaMind: ملاح واجهة المستخدم MCTS
 
 **The Navigator** - Inspired by AlphaZero, when faced with an unknown UI, AlphaMind uses Monte Carlo Tree Search exploring the DOM/Vision tree to find the mathematically optimal sequence of clicks and scrolls.
 
