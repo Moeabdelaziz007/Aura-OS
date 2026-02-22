@@ -2,10 +2,24 @@ import asyncio
 import json
 import os
 import websockets
-from typing import Any
+from typing import Any, Dict
+from pydantic import BaseModel, Field, ValidationError
 from .memory_parser import AuraNavigator
 from .cognitive_router import HyperMindRouter
 from .gemini_live_client import GeminiLiveClient
+
+class ActionContext(BaseModel):
+    """Validated context for cognitive routing."""
+    anomaly: float = 0.0
+    novelty: float = 0.1
+    goal_alignment: float = 1.0
+
+    class Config:
+        extra = "allow"
+
+class SynapticMessage(BaseModel):
+    """Top-level schema for incoming JSON synaptic signals."""
+    data: ActionContext = Field(default_factory=ActionContext)
 
 class AetherCoreOrchestrator:
     """
@@ -94,10 +108,20 @@ class AetherCoreOrchestrator:
                         elif header == 0x02: # Audio Chunk
                             await gemini.stream_input(payload, mime_type="audio/pcm")
                     else:
-                        data = json.loads(message)
-                        # Gating Logic (Active Inference)
-                        mode = await self.router.route_action(data.get("data", {}))
+                        # Validate JSON structure and types
+                        raw_data = json.loads(message)
+                        if not isinstance(raw_data, dict):
+                            raise ValueError("Synaptic signal must be a JSON object")
+
+                        synaptic_signal = SynapticMessage(**raw_data)
+
+                        # Gating Logic (Active Inference) using validated data
+                        # Using .dict() for compatibility across Pydantic V1/V2
+                        context_dict = synaptic_signal.data.dict() if hasattr(synaptic_signal.data, 'dict') else synaptic_signal.data.model_dump()
+                        mode = await self.router.route_action(context_dict)
                         # Intercept/Enrich here
+                except (json.JSONDecodeError, ValidationError, ValueError) as e:
+                    print(f"⚠️ Neural Anomaly (Input Validation): {e}")
                 except Exception as e:
                     print(f"⚠️ Neural Anomaly: {e}")
         
