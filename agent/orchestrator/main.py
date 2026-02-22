@@ -1,11 +1,16 @@
 import asyncio
 import json
 import os
+import re
+import time
 import websockets
 from dotenv import load_dotenv
 
 load_dotenv()
 from typing import Any, Dict
+
+# Gemini 2.0 Spatial API outputs JSON within the text stream
+SPATIAL_JSON_PATTERN = re.compile(r'\{.*\}', re.DOTALL)
 from pydantic import BaseModel, Field, ValidationError
 from .memory_parser import AetherNavigator
 from .cognitive_router import HyperMindRouter
@@ -76,9 +81,7 @@ class AetherCoreOrchestrator:
                         for part in parts:
                             text = part.get("text", "")
                             if text:
-                                import re
-                                # Gemini 2.0 Spatial API outputs JSON within the text stream
-                                match = re.search(r'\{.*\}', text, re.DOTALL)
+                                match = SPATIAL_JSON_PATTERN.search(text)
                                 if match:
                                     data = json.loads(match.group(0))
                                     if "point" in data:
@@ -133,7 +136,6 @@ class AetherCoreOrchestrator:
                                     print("⚠️ Failed to parse metadata JSON. Assuming empty metadata.")
                             
                             # REVERSE ENG: Temporal Anchoring
-                            import time
                             metadata["timestamp_orchestrator"] = time.time_ns()
                             # Check for drift if timestamp was sent from Edge
                             if "timestamp_edge" in metadata:
