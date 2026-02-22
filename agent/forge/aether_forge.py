@@ -19,10 +19,27 @@ from pathlib import Path
 
 import httpx
 from .executors import CoinGeckoExecutor, GitHubExecutor, WeatherExecutor
+from .models import NanoAgent, ForgeResult, NanoExecutor, AgentProposal
+from .exceptions import ForgeException, ForgeErrorType
 
 # ─────────────────────────────────────────────
-# TELEMETRY & LOGGING (القياسات والتسجيل)
+# TELEMETRY & METRICS (القياسات والبيانات)
 # ─────────────────────────────────────────────
+
+@dataclass
+class ForgeMetrics:
+    total_requests: int = 0
+    successful_requests: int = 0
+    failed_requests: int = 0
+    total_latency_ms: float = 0.0
+
+    @property
+    def success_rate(self) -> float:
+        return (self.successful_requests / self.total_requests) * 100 if self.total_requests > 0 else 100.0
+
+    @property
+    def avg_latency(self) -> float:
+        return self.total_latency_ms / self.successful_requests if self.successful_requests > 0 else 0.0
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,61 +49,8 @@ logging.basicConfig(
 logger = logging.getLogger("AetherForge")
 
 # ─────────────────────────────────────────────
-# STRICT DATA CONTRACTS (عقود البيانات الصارمة)
-# ─────────────────────────────────────────────
-
-@dataclass(frozen=True)
-class NanoAgent:
-    """A single-purpose, ephemeral agent. Born. Executes. Dies."""
-    id: str
-    intent: str
-    service: str
-    born_at: float = field(default_factory=time.time)
-    energy_credits: int = 100
-
-@dataclass
-class ForgeResult:
-    """The crystallized payload returned after agent self-destruction."""
-    success: bool
-    data: Optional[Dict[str, Any]]
-    service: str
-    execution_ms: float
-    agent_id: str
-    dna_crystallized: bool
-    error: Optional[str] = None
-
-    def display(self) -> str:
-        status_icon = "✅" if self.success else "❌"
-        line = "━" * 60
-        payload = json.dumps(self.data, indent=2, ensure_ascii=False) if self.success else f"Error: {self.error}"
-        return (
-            f"\n{line}\n"
-            f"{status_icon} AETHER FORGE: DISVOLVED SUCCESSFULLY\n"
-            f"{line}\n"
-            f"🎯 Service    : {self.service.upper()}\n"
-            f"⚡ Speed      : {self.execution_ms:.2f}ms\n"
-            f"🧬 DNA Status : {'Crystallized (System 1 Active)' if self.dna_crystallized else 'Volatile'}\n"
-            f"💥 Agent ID   : {self.agent_id} (Terminated)\n"
-            f"{'─' * 60}\n"
-            f"{payload}\n"
-            f"{line}\n"
-        )
-
-class NanoExecutor(Protocol):
-    """Protocol for API-native executors (The Synaptic Bonds)."""
-    async def execute(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        ...
-
-# ─────────────────────────────────────────────
 # 🎭 AGENT PARLIAMENT — Democratic Consensus
 # ─────────────────────────────────────────────
-
-@dataclass
-class AgentProposal:
-    agent_id: str
-    action: str
-    confidence: float
-    reasoning: str
 
 class AgentParliament:
     """
@@ -200,14 +164,15 @@ class AetherForge:
         self.nexus = AetherNexus()
         self.parliament = AgentParliament()
         self.tides = TemporalMemoryTides(self.nexus)
+        self.metrics = ForgeMetrics()
         
         self.agents_forged = 0
-        self.total_latency_saved = 0.0 # Hypothetical vs UI (15s baseline)
 
-    async def forge_and_deploy(self, intent_data: Dict[str, Any]) -> ForgeResult:
-        """Execute the 4-Phase Forge Loop."""
+    async def forge_and_deploy(self, intent_data: Dict[str, Any], max_retries: int = 3) -> ForgeResult:
+        """Execute the 4-Phase Forge Loop with exponential backoff retry."""
         t0 = time.time()
         service = intent_data.get("service", "unknown").lower()
+        self.metrics.total_requests += 1
         
         # Phase 1: Deconstruct & Recall
         cached_pattern = self.nexus.recall(service)
@@ -229,28 +194,41 @@ class AetherForge:
         # Phase 3: Deploy & Execution
         executor_cls = self.REGISTRY.get(service)
         if not executor_cls:
-            return self._fail(service, f"Service [{service}] is not bound to a Synaptic Executor.", t0, agent_id)
+            self.metrics.failed_requests += 1
+            return self._fail(service, f"Service [{service}] unbound.", t0, agent_id)
 
         executor = executor_cls()
-        try:
-            logger.info(f"Nano-Agent {agent_id} deployed to API Edge...")
-            data = await executor.execute(intent_data.get("params", {}))
-            ms = (time.time() - t0) * 1000
-            
-            # Phase 4: Harvest & Engrave
-            self.nexus.engrave(service, intent_data.get("params", {}), True)
-            self.total_latency_saved += max(0, 15000 - ms)
-            
-            return ForgeResult(True, data, service, ms, agent_id, is_crystallized)
-            
-        except httpx.HTTPStatusError as e:
-            logger.error(f"API Protocol Fault: {e}")
-            self.nexus.engrave(service, {}, False, "HTTPStatusError")
-            return self._fail(service, str(e), t0, agent_id)
-        except Exception as e:
-            logger.error(f"General Execution Fault: {e}")
-            self.nexus.engrave(service, {}, False, "GeneralFault")
-            return self._fail(service, str(e), t0, agent_id)
+        
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Nano-Agent {agent_id} deployed (Attempt {attempt+1})...")
+                data = await executor.execute(intent_data.get("params", {}))
+                ms = (time.time() - t0) * 1000
+                
+                # Phase 4: Harvest & Engrave
+                self.nexus.engrave(service, intent_data.get("params", {}), True)
+                
+                # Update Metrics
+                self.metrics.successful_requests += 1
+                self.metrics.total_latency_ms += ms
+                
+                return ForgeResult(True, data, service, ms, agent_id, is_crystallized)
+                
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code == 429 and attempt < max_retries - 1:
+                    wait = (2 ** attempt) + 0.5
+                    logger.warning(f"Rate Limited. Retrying in {wait}s...")
+                    await asyncio.sleep(wait)
+                    continue
+                logger.error(f"API Protocol Fault: {e}")
+                self.metrics.failed_requests += 1
+                self.nexus.engrave(service, {}, False, "HTTPStatusError")
+                return self._fail(service, str(e), t0, agent_id)
+            except Exception as e:
+                logger.error(f"General Execution Fault: {e}")
+                self.metrics.failed_requests += 1
+                self.nexus.engrave(service, {}, False, "GeneralFault")
+                return self._fail(service, str(e), t0, agent_id)
 
     async def swarm_execute(self, intents: List[Dict[str, Any]]) -> List[ForgeResult]:
         """Deploy a Quantum Swarm (Parallel Execution)."""
