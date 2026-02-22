@@ -11,7 +11,7 @@ class HyperMindRouter:
     def __init__(self, bridge: AuraNavigator):
         self.bridge = bridge
 
-    async def calculate_vfe(self, context: Dict[str, Any]) -> float:
+    async def calculate_vfe(self, context: Dict[str, Any], dna: Any = None) -> float:
         """
         Variational Free Energy (F) = Complexity - Accuracy.
         Determines System 1 vs System 2 gating.
@@ -22,7 +22,8 @@ class HyperMindRouter:
             if key not in context:
                 print(f"⚠️ calculate_vfe: Missing required key '{key}', using default value")
         
-        dna = await self.bridge.load_dna_async()
+        if dna is None:
+            dna = await self.bridge.load_dna_async()
         
         # Accuracy: How well our internal WORLD.md predicts current sensory anomaly
         # In this scale, higher anomaly = lower accuracy = higher surprise
@@ -133,7 +134,7 @@ class HyperMindRouter:
         except Exception:
             pass
 
-        f_score = await self.calculate_vfe(context)
+        f_score = await self.calculate_vfe(context, dna=dna)
         
         print(f"🧠 AetherCore Inference: F={f_score:.4f}, Tau={tau}")
 
