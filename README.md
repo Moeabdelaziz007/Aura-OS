@@ -1,6 +1,6 @@
 # 🌌 AetherOS: The Sovereign API-Native OS
 
-![AetherOS Hero Banner](file:///Users/cryptojoker710/.gemini/antigravity/brain/56b2ca09-7bf5-4904-9f47-8f8e629fc1e6/aetheros_hero_banner_1771812680937.png)
+![AetherOS Hero Banner](./assets/hero_banner.png)
 
 > **"Manus clicks buttons. AetherOS dissolves them."**
 > *"Manus ينقر الأزرار.. AetherOS يذيبها."*
@@ -33,7 +33,7 @@ AetherOS is a **Sovereign API-Native Operating System**. By synthesizing Karl Fr
 
 ## 🏗️ System Anatomy: The 4 Pillars of Sovereignty
 
-![AetherOS Architecture Layers](file:///Users/cryptojoker710/.gemini/antigravity/brain/56b2ca09-7bf5-4904-9f47-8f8e629fc1e6/aetheros_architecture_layers_1771812735076.png)
+![AetherOS Architecture Layers](./assets/architecture_layers.png)
 
 AetherOS is not a script; it is a thermodynamically balanced digital organism.
 
@@ -90,6 +90,7 @@ Because AetherOS extracts pure data payloads, it discards the bloated origin web
 AetherOS is designed to be lightweight, modular, and deployable on zero-cost infrastructure.
 
 **Prerequisites:**
+
 * Python 3.10+
 * Gemini API Key (Pro or Flash)
 * A desire for sovereign autonomy
