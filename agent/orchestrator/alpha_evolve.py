@@ -156,29 +156,58 @@ class AlphaMindGenerator:
         else:
             self.model = None
 
+    def _sanitize_input(self, text: Any, max_length: int = 2000) -> str:
+        """Sanitizes input to prevent prompt injection."""
+        if not isinstance(text, str):
+            text = str(text)
+
+        # Truncate to avoid excessive token usage or buffer overflow attempts
+        if len(text) > max_length:
+            text = text[:max_length] + "...[TRUNCATED]"
+
+        # Basic sanitization to prevent breaking out of context
+        # We replace angle brackets to prevent XML injection since we use XML tags
+        text = text.replace("<", "&lt;").replace(">", "&gt;")
+
+        # Remove potential code block markers to avoid breaking markdown structure
+        text = text.replace("```", "'''")
+
+        return text.strip()
+
     async def generate_patch(self, anomaly: Dict[str, Any], source_code: str) -> Optional[str]:
         """Asks Gemini to generate a fix for the detected anomaly."""
         if not self.model:
             print("⚠️ AlphaMindGenerator: No API Key found.")
             return None
 
+        # Sanitize inputs to prevent prompt injection
+        s_component = self._sanitize_input(anomaly.get('component', 'Unknown'), 100)
+        s_error_type = self._sanitize_input(anomaly.get('error_type', 'Unknown'), 100)
+        s_message = self._sanitize_input(anomaly.get('message', 'No message'), 2000)
+
+        # Use XML structure for clearer separation of data and instructions
         prompt = f"""
         AetherOS Self-Healing Request (AlphaEvolve v0.1.1)
         
-        Anomaly Detected in: {anomaly.get('component')}
-        Error Type: {anomaly.get('error_type')}
-        Error Message: {anomaly.get('message')}
+        <ANOMALY_CONTEXT>
+        <COMPONENT>{s_component}</COMPONENT>
+        <ERROR_TYPE>{s_error_type}</ERROR_TYPE>
+        <ERROR_MESSAGE>
+        {s_message}
+        </ERROR_MESSAGE>
+        </ANOMALY_CONTEXT>
         
         Current Source Code:
         ```python
         {source_code}
         ```
         
-        TASK:
-        Propose a FIX for this anomaly. 
+        <TASK>
+        Propose a FIX for this anomaly based on the context above.
         Output ONLY the corrected code for the ENTIRE file. 
         Maintain the original style and comments.
         Do NOT include any explanation or markdown tags other than the code block.
+        </TASK>
         """
         
         print("💡 AlphaMind: Hypothesizing fix via Gemini 3...")
