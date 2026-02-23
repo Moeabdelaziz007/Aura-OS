@@ -110,7 +110,7 @@
 - NeuroSage Symbolic Guard
 - Counterfactual Trace Analysis
 - GIF-MCTS Protocol
-- AlphaEvolve Self-Healing Circuit
+- AetherEvolve Self-Healing Circuit
 
 لكل ابتكار:
 - المفهوم الأساسي
@@ -186,7 +186,7 @@
 📌 الموقع: قسم منفصل
 📝 المحتوى:
 - نتائج الاختبارات:
-  * اختبار AlphaEvolve
+  * اختبار AetherEvolve
   * اختبار Aether Forge
   * اختبار برلمان العميل
   * اختبار Temporal Memory Tides

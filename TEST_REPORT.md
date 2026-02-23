@@ -33,12 +33,12 @@ Three test files failed to import due to missing dependencies or incorrect impor
 
 | File | Error Type | Root Cause |
 |------|------------|------------|
-| [`tests/test_alpha_evolve_security.py`](tests/test_alpha_evolve_security.py:16) | `ImportError` | Cannot import `AlphaMindGenerator` from `agent.orchestrator.alpha_evolve` |
+| [`tests/test_alpha_evolve_security.py`](tests/test_alpha_evolve_security.py:16) | `ImportError` | Cannot import `AetherMindGenerator` from `agent.orchestrator.alpha_evolve` |
 | [`tests/test_aether_evolve_security.py`](tests/test_aether_evolve_security.py:16) | `ImportError` | Cannot import `AetherMindGenerator` from `agent.orchestrator.aether_evolve` |
 | [`tests/test_main.py`](tests/test_main.py:11) | `ModuleNotFoundError` | Missing `websockets` module (now resolved) |
 
 **Analysis:** The class names in the implementation have changed. The actual classes are:
-- [`AlphaEvolve`](agent/orchestrator/alpha_evolve.py:562) (not `AlphaMindGenerator`)
+- [`AetherEvolve`](agent/orchestrator/alpha_evolve.py:562) (not `AetherMindGenerator`)
 - [`HeuristicSandbox`](agent/orchestrator/alpha_evolve.py:459) (not `AetherHeuristicSandbox`)
 
 ---
@@ -198,7 +198,7 @@ TypeError: 'async for' received an object from __aiter__ that does not implement
 ### Priority 1: Critical (Immediate Action Required)
 
 1. **Fix Collection Errors**
-   - Update [`tests/test_alpha_evolve_security.py`](tests/test_alpha_evolve_security.py:16) to import `AlphaEvolve` and `HeuristicSandbox` instead of non-existent class names
+   - Update [`tests/test_alpha_evolve_security.py`](tests/test_alpha_evolve_security.py:16) to import `AetherEvolve` and `HeuristicSandbox` instead of non-existent class names
    - Update [`tests/test_aether_evolve_security.py`](tests/test_aether_evolve_security.py:16) similarly
    - Ensure `websockets` is in [`requirements.txt`](requirements.txt)
 

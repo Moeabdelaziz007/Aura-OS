@@ -14,7 +14,7 @@ AetherOS dynamically optimizes its communication topology. Hyperedges only insta
 | :--- | :--- | :--- | :--- |
 | **H_SENSORY** | Always Active | Vision, Audio, Anomaly | Perception_D-Buffer |
 | **H_COGNITION** | $\Delta F > \tau$ | Prometheus, NeuroSage | Belief_DAG |
-| **H_STRATEGY** | Policy Conflict | AlphaMind, Swarm_Admin | MCTS_Tree_Root |
+| **H_STRATEGY** | Policy Conflict | AetherMind, Swarm_Admin | MCTS_Tree_Root |
 
 ## 📡 Memory-Mapped Context Slots (mmap)
 

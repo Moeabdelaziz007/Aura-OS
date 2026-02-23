@@ -16,7 +16,7 @@
       "crewai_percent": 85,
       "openclaw_percent": 78,
       "manus_ai_percent": 82,
-      "notes": "AetherOS achieves 95% via self-healing AlphaEvolve with VerMCTS. UI-based agents fail due to DOM changes, element invisibility, timing issues, and CAPTCHA challenges."
+      "notes": "AetherOS achieves 95% via self-healing AetherEvolve with VerMCTS. UI-based agents fail due to DOM changes, element invisibility, timing issues, and CAPTCHA challenges."
     },
     "cost_per_request": {
       "aetheros_usd": 0.001,
@@ -43,7 +43,7 @@
       "crewai": false,
       "openclaw": false,
       "manus_ai": false,
-      "notes": "AetherOS features AlphaEvolve with VerMCTS (Verified Monte Carlo Tree Search) for automatic mutation generation, testing, and rollback. Competitors require manual debugging and code updates when UIs change."
+      "notes": "AetherOS features AetherEvolve with VerMCTS (Verified Monte Carlo Tree Search) for automatic mutation generation, testing, and rollback. Competitors require manual debugging and code updates when UIs change."
     },
     "memory_system": {
       "aetheros": "4D Temporal",
@@ -82,7 +82,7 @@
   "competitive_advantages": [
     "Sovereign API-Native architecture dissolves UIs entirely, eliminating DOM fragility",
     "VerMCTS (Verified Monte Carlo Tree Search) for mutation verification with symbolic guards",
-    "AlphaEvolve self-healing circuit with automatic rollback and skill consolidation",
+    "AetherEvolve self-healing circuit with automatic rollback and skill consolidation",
     "Temporal Memory Tides (4D memory breathing) with causal inference",
     "Ephemeral agents with TTL-based lifecycle for zero resource bloat",
     "Zero-cost architecture (Tauri/Rust, Supabase pgvector) with $0.001 per request",
@@ -98,7 +98,7 @@
       "GIF-MCTS Protocol - self-healing via Generate-Improve-Fix cycles with verified leaf nodes",
       "Agent Parliament - consensus-based decision making with variant execution and voting",
       "Temporal Memory Tides - 4D memory system with breathing, decay, and revival mechanisms",
-      "AlphaEvolve Circuit - automatic skill consolidation with promotion criteria and rollback"
+      "AetherEvolve Circuit - automatic skill consolidation with promotion criteria and rollback"
     ]
   },
   "sources": {
@@ -118,6 +118,6 @@
     "competitor_data_source": "Public documentation, research papers, and GitHub repositories",
     "latency_calculation": "UI-based agents: browser startup (2-5s) + DOM parsing (1-3s) + element interaction (5-15s) + page load (5-10s) = 15-30s. AetherOS: API call (50ms)",
     "cost_calculation": "UI-based agents: browser automation ($0.02-0.05) + multiple LLM calls ($0.03-0.08) + retry overhead ($0.01-0.02) = $0.06-0.15. AetherOS: single API call ($0.001)",
-    "success_rate_basis": "AetherOS: API contracts are stable, AlphaEvolve provides self-healing. Competitors: UI changes cause 15-30% of failures"
+    "success_rate_basis": "AetherOS: API contracts are stable, AetherEvolve provides self-healing. Competitors: UI changes cause 15-30% of failures"
   }
 }

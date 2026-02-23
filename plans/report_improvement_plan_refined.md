@@ -25,7 +25,7 @@ automatic mutation consolidation.
 - **Execution Latency**: 50ms vs 120s (2,400x faster)
 - **Success Rate**: 95%+ vs 70-80% (industry average)
 - **Architecture**: API-Native vs UI-Simulation
-- **Self-Healing**: Yes (AlphaEvolve) vs No
+- **Self-Healing**: Yes (AetherEvolve) vs No
 
 ---
 
@@ -40,7 +40,7 @@ automatic mutation consolidation.
 | **Latency** | 120+ seconds | 50 milliseconds |
 | **Success Rate** | 70-80% | 95%+ |
 | **Scalability** | Limited by UI fragility | Unlimited via API contracts |
-| **Self-Healing** | Manual debugging | Automatic (AlphaEvolve) |
+| **Self-Healing** | Manual debugging | Automatic (AetherEvolve) |
 | **Learning** | Static patterns | Continuous evolution |
 
 **Architecture Diagram**:
@@ -104,7 +104,7 @@ If F ≥ τ → System 2 (Reflective/VerMCTS)
 **Implementation**:
 ```python
 # From agent/orchestrator/alpha_evolve.py
-class AlphaMindGenerator:
+class AetherMindGenerator:
     """Uses Gemini 3.0 to test hypotheses and generate code fixes."""
     def generate_fix(self, anomaly: Dict) -> str:
         # Generates VerMCTS tree with verified leaf nodes
@@ -119,7 +119,7 @@ class NeuroSage:
 
 ---
 
-### 2.2 Digital Darwinism (AlphaEvolve)
+### 2.2 Digital Darwinism (AetherEvolve)
 
 **The Self-Healing Circuit**:
 
@@ -144,7 +144,7 @@ Where:
 
 **GIF-MCTS Protocol**:
 1. **Generate**: NeuroSage identifies root cause via Counterfactual Trace
-2. **Improve**: AlphaMind spawns VerMCTS tree with verified leaf nodes
+2. **Improve**: AetherMind spawns VerMCTS tree with verified leaf nodes
 3. **Fix (GIF Strategy)**:
    - **Rethink Stage**: Failed mutations → negative priors
    - **Swarm Backtest**: Parallel testing on Cloud Run Shadow DOM
@@ -302,7 +302,7 @@ class HeuristicSandbox:
 
 **1:30-2:00: The Architecture**
 - Show system architecture diagram
-- Highlight AlphaEvolve self-healing
+- Highlight AetherEvolve self-healing
 - Show VerMCTS decision tree
 - Show skill consolidation to SKILLS.md
 
@@ -341,7 +341,7 @@ class HeuristicSandbox:
 2. The Paradigm Shift (Visual Comparison)
 3. The Competitive Matrix (Numbers-Based)
 4. Active Inference & VerMCTS (Mathematical Foundation)
-5. Digital Darwinism (AlphaEvolve Circuit)
+5. Digital Darwinism (AetherEvolve Circuit)
 6. Zero-Cost Architecture (Stack & Cost Analysis)
 7. Telemetry Truth (KPIs & Data)
 8. The Shadow Realm Sandbox (Safety & Isolation)
@@ -363,7 +363,7 @@ class HeuristicSandbox:
 | 0-4 | Extract & verify telemetry data | TELEMETRY.json analysis |
 | 4-8 | Create competitive matrix | competitive_matrix.json |
 | 8-12 | Write Vector 1 (Core Signal) | Executive summary, paradigm shift |
-| 12-16 | Write Vector 2 (Engineering) | VerMCTS, AlphaEvolve, architecture |
+| 12-16 | Write Vector 2 (Engineering) | VerMCTS, AetherEvolve, architecture |
 | 16-20 | Write Vector 3 (Empirical Proof) | KPIs, sandbox data, demo outline |
 | 20-24 | Generate visualizations | Charts, diagrams |
 | 24-32 | Compile main document | AetherOS_Gemini_Submission.md |
@@ -380,7 +380,7 @@ The submission is successful if it:
 2. **Eliminates all noise** (every word serves the proof)
 3. **Convinces in 60 seconds** (executive summary impact)
 4. **Provides undeniable evidence** (telemetry, benchmarks)
-5. **Shows technical depth** (VerMCTS, AlphaEvolve details)
+5. **Shows technical depth** (VerMCTS, AetherEvolve details)
 
 ---
 

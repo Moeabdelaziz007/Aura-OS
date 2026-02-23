@@ -33,7 +33,7 @@ Where:
 When a "Pain Signal" (Error/Anomaly) triggers the circuit:
 
 1. **Generate:** NeuroSage identifies the root cause via Counterfactual Trace (see CAUSAL.md).
-2. **Improve:** AlphaMind spawns a **VerMCTS** tree. Unlike standard MCTS, every leaf node must be verified by the NeuroSage symbolic guard.
+2. **Improve:** AetherMind spawns a **VerMCTS** tree. Unlike standard MCTS, every leaf node must be verified by the NeuroSage symbolic guard.
 3. **Fix (GIF Strategy):**
     * **Rethink Stage:** If a mutation fails execution, the error log is fed back into the search as a negative prior.
     * **Swarm Backtest:** Mutations are tested in parallel on the Cloud Run Shadow DOM.

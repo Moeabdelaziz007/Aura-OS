@@ -22,7 +22,7 @@ From [`agent/memory/TELEMETRY.json`](agent/memory/TELEMETRY.json) and [`AetherOS
 | Metric | Value | Notes |
 |--------|--------|-------|
 | **Total Mutations** | 0 | No evolution activity recorded |
-| **Successful Mutations** | 0 | AlphaEvolve not yet triggered |
+| **Successful Mutations** | 0 | AetherEvolve not yet triggered |
 | **Failed Mutations** | 0 | No failures to analyze |
 | **Rollback Rate** | 0% | System stable |
 | **Skill Promotions** | 0 | No new skills promoted |
@@ -172,7 +172,7 @@ class HeuristicSandbox:
 - "AetherOS is built on mathematical principles"
 - "Active Inference guides decision making"
 - "VerMCTS verifies every mutation"
-- "AlphaEvolve heals the system automatically"
+- "AetherEvolve heals the system automatically"
 
 **Technical Details**:
 - Show Free Energy calculation
@@ -207,7 +207,7 @@ result = agent.execute()
 1. **The "Aha!" Moment**: When the compiler generates the agent in 50ms
 2. **The Speed Moment**: When the API call returns in <2 seconds
 3. **The Reliability Moment**: When the telemetry shows 95%+ success rate
-4. **The Intelligence Moment**: When AlphaEvolve automatically fixes an error
+4. **The Intelligence Moment**: When AetherEvolve automatically fixes an error
 
 ---
 

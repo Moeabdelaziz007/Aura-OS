@@ -145,7 +145,7 @@ This reward function balances:
 From [`agent/orchestrator/alpha_evolve.py`](agent/orchestrator/alpha_evolve.py):
 
 ```python
-class AlphaMindGenerator:
+class AetherMindGenerator:
     """
     Multimodal Patch Generation.
     Uses Gemini 3.0 to hypothesize and generate code fixes.
@@ -176,7 +176,7 @@ class AlphaMindGenerator:
     async def generate_patch(self, anomaly: Dict[str, Any], source_code: str) -> Optional[str]:
         """Asks Gemini to generate a fix for the detected anomaly."""
         if not self.model:
-            print("⚠️ AlphaMindGenerator: No API Key found.")
+            print("⚠️ AetherMindGenerator: No API Key found.")
             return None
 
         # Sanitize inputs to prevent prompt injection
@@ -186,7 +186,7 @@ class AlphaMindGenerator:
 
         # Generates VerMCTS tree with verified leaf nodes
         prompt = f"""
-        AetherOS Self-Healing Request (AlphaEvolve v0.1.1)
+        AetherOS Self-Healing Request (AetherEvolve v0.1.1)
         
         <ANOMALY_CONTEXT>
         <COMPONENT>{s_component}</COMPONENT>
@@ -206,7 +206,7 @@ class AlphaMindGenerator:
 class NeuralMonitor:
     """
     Neural Telemetry & Anomaly Identification.
-    Captures system exceptions and panics for AlphaEvolve processing.
+    Captures system exceptions and panics for AetherEvolve processing.
     """
     def __init__(self, log_path: str = "agent/orchestrator/anomaly_log.json"):
         self.log_path = log_path
@@ -238,7 +238,7 @@ class NeuralMonitor:
 
 ---
 
-## 2.2 Digital Darwinism (AlphaEvolve)
+## 2.2 Digital Darwinism (AetherEvolve)
 
 ### The Self-Healing Circuit
 
@@ -295,7 +295,7 @@ counterfactual_reasoning:
 - **Evaluate**: If R_a' > R_a, log as Mutation Signal
 
 #### 2. Improve
-AlphaMind spawns a **VerMCTS** tree. Unlike standard MCTS, every leaf node must be verified by the NeuroSage symbolic guard.
+AetherMind spawns a **VerMCTS** tree. Unlike standard MCTS, every leaf node must be verified by the NeuroSage symbolic guard.
 
 #### 3. Fix (GIF Strategy)
 
@@ -484,7 +484,7 @@ From [`agent/orchestrator/alpha_evolve.py`](agent/orchestrator/alpha_evolve.py):
 ```python
 class HeuristicSandbox:
     """
-    AlphaMind Heuristic Sandbox.
+    AetherMind Heuristic Sandbox.
     Executes isolated code validation (Build/Test) with process isolation.
     """
     def __init__(self, workspace_root: Optional[str] = None):
@@ -662,7 +662,7 @@ class AetherOrchestrator:
 The engineering breakthroughs in AetherOS are not incremental improvements—they represent a paradigm shift:
 
 1. **Mathematical Foundation**: Active Inference and VerMCTS provide rigorous decision making
-2. **Self-Healing**: AlphaEvolve automatically fixes 90%+ of errors
+2. **Self-Healing**: AetherEvolve automatically fixes 90%+ of errors
 3. **Zero-Cost Architecture**: 50-80x cheaper than competitors
 4. **Proven Implementation**: All systems are implemented and tested in production
 

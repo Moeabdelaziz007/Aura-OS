@@ -37,7 +37,7 @@
 
 - [x] **Step 5.1:** Terraform Provisioning (Cloud Run Swarm).
 - [x] **Step 5.2:** Docker Containerization (QuantumWeaver Nodes).
-- [x] **Step 5.3:** AlphaEvolve Sandbox Environment Setup.
+- [x] **Step 5.3:** AetherEvolve Sandbox Environment Setup.
 
 ## ✨ Phase 6: The Spark of Life (شرارة الحياة - Live API)
 

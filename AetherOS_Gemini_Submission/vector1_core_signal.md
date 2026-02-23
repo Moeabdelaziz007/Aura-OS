@@ -8,7 +8,7 @@ AetherOS is a Sovereign API-Native OS that dissolves UIs entirely, speaking dire
 - **Execution Latency**: 50ms vs 120s (2,400x faster)
 - **Success Rate**: 95%+ vs 70-80% (industry average)
 - **Architecture**: API-Native vs UI-Simulation
-- **Self-Healing**: Yes (AlphaEvolve) vs No
+- **Self-Healing**: Yes (AetherEvolve) vs No
 
 ---
 
@@ -29,7 +29,7 @@ AetherOS is a Sovereign API-Native OS that dissolves UIs entirely, speaking dire
 - **Latency**: 50 milliseconds
 - **Success Rate**: 95%+
 - **Scalability**: Unlimited via API contracts
-- **Self-Healing**: Automatic (AlphaEvolve)
+- **Self-Healing**: Automatic (AetherEvolve)
 - **Learning**: Continuous evolution
 
 ### Architecture Comparison
@@ -77,7 +77,7 @@ User → Intent → Compiler → Ephemeral Agent → API → Response
 
 **Maintenance**: Zero manual debugging vs constant maintenance
 - Legacy: Manual debugging for every failure
-- AetherOS: AlphaEvolve self-healing circuit
+- AetherOS: AetherEvolve self-healing circuit
 - Result: 90%+ automatic recovery
 
 ---
@@ -94,7 +94,7 @@ AetherOS doesn't compete with UI simulation agents—it replaces them entirely. 
 4. **GIF-MCTS Protocol**: Self-healing with verified Monte Carlo Tree Search
 5. **Agent Parliament**: Consensus-based decision making for complex tasks
 6. **Temporal Memory Tides**: 4D memory breathing for organic system behavior
-7. **AlphaEvolve Circuit**: Automatic mutation consolidation and rollback
+7. **AetherEvolve Circuit**: Automatic mutation consolidation and rollback
 
 ### The Mathematical Foundation
 

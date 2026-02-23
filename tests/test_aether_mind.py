@@ -1,7 +1,7 @@
 import unittest
 import json
 
-# This function simulates the Phase 3 feature: The AlphaMind Parser
+# This function simulates the Phase 3 feature: The AetherMind Parser
 # It intercepts Gemini's 2.0 Spatial API response and translates it to Tauri commands.
 def parse_gemini_spatial(response_text: str, screen_w: int, screen_h: int) -> dict:
     try:

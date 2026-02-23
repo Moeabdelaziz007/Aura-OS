@@ -102,7 +102,7 @@ This history is used to:
 - Accelerate System 1 reflexive responses
 
 ---
-*WORLD.md is the probabilistic arena where AlphaMind plays its games.*
+*WORLD.md is the probabilistic arena where AetherMind plays its games.*
 
 ## 🌳 Action Space Mapping
 

@@ -123,7 +123,7 @@ def extract_asset(
         if any(alias in query_lower for alias in aliases):
             return canonical
 
-    # Second: screen context (this is the AlphaFold magic)
+    # Second: screen context (this is the Fold-inspired magic)
     if screen_ctx:
         for asset in screen_ctx.detected_assets:
             asset_l = asset.lower()

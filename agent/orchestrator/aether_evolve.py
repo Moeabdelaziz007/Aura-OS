@@ -284,7 +284,7 @@ class MutationGenerator:
         if len(text) > max_length:
             text = text[:max_length] + "...[TRUNCATED]"
 
-        text = text.replace("<", "<").replace(">", ">")
+        text = text.replace("<", "&lt;").replace(">", "&gt;")
         text = text.replace("```", "'''")
 
         return text.strip()

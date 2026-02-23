@@ -16,7 +16,7 @@ By leveraging **AetherCore Prometheus**, AetherOS maintains a persistent, genera
 
 * **Paradigm:** Active Inference + **Dual-Process Theory (System 1 & 2)**.
 * **System 1 (Reflexive):** Direct Gemini 3.1 Pro inference for low-entropy, routine UI tasks.
-* **System 2 (Reflective):** Engages AlphaMind and NeuroSage only when Prediction Error ΔF > τ (Threshold).
+* **System 2 (Reflective):** Engages AetherMind and NeuroSage only when Prediction Error ΔF > τ (Threshold).
 * **Benefit:** 90% reduction in latency and token cost for standard interactions.
 
 #### 2.2 ⚡ QuantumWeaver (The Execution Engine)
@@ -38,13 +38,13 @@ By leveraging **AetherCore Prometheus**, AetherOS maintains a persistent, genera
 * **Function:** Merges the high-creativity neural generation of Gemini with strict symbolic constraints and Causal Graphs.
 * **Safeguard:** Prevents hallucinations by validating actions against a set of causal rules (Intervention & Counterfactual analysis).
 
-#### 2.5 🌳 AlphaMind (The Strategic Navigator)
+#### 2.5 🌳 AetherMind (The Strategic Navigator)
 
 * **Paradigm:** Monte Carlo Tree Search (MCTS).
 * **Function:** Explores the "Action Space" of a website or application as a search tree, finding the mathematically optimal path to the user's goal.
-* **Inspiration:** DeepMind's AlphaZero and AlphaTensor.
+* **Inspiration:** DeepMind's Zero-inspired and AlphaTensor.
 
-#### 2.6 🧬 AlphaEvolve (The Self-Healing & Evolution Engine)
+#### 2.6 🧬 AetherEvolve (The Self-Healing & Evolution Engine)
 
 > **Engineering Notes:**
 > - *Catastrophic Forgetting Risk*: Cognitive weights update in real time. Updates are bounded by ±10% of original baseline stored in `SOUL.md` and subject to cooldown periods, preventing runaway identity drift.
@@ -53,7 +53,7 @@ By leveraging **AetherCore Prometheus**, AetherOS maintains a persistent, genera
 
 
 * **Paradigm:** Recursive Self-Optimization & Automated Algorithm Discovery.
-* **Inspiration:** DeepMind's **AlphaZero** & **AlphaCode**.
+* **Inspiration:** DeepMind's **Zero-inspired** & **AetherCode**.
 * **The Self-Healing Circuit:**
     1. **Anomaly Detection:** Integrated Rust-level monitor for $T_{exec}$, memory leaks, and Prediction Error $\Delta F$.
     2. **Quantum Hypothesis Generation:** If a failure is detected, NeuroSage generates $\sim 50$ potential structural mutations/fixes via Gemini.
@@ -112,7 +112,7 @@ The agent's personality, skills, and logic reside in `agent/memory/`:
 2. **Streaming:** Bidi-WebSocket streams data to the Google Cloud Run Orchestrator.
 3. **Inference:** Prometheus predicts the next UI state to minimize Free Energy.
 4. **Simulation:** QuantumWeaver spawns parallel headless browser jobs (The Swarm).
-5. **Selection:** AlphaMind selects the optimal path; NeuroSage validates logic.
+5. **Selection:** AetherMind selects the optimal path; NeuroSage validates logic.
 6. **Collapse:** Result returned to the user; redundant swarm nodes are purged.
 
 ---

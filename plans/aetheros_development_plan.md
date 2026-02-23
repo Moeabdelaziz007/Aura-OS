@@ -36,7 +36,7 @@ This development plan addresses the AetherOS project following a comprehensive r
 
 1. **Immediate**: Bridge the gap between architectural claims and actual performance data
 2. **Short-term**: Refactor telemetry_visualization.py for data-driven visualizations
-3. **Medium-term**: Activate AlphaEvolve self-healing circuit
+3. **Medium-term**: Activate AetherEvolve self-healing circuit
 4. **Long-term**: Complete NeuroSage symbolic guard implementation
 
 ---
@@ -342,7 +342,7 @@ From `competitive_matrix.json`, competitors offer:
 | Anomaly Resolution | Auto-fix ZeroDivisionError | anomaly_log.json | 1 week |
 | Dashboard | Real-time metrics | New file | 2 weeks |
 
-#### Priority 2: AlphaEvolve Activation
+#### Priority 2: AetherEvolve Activation
 
 | Feature | Description | File | Effort |
 |---------|-------------|------|--------|
@@ -384,7 +384,7 @@ From `competitive_matrix.json`, competitors offer:
 | 7-8 | Build sandbox environment | DevOps | Tests run in isolation |
 | 9-10 | Enable skill promotion | Backend Dev | Skills auto-promoted |
 
-**Milestone:** Active AlphaEvolve circuit
+**Milestone:** Active AetherEvolve circuit
 
 ### Phase 3: Verification (Weeks 11-16)
 
@@ -430,7 +430,7 @@ From `competitive_matrix.json`, competitors offer:
 
 | # | Action | Owner | Priority | Status |
 |---|--------|-------|----------|--------|
-| 8 | Activate AlphaEvolve mutation pipeline | Backend Dev | HIGH | ⬜ |
+| 8 | Activate AetherEvolve mutation pipeline | Backend Dev | HIGH | ⬜ |
 | 9 | Implement P95/P99 latency tracking | Backend Dev | MEDIUM | ⬜ |
 | 10 | Build real-time dashboard | Frontend | MEDIUM | ⬜ |
 | 11 | Implement NeuroSage symbolic guard | Research | MEDIUM | ⬜ |

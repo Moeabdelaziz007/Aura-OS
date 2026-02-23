@@ -82,7 +82,7 @@ performance_metrics:
 ### 🧘 System 2 (Reflective)
 
 * **Trigger:** $\Delta F \ge \tau$ OR Explicit User Query.
-* **Search:** AlphaMind MCTS search on latent manifold $z$.
+* **Search:** AetherMind MCTS search on latent manifold $z$.
 * **Loop:** GIF-MCTS (Identify -> Fix -> Verify).
 
 ### 🎲 Exploration vs Exploitation

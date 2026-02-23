@@ -74,7 +74,7 @@ This script provides a precise 2-minute demo showing the 10x improvement of Aeth
 │ Latency: 2s                      │
 │ Success Rate: 95%+                │
 │ Architecture: API-Native            │
-│ Self-Healing: Yes (AlphaEvolve)   │
+│ Self-Healing: Yes (AetherEvolve)   │
 └─────────────────────────────────────┘
 ```
 
@@ -147,7 +147,7 @@ result = await agent.execute()
 > "AetherOS is built on mathematical principles."
 > "Active Inference guides decision making."
 > "VerMCTS verifies every mutation."
-> "AlphaEvolve heals the system automatically."
+> "AetherEvolve heals the system automatically."
 
 ### Technical Details (Visible for Demo)
 
@@ -187,7 +187,7 @@ Week 4: 1 skill promoted
    - Highlight: "Every leaf node is verified"
 
 5. **The Self-Healing Moment** (1:55)
-   - Show AlphaEvolve fixing an error
+   - Show AetherEvolve fixing an error
    - Highlight: "Automatic mutation consolidation"
 
 ---
@@ -248,7 +248,7 @@ python executor.py
 
 # Command 3: Error recovery scenario
 "Book me a flight from SFO to JFK tomorrow"
-# (Simulate error - AlphaEvolve should auto-fix)
+# (Simulate error - AetherEvolve should auto-fix)
 ```
 
 ### C. Video Production Notes

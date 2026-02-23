@@ -1,4 +1,4 @@
-# Strategic Plan: AlphaEvolve & Roadmap 2.0
+# Strategic Plan: AetherEvolve & Roadmap 2.0
 
 Upgrade AetherOS from a static agent to a self-healing, expert-grade OS with recursive optimization.
 
@@ -11,7 +11,7 @@ Upgrade AetherOS from a static agent to a self-healing, expert-grade OS with rec
 *   Define the "Self-Healing Circuit" steps.
 
 #### [MODIFY] [README.md](README.md)
-*   Integrate the "Self-Healing Engine" description into the AlphaEvolve section.
+*   Integrate the "Self-Healing Engine" description into the AetherEvolve section.
 *   Update the Roadmap section to the Expert Grade 5-Phase version.
 
 ### [Engineering Layer]
@@ -41,4 +41,4 @@ Upgrade AetherOS from a static agent to a self-healing, expert-grade OS with rec
 ### Automated Tests
 
 * **Audit Script:** `scripts/check_dna_health.py` to verify consistency of Smart Files.
-* **Evolution Test:** Simulated failure scenario to trigger AlphaEvolve healing loop.
+* **Evolution Test:** Simulated failure scenario to trigger AetherEvolve healing loop.

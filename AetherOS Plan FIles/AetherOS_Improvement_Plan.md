@@ -10,7 +10,7 @@ Your AetherOS has solid foundations with:
 - ✅ AetherCore Orchestrator with WebSocket bridge
 - ✅ DNA Memory System (SOUL.md, WORLD.md, NEXUS.md, etc.)
 - ✅ HyperMind Router for cognitive routing
-- ✅ AlphaEvolve self-healing mechanism
+- ✅ AetherEvolve self-healing mechanism
 - ✅ Gemini Live Client integration
 - ✅ Basic test coverage
 
@@ -399,7 +399,7 @@ class ShadowRealm:
 
 **Tasks:**
 1. 🆕 Implement `agent/shadow/` - Parallel simulation
-2. 🆕 Complete AlphaEvolve integration with economic rewards
+2. 🆕 Complete AetherEvolve integration with economic rewards
 3. 🆕 Build shared API Map network (Waze for APIs)
 4. ✅ Add comprehensive telemetry dashboard
 5. 🆕 Create "Agent DNA Marketplace" concept

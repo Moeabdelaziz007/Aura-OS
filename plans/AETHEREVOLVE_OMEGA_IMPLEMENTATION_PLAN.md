@@ -47,12 +47,12 @@ The following terms are **STRICTLY PROHIBITED** and must be replaced:
 | Prohibited Term | Replace With |
 |-----------------|--------------|
 | `alpha` | `omega` or `aether` |
-| `AlphaEvolve` | `AetherEvolve` |
-| `AlphaMind` | `AetherMind` |
-| `AlphaFold` | Reference as "Fold-inspired" |
-| `AlphaZero` | Reference as "Zero-inspired" |
-| `AlphaCode` | Reference as "Code-inspired" |
-| `AlphaSovereign` | `AetherSovereign` |
+| `AetherEvolve` | `AetherEvolve` |
+| `AetherMind` | `AetherMind` |
+| `Fold-inspired` | Reference as "Fold-inspired" |
+| `Zero-inspired` | Reference as "Zero-inspired" |
+| `AetherCode` | Reference as "Code-inspired" |
+| `AetherSovereign` | `AetherSovereign` |
 | `alpha_evolve` | `aether_evolve` |
 | `alpha_mind` | `aether_mind` |
 
@@ -78,10 +78,10 @@ The following terms are **STRICTLY PROHIBITED** and must be replaced:
 
 | Current Class | New Class |
 |---------------|-----------|
-| `AlphaEvolve` | `AetherEvolve` |
-| `AlphaMindGenerator` | `AetherMindGenerator` |
-| `AlphaZeroAgent` | `AetherZeroAgent` |
-| `AlphaSovereign` | `AetherSovereign` |
+| `AetherEvolve` | `AetherEvolve` |
+| `AetherMindGenerator` | `AetherMindGenerator` |
+| `Zero-inspiredAgent` | `AetherZeroAgent` |
+| `AetherSovereign` | `AetherSovereign` |
 | `AnomalyMonitor` | `AetherAnomalyMonitor` |
 | `NeuralMonitor` | `AetherNeuralMonitor` |
 | `HeuristicSandbox` | `AetherHeuristicSandbox` |
@@ -91,11 +91,11 @@ The following terms are **STRICTLY PROHIBITED** and must be replaced:
 
 ```python
 # BEFORE (Prohibited)
-"AlphaEvolve v1.0"
+"AetherEvolve v1.0"
 "alpha_evolve"
-"AlphaMind Spatial Interceptor"
-"AlphaEvolve: Mutation pipeline"
-"AlphaEvolve Self-Healing"
+"AetherMind Spatial Interceptor"
+"AetherEvolve: Mutation pipeline"
+"AetherEvolve Self-Healing"
 
 # AFTER (Compliant)
 "AetherEvolve v1.0"
@@ -109,8 +109,8 @@ The following terms are **STRICTLY PROHIBITED** and must be replaced:
 
 | Document | Section | Change Required |
 |----------|---------|-----------------|
-| README.md | Badge | `Self--Healing-AlphaEvolve` → `Self--Healing-AetherEvolve` |
-| README.md | Changelog | All `AlphaEvolve` → `AetherEvolve` |
+| README.md | Badge | `Self--Healing-AetherEvolve` → `Self--Healing-AetherEvolve` |
+| README.md | Changelog | All `AetherEvolve` → `AetherEvolve` |
 | SKILLS.md | Version | Ensure `version: 1.1.0` (no alpha references) |
 | AGENTS.md | Identity | `AetherOS-Forge-v2.0.0-Prometheus` (verify) |
 
@@ -311,7 +311,7 @@ class AetherVisionEngine:
 
 class AetherHierarchicalReasoner:
     """
-    AlphaFold-inspired hierarchical reasoning using Evo-NTM.
+    Fold-inspired-inspired hierarchical reasoning using Evo-NTM.
     
     Features:
     - Multi-scale attention across task components
@@ -1080,12 +1080,12 @@ done
 grep -r "alpha" --include="*.py" --include="*.md" --include="*.json" .
 
 # Replace in Python files
-sed -i 's/AlphaEvolve/AetherEvolve/g' $(find . -name "*.py")
-sed -i 's/AlphaMind/AetherMind/g' $(find . -name "*.py")
+sed -i 's/AetherEvolve/AetherEvolve/g' $(find . -name "*.py")
+sed -i 's/AetherMind/AetherMind/g' $(find . -name "*.py")
 sed -i 's/alpha_evolve/aether_evolve/g' $(find . -name "*.py")
 
 # Replace in markdown files
-sed -i 's/AlphaEvolve/AetherEvolve/g' $(find . -name "*.md")
+sed -i 's/AetherEvolve/AetherEvolve/g' $(find . -name "*.md")
 sed -i 's/alpha_evolve/aether_evolve/g' $(find . -name "*.md")
 ```
 

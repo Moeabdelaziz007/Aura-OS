@@ -4,8 +4,8 @@
 
 This document presents the architectural blueprint for **AetherEvolve Omega**—a revolutionary voice-first AI agent system that transcends current paradigms by integrating:
 
-1. **AlphaZero-style self-play mastery** through self-generated training data
-2. **AlphaFold-inspired hierarchical reasoning** for complex task decomposition
+1. **Zero-inspired-style self-play mastery** through self-generated training data
+2. **Fold-inspired-inspired hierarchical reasoning** for complex task decomposition
 3. **Distributed claw swarm coordination** for emergent task execution
 4. **Continuous self-improvement** through environmental interaction and reflection
 5. **Adaptive meta-improvement loops** for continuous architectural evolution
@@ -39,7 +39,7 @@ The system achieves **emergent conversational intelligence** that improves with 
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                     HIERARCHICAL REASONING ENGINE                                  │
 │  ┌─────────────────────────────────────────────────────────────────────┐         │
-│  │                    ALPHAFOLD-STYLE TRANSFORMER                       │         │
+│  │                    FOLD-STYLE-STYLE TRANSFORMER                       │         │
 │  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │         │
 │  │  │ Task        │ │ Context     │ │ Memory      │ │ Tool        │  │         │
 │  │  │ Decomposer  │ │ Aggregator  │ │ Attention   │ │ Planner     │  │         │
@@ -62,7 +62,7 @@ The system achieves **emergent conversational intelligence** that improves with 
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                     SELF-PLAY LEARNING LAYER                                     │
 │  ┌─────────────────────────────────────────────────────────────────────┐         │
-│  │                    ALPHAZERO AGENT CORE                             │         │
+│  │                    ZERO-AGENT AGENT CORE                             │         │
 │  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │         │
 │  │  │ MCTS        │ │ Self-Play   │ │ Value       │ │ Policy      │  │         │
 │  │  │ Tree Search │ │ + Curriculum│ │ Network     │ │ Network     │  │         │
@@ -392,7 +392,7 @@ class UncertaintyAwareFusion:
 
 ---
 
-## 3. Hierarchical Reasoning Engine (AlphaFold-Inspired)
+## 3. Hierarchical Reasoning Engine (Fold-inspired-Inspired)
 
 ### 3.1 Task Decomposition Transformer
 
@@ -401,7 +401,7 @@ class UncertaintyAwareFusion:
 
 class HierarchicalReasoner:
     """
-    AlphaFold-inspired hierarchical reasoning using Evo-NTM.
+    Fold-inspired-inspired hierarchical reasoning using Evo-NTM.
     
     Key innovations:
     - Multi-scale attention across task components
@@ -505,7 +505,7 @@ class HierarchicalReasoner:
         context: ContextBlock
     ) -> List[TaskComponent]:
         """
-        AlphaFold MSA-inspired task decomposition.
+        Fold-inspired MSA-inspired task decomposition.
         Like MSA generating multiple sequence alignments,
         we generate multiple task hypotheses.
         """
@@ -679,16 +679,16 @@ class DynamicComplexityReasoner:
 
 ---
 
-## 4. Self-Play Learning Layer (AlphaZero-Inspired)
+## 4. Self-Play Learning Layer (Zero-inspired-Inspired)
 
-### 4.1 AlphaZero Agent Core
+### 4.1 Zero-inspired Agent Core
 
 ```python
 # agent/orchestrator/modules/learning/alpha_zero_agent.py
 
-class AlphaZeroAgent:
+class Zero-inspiredAgent:
     """
-    AlphaZero-style self-play agent for continuous improvement.
+    Zero-inspired-style self-play agent for continuous improvement.
     
     Key innovations:
     - MCTS tree search for decision making
@@ -791,7 +791,7 @@ class AlphaZeroAgent:
 class NoveltyDetector:
     """
     Detects novel patterns and triggers crystallization.
-    Inspired by AlphaZero discovering new strategies.
+    Inspired by Zero-inspired discovering new strategies.
     """
     
     def __init__(self, threshold: float = 0.8):
@@ -839,7 +839,7 @@ This section describes the enhancement from **Meta-Improvement Loop 1: Self-Play
 ```python
 class CurriculumAdaptiveSelfPlay:
     """
-    Enhances AlphaZero with curriculum learning and adaptive difficulty.
+    Enhances Zero-inspired with curriculum learning and adaptive difficulty.
     Part of Meta-Improvement Loop 1.
     """
     
@@ -1317,7 +1317,7 @@ agent/orchestrator/modules/
 │   └── crossmodal_associator.py    # Voice-vision binding + learned scoring
 ├── reasoning/
 │   ├── evo_ntm.py                  # Evolutionary Neural Turing Machine + Priority
-│   ├── hierarchical_reasoner.py    # AlphaFold-style decomposition + Dynamic Complexity
+│   ├── hierarchical_reasoner.py    # Fold-inspired-style decomposition + Dynamic Complexity
 │   └── task_planner.py            # Goal decomposition
 ├── learning/
 │   ├── alpha_zero_agent.py         # Self-play MCTS + Curriculum Adaptive
@@ -1443,8 +1443,8 @@ flowchart TD
 
 AetherEvolve Omega represents a paradigm shift in voice-first AI agents. By combining:
 
-- **AlphaZero's self-play mastery** for continuous improvement with curriculum-adaptive learning
-- **AlphaFold's hierarchical reasoning** for complex task decomposition with dynamic complexity awareness
+- **Zero-inspired's self-play mastery** for continuous improvement with curriculum-adaptive learning
+- **Fold-inspired's hierarchical reasoning** for complex task decomposition with dynamic complexity awareness
 - **Distributed swarm intelligence** for parallel execution with capability-aware hierarchical coordination
 - **Constitutional AI** for safe, ethical operation with adaptive adversarial robustness
 - **Meta-improvement loops** for continuous architectural evolution across 7 key dimensions
@@ -1457,5 +1457,5 @@ The system is designed to be **extensible, self-healing, and capable of emergent
 
 *Document Version: 2.0*  
 *Architecture Codename: AetherEvolve Omega*  
-*Inspired by: DeepMind AlphaZero, AlphaFold, OpenClaw/ClawHub*  
+*Inspired by: DeepMind Zero-inspired, Fold-inspired, OpenClaw/ClawHub*  
 *Meta-Improvement Loops: 7 integrated enhancement pathways*

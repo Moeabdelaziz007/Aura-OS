@@ -9,7 +9,7 @@ Your current AetherOS repository has:
 - ✅ Solid Python foundation with async orchestrator
 - ✅ DNA memory system (SOUL.md, WORLD.md, NEXUS.md)
 - ✅ HyperMind Router for cognitive routing
-- ✅ AlphaEvolve self-healing mechanism
+- ✅ AetherEvolve self-healing mechanism
 - ✅ Gemini Live Client integration
 - ✅ Test coverage
 
