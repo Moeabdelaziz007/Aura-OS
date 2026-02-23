@@ -520,7 +520,7 @@ def plot_success_rate_over_time() -> None:
             markeredgewidth=2)
     
     ax.set_ylabel('Success Rate (%)', fontsize=14, fontweight='bold')
-    ax.set_title('Success Rate Improvement Over Time\nAlphaEvolve Self-Healing in Action',
+    ax.set_title('Success Rate Improvement Over Time\nAetherEvolve Self-Healing in Action',
                  fontsize=18, fontweight='bold', pad=20)
     ax.set_ylim(80, 100)
     ax.grid(True, alpha=0.3, axis='y')
@@ -718,7 +718,7 @@ def plot_skill_promotion(telemetry_data: Dict[str, Any]) -> None:
            edgecolor=COLORS['white'], linewidth=2)
     
     ax.set_ylabel('Number of Skills', fontsize=14, fontweight='bold')
-    ax.set_title('Skill Promotion Over Time\nAlphaEvolve Consolidates Successful Patterns',
+    ax.set_title('Skill Promotion Over Time\nAetherEvolve Consolidates Successful Patterns',
                  fontsize=18, fontweight='bold', pad=20)
     ax.set_xticks(range(len(weeks)))
     ax.set_xticklabels(weeks)

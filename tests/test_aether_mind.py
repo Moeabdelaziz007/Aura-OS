@@ -19,7 +19,7 @@ def parse_gemini_spatial(response_text: str, screen_w: int, screen_h: int) -> di
         print(f"Error parsing spatial coords: {e}")
     return None
 
-class TestAlphaMindParser(unittest.TestCase):
+class TestAetherMindParser(unittest.TestCase):
     def test_click_extraction(self):
         # Gemini 2.0 Spatial API outputs [y, x] inside a 1000x1000 grid
         # y=500 (50%), x=250 (25%)

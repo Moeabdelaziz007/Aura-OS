@@ -1,7 +1,7 @@
 """
 AetherOS — Constraint Solver (Intent Resolution Engine)
 =========================================================
-Inspired by AlphaFold: don't guess from ambiguous language alone.
+Inspired by Fold-inspired: don't guess from ambiguous language alone.
 Let 4 real-world constraints COLLAPSE into one deterministic intent.
 """
 

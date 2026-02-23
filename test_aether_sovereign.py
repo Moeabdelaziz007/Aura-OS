@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from agent.core.parliament import AgentParliament
 
-class TestAlphaSovereign(unittest.IsolatedAsyncioTestCase):
+class TestAetherSovereign(unittest.IsolatedAsyncioTestCase):
     
     async def dummy_logic(self, intent, context, state):
         """Simulated work with variable latency."""

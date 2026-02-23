@@ -1,5 +1,5 @@
 """
-Test the AlphaEvolve Mutation Pipeline
+Test the AetherEvolve Mutation Pipeline
 Tests the activation, generation, validation, and telemetry tracking of mutations.
 """
 
@@ -13,23 +13,23 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from agent.orchestrator.alpha_evolve import (
-    AlphaEvolve,
-    NeuralMonitor,
-    MutationGenerator,
-    MutationValidator,
-    MutationTracker,
-    AnomalyAnalyzer,
+from agent.orchestrator.aether_evolve import (
+    AetherEvolve,
+    AetherNeuralMonitor,
+    AetherMutationGenerator,
+    AetherMutationValidator,
+    AetherMutationTracker,
+    AetherAnomalyAnalyzer,
     MUTATION_TEMPLATES,
     DANGEROUS_PATTERNS
 )
 
 
 async def test_mutation_tracker():
-    """Test the MutationTracker class."""
-    print("\n🧪 Testing MutationTracker...")
+    """Test the AetherMutationTracker class."""
+    print("\n🧪 Testing AetherMutationTracker...")
     
-    tracker = MutationTracker()
+    tracker = AetherMutationTracker()
     
     # Record some mutations
     tracker.record_mutation("ZeroDivisionError", "Orchestrator", True, "mut_001")
@@ -44,15 +44,15 @@ async def test_mutation_tracker():
     assert metrics["mutations_by_type"]["ZeroDivisionError"] == 2
     assert metrics["mutations_by_component"]["Orchestrator"] == 2
     
-    print("✅ MutationTracker tests passed")
+    print("✅ AetherMutationTracker tests passed")
     return True
 
 
 def test_mutation_validator():
-    """Test the MutationValidator class."""
-    print("\n🧪 Testing MutationValidator...")
+    """Test the AetherMutationValidator class."""
+    print("\n🧪 Testing AetherMutationValidator...")
     
-    validator = MutationValidator()
+    validator = AetherMutationValidator()
     
     # Test safe mutation
     safe_code = "def foo():\n    return 42"
@@ -82,7 +82,7 @@ def test_mutation_validator():
     assert validator.validate_mutation_template("ZeroDivisionError", "x = 1/0")
     assert not validator.validate_mutation_template("UnknownError", "x = 1/0")
     
-    print("✅ MutationValidator tests passed")
+    print("✅ AetherMutationValidator tests passed")
     return True
 
 
@@ -137,8 +137,8 @@ def test_dangerous_patterns():
 
 
 async def test_anomaly_analyzer():
-    """Test the AnomalyAnalyzer class."""
-    print("\n🧪 Testing AnomalyAnalyzer...")
+    """Test the AetherAnomalyAnalyzer class."""
+    print("\n🧪 Testing AetherAnomalyAnalyzer...")
     
     # Create a temporary test anomaly log
     test_log_path = "/tmp/test_anomaly_log.json"
@@ -177,7 +177,7 @@ async def test_anomaly_analyzer():
         json.dump(test_anomalies, f)
     
     try:
-        analyzer = AnomalyAnalyzer(test_log_path)
+        analyzer = AetherAnomalyAnalyzer(test_log_path)
         
         # Test loading
         anomalies = analyzer.load_anomalies()
@@ -194,7 +194,7 @@ async def test_anomaly_analyzer():
         # ZeroDivisionError should be first (higher frequency)
         assert "ZeroDivisionError" in prioritized[0][0]
         
-        print("✅ AnomalyAnalyzer tests passed")
+        print("✅ AetherAnomalyAnalyzer tests passed")
         return True
     finally:
         # Clean up
@@ -206,8 +206,8 @@ async def test_pipeline_activation():
     """Test pipeline activation and deactivation."""
     print("\n🧪 Testing Pipeline Activation...")
     
-    monitor = NeuralMonitor()
-    evolve = AlphaEvolve(monitor)
+    monitor = AetherNeuralMonitor()
+    evolve = AetherEvolve(monitor)
     
     # Test initial state
     assert not evolve.is_pipeline_active, "Pipeline should be inactive initially"
@@ -237,7 +237,7 @@ async def test_template_mutation_generation():
     """Test template-based mutation generation."""
     print("\n🧪 Testing Template Mutation Generation...")
     
-    generator = MutationGenerator(use_gemini=False)  # Disable Gemini for this test
+    generator = AetherMutationGenerator(use_gemini=False)  # Disable Gemini for this test
     
     anomaly = {
         "component": "TestComponent",
@@ -250,7 +250,7 @@ async def test_template_mutation_generation():
     mutation = await generator.generate_mutation(anomaly, source_code)
     
     assert mutation is not None, "Template mutation should be generated"
-    assert "ALPHA_EVOLVE_FIX" in mutation, "Mutation should contain fix marker"
+    assert "AETHER_EVOLVE_FIX" in mutation, "Mutation should contain fix marker"
     assert "ZeroDivisionError" in mutation, "Mutation should contain error type"
     
     print("✅ Template mutation generation tests passed")
@@ -261,8 +261,8 @@ async def test_telemetry_integration():
     """Test telemetry integration."""
     print("\n🧪 Testing Telemetry Integration...")
     
-    monitor = NeuralMonitor()
-    evolve = AlphaEvolve(monitor)
+    monitor = AetherNeuralMonitor()
+    evolve = AetherEvolve(monitor)
     
     # Activate pipeline
     evolve.activate_pipeline()
@@ -294,7 +294,7 @@ async def test_telemetry_integration():
 async def run_all_tests():
     """Run all mutation pipeline tests."""
     print("=" * 60)
-    print("🧬 AlphaEvolve Mutation Pipeline Test Suite")
+    print("🧬 AetherEvolve Mutation Pipeline Test Suite")
     print("=" * 60)
     
     tests = [

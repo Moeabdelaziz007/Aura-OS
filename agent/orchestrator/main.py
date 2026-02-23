@@ -19,7 +19,7 @@ from typing import Any, Dict
 from pydantic import BaseModel, Field, ValidationError
 from .memory_parser import AetherNavigator
 from .cognitive_router import HyperMindRouter
-from .alpha_evolve import monitor, evolve_engine
+from .aether_evolve import monitor, evolve_engine
 from agent.forge.aether_forge import AetherForge
 from agent.forge.constraint_solver import MemorySignal
 from agent.forge.models import ForgeResult

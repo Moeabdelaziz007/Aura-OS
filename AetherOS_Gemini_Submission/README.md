@@ -33,7 +33,7 @@ This submission contains all materials for the Google Gemini Live Agents Challen
 | **Speed**: 2,400x faster (50ms vs 120s) | [`telemetry_analysis.json`](telemetry_analysis.json): 2.25ms avg latency |
 | **Cost**: 50-100x cheaper ($0.001 vs $0.07-0.12) | [`competitive_matrix.json`](competitive_matrix.json): Cost comparison |
 | **Reliability**: 20% higher success rate (95% vs 75-85%) | [`telemetry_analysis.json`](telemetry_analysis.json): 100% success rate |
-| **Maintenance**: Zero manual debugging vs constant maintenance | [`AetherOS_Gemini_Submission.md`](AetherOS_Gemini_Submission.md): AlphaEvolve self-healing |
+| **Maintenance**: Zero manual debugging vs constant maintenance | [`AetherOS_Gemini_Submission.md`](AetherOS_Gemini_Submission.md): AetherEvolve self-healing |
 
 ---
 
@@ -130,7 +130,7 @@ Before recording demo, verify:
 - [x] Links: All file links verified to point to existing files
 
 ### Code References
-- [x] [`agent/orchestrator/alpha_evolve.py`](agent/orchestrator/alpha_evolve.py) - AlphaEvolve self-healing circuit
+- [x] [`agent/orchestrator/aether_evolve.py`](agent/orchestrator/aether_evolve.py) - AetherEvolve self-healing circuit
 - [x] [`agent/orchestrator/cognitive_router.py`](agent/orchestrator/cognitive_router.py) - Active Inference decision making
 - [x] [`swarm_infrastructure/evolution_sandbox/executor.py`](swarm_infrastructure/evolution_sandbox/executor.py) - Evolution executor with rollback
 - [x] [`agent/forge/compiler.py`](agent/forge/compiler.py) - NanoAgentCompiler

@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
 ![Architecture](https://img.shields.io/badge/Architecture-API--Native-orange)
-![Self-Healing](https://img.shields.io/badge/Self--Healing-AlphaEvolve-red)
+![Self-Healing](https://img.shields.io/badge/Self--Healing-AetherEvolve-red)
 ![Gemini Challenge](https://img.shields.io/badge/Google-Gemini-Live--Challenge-gold)
 
 > **"Manus clicks buttons. AetherOS dissolves them."**
@@ -346,7 +346,7 @@ We welcome contributions! Please follow these guidelines:
 - ✅ إضافة Vector 3: Empirical Proof
 - ✅ تحسين وثائق Gemini Submission
 - ✅ إضافة دعم Gemini Live
-- ✅ تحسين نظام AlphaEvolve
+- ✅ تحسين نظام AetherEvolve
 
 ### v1.5.0 (2026-02-15)
 

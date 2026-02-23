@@ -12,7 +12,7 @@ sys.path.append(str(PROJECT_ROOT))
 # Attempt imports with fallback/mocking for the demo environment if needed
 try:
     from agent.forge.aether_forge import AetherForge
-    from agent.orchestrator.alpha_evolve import AlphaMindGenerator, NeuralMonitor, HeuristicSandbox
+    from agent.orchestrator.aether_evolve import MutationGenerator, AetherNeuralMonitor, AetherHeuristicSandbox
     from agent.orchestrator.cognitive_router import HyperMindRouter
     from agent.forge.models import ForgeResult
 except ImportError as e:
@@ -30,9 +30,9 @@ async def run_sovereign_healing_loop():
     logger.info("🚀 Initiating Sovereign Healing Stress Test...")
     
     # 1. Setup Components
-    monitor = NeuralMonitor(log_path="tests/stress_anomaly_log.json")
-    generator = AlphaMindGenerator() # Uses Gemini 3.0
-    sandbox = HeuristicSandbox()
+    monitor = AetherNeuralMonitor(log_path="tests/stress_anomaly_log.json")
+    generator = MutationGenerator(use_gemini=True)  # Uses Gemini 3.0
+    sandbox = AetherHeuristicSandbox()
     
     async with AetherForge() as forge:
         # 2. Simulate a "Schema Break" Anomaly
@@ -59,8 +59,8 @@ async def run_sovereign_healing_loop():
             )
             logger.info("🧠 Step 2: Anomaly logged in Neural Cortex.")
             
-            # 4. Invoke AlphaEvolve (The Healer)
-            logger.info("🧬 Step 3: Invoking AlphaEvolve for VerMCTS Patching...")
+            # 4. Invoke AetherEvolve (The Healer)
+            logger.info("🧬 Step 3: Invoking AetherEvolve for VerMCTS Patching...")
             try:
                 with open(PROJECT_ROOT / "agent/forge/aether_forge.py", "r") as f:
                     source = f.read()
@@ -68,7 +68,7 @@ async def run_sovereign_healing_loop():
                 source = "# Missing source file"
             
             # Generating a patch via Gemini
-            patch = await generator.generate_patch(
+            patch = await generator.generate_mutation(
                 anomaly={"component": "AetherForge", "error_type": "SchemaMismatch", "message": res.error},
                 source_code=source[:2000] # Feeding context
             )

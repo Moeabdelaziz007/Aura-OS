@@ -139,7 +139,7 @@ class TaskExecutor:
             gemini_client: The Gemini Live client to listen to
         """
         async for response in gemini_client.listen():
-            # AlphaMind Spatial Interceptor
+            # AetherMind Spatial Interceptor
             try:
                 if "modelTurn" in response:
                     parts = response["modelTurn"].get("parts", [])
@@ -150,7 +150,7 @@ class TaskExecutor:
                             if match:
                                 data = json.loads(match.group(0))
                                 if "point" in data:
-                                    print(f"🎯 AlphaMind Spatial Match: {data['point']}")
+                                    print(f"🎯 AetherMind Spatial Match: {data['point']}")
                                     y_rel, x_rel = data["point"]
                                     # Assuming standard 1920x1080 display for relative mapping
                                     abs_x = int((x_rel / 1000.0) * 1920)
@@ -166,7 +166,7 @@ class TaskExecutor:
                                     await websocket.send(json.dumps({"action": "PRESS_ENTER"}))
                                     continue
             except Exception as e:
-                print(f"⚠️ AlphaMind parsing error: {e}")
+                print(f"⚠️ AetherMind parsing error: {e}")
 
             # Route standard AI voice/text info back to Edge
             await websocket.send(json.dumps(response))

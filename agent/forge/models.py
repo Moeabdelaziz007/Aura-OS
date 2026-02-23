@@ -112,7 +112,7 @@ class TimeContext:
 class ResolvedIntent:
     """
     A partial user query + 4 constraints → 1 deterministic intent.
-    Inspired by AlphaFold: constraints collapse ambiguity.
+    Inspired by Fold-inspired: constraints collapse ambiguity.
     """
     raw_query: str
     action: str                     # "price_check", "github_search", "weather"

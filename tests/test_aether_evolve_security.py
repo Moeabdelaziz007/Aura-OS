@@ -13,11 +13,11 @@ sys.modules['dotenv'] = MagicMock()
 # Set env var
 os.environ["GEMINI_API_KEY"] = "fake_key"
 
-from agent.orchestrator.alpha_evolve import AlphaMindGenerator, HeuristicSandbox
+from agent.orchestrator.aether_evolve import MutationGenerator, AetherHeuristicSandbox
 
-class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
+class TestMutationGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.generator = AlphaMindGenerator(api_key="fake_key")
+        self.generator = MutationGenerator(use_gemini=True)
         self.mock_model = MagicMock()
         self.generator.model = self.mock_model
 
@@ -47,8 +47,8 @@ class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
         sanitized = self.generator._sanitize_input(input_with_blocks)
         self.assertEqual(sanitized, "'''python\nimport os\n'''")
 
-    async def test_generate_patch_sanitization(self):
-        """Test that generate_patch uses sanitized inputs in the prompt."""
+    async def test_generate_mutation_sanitization(self):
+        """Test that generate_mutation uses sanitized inputs in the prompt."""
         anomaly = {
             "component": "<COMPONENT>",
             "error_type": "ValueError",
@@ -56,7 +56,7 @@ class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
         }
         source_code = "print('Hello')"
 
-        await self.generator.generate_patch(anomaly, source_code)
+        await self.generator.generate_mutation(anomaly, source_code)
 
         # Verify the prompt structure and content
         self.assertIn("&lt;COMPONENT&gt;", self.captured_prompt)
@@ -72,9 +72,9 @@ class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
         self.assertIn("<ANOMALY_CONTEXT>", self.captured_prompt)
         self.assertIn("<COMPONENT>", self.captured_prompt)
 
-class TestHeuristicSandboxSecurity(unittest.IsolatedAsyncioTestCase):
+class TestAetherHeuristicSandboxSecurity(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.sandbox = HeuristicSandbox()
+        self.sandbox = AetherHeuristicSandbox()
 
     @patch('asyncio.create_subprocess_shell')
     @patch('asyncio.create_subprocess_exec')

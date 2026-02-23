@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Dynamically determine the project root (3 levels up from agent/orchestrator/alpha_evolve.py)
+# Dynamically determine the project root (3 levels up from agent/orchestrator/aether_evolve.py)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Mutation templates for common error types
@@ -162,7 +162,7 @@ class AnomalyAnalyzer:
         self.log_path = log_path
 
     def load_anomalies(self) -> List[Dict[str, Any]]:
-        """Load anomalies from the log file."""
+        """Load anomalies from log file."""
         try:
             if os.path.exists(self.log_path):
                 with open(self.log_path, 'r') as f:
@@ -256,7 +256,7 @@ class MutationValidator:
     @staticmethod
     def validate_mutation_template(error_type: str, source_code: str) -> bool:
         """
-        Check if a mutation template exists for the given error type.
+        Check if a mutation template exists for given error type.
         """
         return error_type in MUTATION_TEMPLATES
 
@@ -348,7 +348,7 @@ class MutationGenerator:
         - Do NOT add any file deletion operations
         - Do NOT add eval() or exec() calls
         - Do NOT add any network requests unless fixing a connection error
-        - Keep the fix minimal and focused on the reported error
+        - Keep fix minimal and focused on the reported error
         </TASK>
         """
         
@@ -377,7 +377,7 @@ class MutationGenerator:
         if self.validator.validate_mutation_template(error_type, source_code):
             template_mutation = self.generate_template_mutation(anomaly, source_code)
             if template_mutation:
-                # Validate the template mutation
+                # Validate template mutation
                 is_safe, reason = self.validator.is_safe_mutation(source_code, template_mutation)
                 if is_safe:
                     return template_mutation
@@ -397,7 +397,7 @@ class MutationGenerator:
         return None
 
 
-class NeuralMonitor:
+class AetherNeuralMonitor:
     """
     Beta-Test: Neural Telemetry & Anomaly Identification (Phase 6.2).
     Captures system exceptions and panics for AetherEvolve processing.
@@ -413,7 +413,7 @@ class NeuralMonitor:
                 with open(self.log_path, 'w') as f:
                     json.dump([], f)
             except Exception as e:
-                print(f"⚠️ NeuralMonitor: Failed to create log file: {e}")
+                print(f"⚠️ AetherNeuralMonitor: Failed to create log file: {e}")
 
     def log_anomaly(self, component: str, error_type: str, message: str, stack_trace: Optional[str] = None):
         """记录系统异常到 anomaly_log.json."""
@@ -455,8 +455,7 @@ class NeuralMonitor:
                 return True
         return False
 
-
-class HeuristicSandbox:
+class AetherHeuristicSandbox:
     """
     Beta-Test: AetherMind Heuristic Sandbox (Phase 6.3).
     Executes isolated code validation (Build/Test) with process isolation.
@@ -481,7 +480,7 @@ class HeuristicSandbox:
             return False
 
     async def cleanup_snapshot(self):
-        """Purges the temporary sandbox."""
+        """Purges temporary sandbox."""
         print("🧹 Sandbox: Cleaning up...")
         if os.path.exists(self.sandbox_path):
             import shutil
@@ -493,7 +492,7 @@ class HeuristicSandbox:
         """
         cwd = self.sandbox_path if os.path.exists(self.sandbox_path) else self.workspace_root
         print(f"🧪 Sandbox: Executing '{command}' in {cwd}...")
-
+        
         try:
             process = await asyncio.create_subprocess_exec(
                 *command,
@@ -527,7 +526,7 @@ class HeuristicSandbox:
             }
 
 
-class DnaCommitter:
+class AetherDnaCommitter:
     """
     Beta-Test: Autonomous DNA Consolidation (Phase 6.5).
     Safely commits verified patches to the production codebase.
@@ -540,7 +539,7 @@ class DnaCommitter:
         target_path = os.path.join(self.workspace_root, relative_path)
         backup_path = f"{target_path}.bak"
         
-        print(f"🧬 DnaCommitter: Consolidating DNA to {relative_path}...")
+        print(f"🧬 AetherDnaCommitter: Consolidating DNA to {relative_path}...")
         try:
             if os.path.exists(target_path):
                 import shutil
@@ -549,10 +548,10 @@ class DnaCommitter:
             with open(target_path, 'w') as f:
                 f.write(new_content)
             
-            print(f"✅ DnaCommitter: Permanent update successful for {relative_path}")
+            print(f"✅ AetherDnaCommitter: Permanent update successful for {relative_path}")
             return True
         except Exception as e:
-            print(f"❌ DnaCommitter: Critical update failure: {e}")
+            print(f"❌ AetherDnaCommitter: Critical update failure: {e}")
             if os.path.exists(backup_path):
                 import shutil
                 shutil.move(backup_path, target_path)
@@ -563,11 +562,11 @@ class AetherEvolve:
     """
     Recursive Self-Optimization Engine (Phase 6) with Mutation Pipeline.
     """
-    def __init__(self, monitor_instance: NeuralMonitor, use_gemini: bool = True):
+    def __init__(self, monitor_instance: AetherNeuralMonitor, use_gemini: bool = True):
         self.monitor = monitor_instance
-        self.sandbox = HeuristicSandbox()
+        self.sandbox = AetherHeuristicSandbox()
         self.generator = MutationGenerator(use_gemini=use_gemini)
-        self.committer = DnaCommitter()
+        self.committer = AetherDnaCommitter()
         self.is_evolving = False
         self.is_pipeline_active = False
         self.mutation_tracker = MutationTracker()
@@ -858,7 +857,7 @@ class AetherEvolve:
             check = await self.sandbox.run_validation(v_cmd)
             
             if check["success"]:
-                print("🏆 Sandbox: Fixed verified! Proceeding to consolidation.")
+                print("🏆 Sandbox: Fix verified! Proceeding to consolidation.")
                 if self.committer.commit(component_file, mutation):
                     self.mutation_tracker.record_mutation(
                         anomaly.get('error_type', 'Unknown'),
@@ -902,5 +901,5 @@ class AetherEvolve:
 
 
 # Global Singleton for Orchestrator use
-monitor = NeuralMonitor()
+monitor = AetherNeuralMonitor()
 evolve_engine = AetherEvolve(monitor)

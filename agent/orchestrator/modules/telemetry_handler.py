@@ -10,7 +10,7 @@ Classes:
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..alpha_evolve import AnomalyMonitor
+    from ..aether_evolve import AetherNeuralMonitor
 
 
 class TelemetryHandler:
@@ -20,15 +20,15 @@ class TelemetryHandler:
     Responsible for:
     - Logging anomalies from various components
     - Providing telemetry data access
-    - Coordinating with AlphaEvolve for autonomous healing
+    - Coordinating with AetherEvolve for autonomous healing
     """
 
-    def __init__(self, monitor: "AnomalyMonitor"):
+    def __init__(self, monitor: "AetherNeuralMonitor"):
         """
         Initialize the Telemetry Handler.
 
         Args:
-            monitor: The AnomalyMonitor from alpha_evolve for anomaly tracking
+            monitor: The AetherNeuralMonitor from aether_evolve for anomaly tracking
         """
         self.monitor = monitor
 

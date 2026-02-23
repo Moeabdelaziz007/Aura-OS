@@ -1,9 +1,9 @@
 import asyncio
 import os
-from agent.orchestrator.alpha_evolve import monitor, evolve_engine
+from agent.orchestrator.aether_evolve import monitor, evolve_engine
 
 async def main():
-    print("🔬 Starting AlphaEvolve Standalone Test...")
+    print("🔬 Starting AetherEvolve Standalone Test...")
     
     # Simulate an anomaly
     anomaly = {

@@ -211,7 +211,7 @@ class AetherForge:
         intent_obj: Optional[ResolvedIntent] = None
     ) -> ForgeResult:
         """
-        Agent Parliament 2.0: AlphaCode Swarm Race + Proof of Data.
+        Agent Parliament 2.0: AetherCode Swarm Race + Proof of Data.
         Multiple agents race for speed; the first two valid results are used for consensus.
         """
         t0 = time.time()
