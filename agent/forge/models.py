@@ -16,6 +16,8 @@ from enum import Enum, auto
 from typing import Any, Dict, List, Optional, Protocol
 
 import httpx
+import asyncio
+from agent.core.telemetry import TelemetryManager
 
 # ─────────────────────────────────────────────
 # Enums
@@ -292,6 +294,17 @@ class ForgeMetrics:
             self.successful += 1
         else:
             self.failed += 1
+
+        # 📡 Live Telemetry Update
+        telemetry_data = {
+            "total_requests": self.total_requests,
+            "successful_forges": self.successful,
+            "failed_forges": self.failed,
+            "avg_latency_ms": self.avg_latency_ms,
+            "last_active": datetime.utcnow().isoformat(),
+            "current_state": "Executing (System 2)" if result.cognitive_system == CognitiveSystem.SYSTEM_2 else "Reflexive (System 1)"
+        }
+        asyncio.create_task(TelemetryManager.update(telemetry_data))
 
     def summary(self) -> str:
         return (

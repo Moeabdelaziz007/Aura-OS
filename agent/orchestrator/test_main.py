@@ -38,7 +38,7 @@ sys.modules["pydantic"] = mock_pydantic
 sys.modules["websockets"] = MagicMock()
 sys.modules["dotenv"] = MagicMock()
 sys.modules["numpy"] = MagicMock()
-sys.modules["google"] = MagicMock()
+# sys.modules["google"] = MagicMock()  # This breaks firebase_admin
 sys.modules["google.generativeai"] = MagicMock()
 
 # We need to set the environment variable before importing main so it picks it up

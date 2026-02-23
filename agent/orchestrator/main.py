@@ -16,6 +16,7 @@ from .memory_parser import AetherNavigator
 from .cognitive_router import HyperMindRouter
 from .gemini_live_client import GeminiLiveClient
 from .alpha_evolve import monitor, evolve_engine
+from agent.forge.aether_forge import AetherForge
 
 class ActionContext(BaseModel):
     """Validated context for cognitive routing."""
@@ -41,6 +42,7 @@ class AetherCoreOrchestrator:
         self.drift_threshold_ms = drift_threshold_ms
         self.bridge = AetherNavigator()
         self.router = HyperMindRouter(self.bridge)
+        self.forge = AetherForge()  # Initialize the Forge
         self.is_running = False
         self.api_key = os.getenv("GEMINI_API_KEY")
         self._cleanup_tasks = set()  # Track cleanup tasks for graceful shutdown
@@ -51,6 +53,11 @@ class AetherCoreOrchestrator:
         print("🪐 AetherOS: AetherCore Prometheus Booting...")
         dna = await self.bridge.load_dna_async()
         print(f"🧬 DNA Sequence Verified: {dna.version}")
+
+        # Ignite the Forge (Start Async Client)
+        await self.forge.__aenter__()
+        print("🔥 Aether Forge: Ignited & Ready.")
+
         self.is_running = True
         
         # Priority 3: Start Active Pulse Monitor
@@ -174,6 +181,35 @@ class AetherCoreOrchestrator:
                             continue
 
                         mode = await self.router.route_action(context_dict)
+
+                        # 🔮 Phase 1: Wire Forge to Orchestrator
+                        if mode == "AETHER_FORGE":
+                            intent_text = context_dict.get("intent_text", "Unknown Intent")
+                            print(f"🔨 Aether Forge Activated: {intent_text}")
+
+                            # Execute the Forge Protocol
+                            forge_result = await self.forge.resolve_and_forge(query=intent_text)
+
+                            if forge_result.success:
+                                response_text = f"Forge Execution Complete: {forge_result.service.upper()}\n"
+
+                                # Add ASCII Visual if available
+                                if forge_result.ascii_visual:
+                                    response_text += f"\n{forge_result.ascii_visual}\n"
+
+                                # Serialize data safely
+                                try:
+                                    data_str = json.dumps(forge_result.data, indent=2)
+                                    response_text += f"\nData Payload:\n{data_str}"
+                                except Exception:
+                                    response_text += f"\nData Payload: {forge_result.data}"
+
+                                await gemini.send_text(response_text)
+                            else:
+                                error_msg = f"Forge Execution Failed: {forge_result.error}"
+                                print(f"❌ {error_msg}")
+                                await gemini.send_text(error_msg)
+
                         # Intercept/Enrich here
                 except (json.JSONDecodeError, ValidationError, ValueError) as e:
                     print(f"⚠️ Neural Anomaly (Input Validation): {e}")
@@ -250,6 +286,11 @@ class AetherCoreOrchestrator:
         # Close bridge resources
         if hasattr(self.bridge, 'close'):
             await self.bridge.close()
+
+        # Cool down the Forge
+        if hasattr(self.forge, '__aexit__'):
+            await self.forge.__aexit__(None, None, None)
+            print("❄️ Aether Forge: Cooled down.")
         
         print("✅ AetherCoreOrchestrator: Shutdown complete")
 

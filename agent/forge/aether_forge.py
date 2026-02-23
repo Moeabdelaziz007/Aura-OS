@@ -82,6 +82,8 @@ class TemporalMemoryTides:
 
 from .archaeology import archaeologist
 from .circuit_breaker import get_circuit_breaker, CircuitOpenError
+from .compiler import NanoAgentCompiler, CompiledAgent
+from .sandbox import NanoSandbox
 
 # ─────────────────────────────────────────────
 # 🔮 AETHER FORGE — Core Orchestrator
@@ -106,6 +108,10 @@ class AetherForge:
         self.solver = ConstraintSolver()
         self.circuit = get_circuit_breaker()
         
+        # Dynamic Forge Components
+        self.compiler = NanoAgentCompiler()
+        self.sandbox = NanoSandbox()
+
         # Cloud Nexus (The Global Nervous System)
         project_id = os.getenv("GOOGLE_CLOUD_PROJECT", "notional-armor-456623-e8")
         key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", ".idx/aether-key.json")
@@ -245,17 +251,23 @@ class AetherForge:
         
         # Mapping solver action to service
         service_map = {"price_check": "coingecko", "github_search": "github", "weather_check": "weather"}
-        service = service_map.get(intent.action, "coingecko")
         
-        # Params generation
-        params = {}
-        if intent.action == "price_check":
-            params = {"coins": [intent.target], "currencies": ["usd"]}
-        elif intent.action == "github_search":
-            params = {"query": intent.target, "limit": 3}
-        elif intent.action == "weather_check":
-            params = {"city": intent.target}
-            
+        if intent.action in service_map:
+            service = service_map[intent.action]
+            # Params generation for known services
+            params = {}
+            if intent.action == "price_check":
+                params = {"coins": [intent.target], "currencies": ["usd"]}
+            elif intent.action == "github_search":
+                params = {"query": intent.target, "limit": 3}
+            elif intent.action == "weather_check":
+                params = {"city": intent.target}
+        else:
+            # Dynamic Intent!
+            service = intent.target if intent.target != "unknown" else intent.action
+            params = {"query": query, "context": intent.reasoning}
+            logger.info(f"✨ Unmapped Intent '{intent.action}': Routing to Dynamic Forge.")
+
         intent_data = {
             "query": query,
             "intent_id": intent.intent_id,
@@ -323,71 +335,95 @@ class AetherForge:
         
         # Phase 3: Deploy & Execution
         executor_cls = self.REGISTRY.get(service)
-        if not executor_cls:
-            self.metrics.failed_requests += 1
-            return self._fail(service, f"Service [{service}] unbound.", t0, agent_id)
-
-        executor = executor_cls()
         
+        # If static executor exists, use it. Otherwise, go DYNAMIC.
+        if executor_cls:
+            executor = executor_cls()
+            return await self._execute_static_agent(executor, service, intent_data, t0, agent_id, is_crystallized, max_retries)
+        else:
+            return await self._compile_and_execute_dynamic(service, intent_data, t0, agent_id)
+
+    async def _execute_static_agent(self, executor, service, intent_data, t0, agent_id, is_crystallized, max_retries):
+        """Helper to run pre-defined static agents."""
         for attempt in range(max_retries):
             try:
-                logger.info(f"Nano-Agent {agent_id} deployed (Attempt {attempt+1})...")
-                # Injected Sovereign Client + Circuit Breaker
+                logger.info(f"Nano-Agent {agent_id} (Static) deployed...")
                 res_obj = await self.circuit.call(service, executor.execute, intent_data.get("params", {}), self.client)
                 data = res_obj.raw_response if hasattr(res_obj, "raw_response") else res_obj
                 ms = (time.time() - t0) * 1000
                 
-                # Phase 4: Harvest & Engrave
                 await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
                 
-                # Update Shadow Maps (Collective Intelligence)
                 if hasattr(executor, 'base_url'):
                     await self.archaeologist.register_discovery(service, executor.base_url)
-                    if self.cloud:
-                        # Shared Intelligence: Asynchronously inform the Hive Mind
-                        asyncio.create_task(self.cloud.share_shadow_map(
-                            service, 
-                            executor.base_url, 
-                            getattr(executor, 'intent_action', 'unknown')
-                        ))
                 
-                # ASCII Visualizer
                 ascii_visual = self.visualizer.render(service, data)
                 
-                # Record Learning
-                if hasattr(self.solver, "feedback"):
-                    # We usually pass the real intent object here
-                    pass 
+                res = ForgeResult(
+                    success=True, service=service, agent_id=agent_id, execution_ms=ms,
+                    dna_crystallized=is_crystallized,
+                    cognitive_system=CognitiveSystem.SYSTEM_1, data=data, ascii_visual=ascii_visual
+                )
+                self.metrics.record(res)
+                return res
+            except Exception as e:
+                logger.error(f"Static Execution Fault: {e}")
+                return self._fail(service, str(e), t0, agent_id)
+
+    async def _compile_and_execute_dynamic(self, service: str, intent_data: Dict[str, Any], t0: float, agent_id: str) -> ForgeResult:
+        """Compiles a Swarm of Python agents on the fly and executes them for consensus."""
+        logger.info(f"🧬 DYNAMIC FORGE: Spawning Swarm for '{service}'...")
+
+        try:
+            # 1. Compile Swarm (3 Variants)
+            # In production, we'd vary the prompt temperature for diversity
+            variants = await self.compiler.compile_variants(
+                intent=intent_data.get("query"),
+                context=intent_data,
+                n=3
+            )
+
+            # Filter valid agents
+            agents = [v for v in variants if isinstance(v, CompiledAgent)]
+            if not agents:
+                logger.error("❌ Swarm Compilation Failed: No valid agents generated.")
+                return self._fail(service, "Swarm Compilation Failed", t0, agent_id)
+
+            logger.info(f"🐝 Swarm Generated: {len(agents)} Nano-Agents ready.")
+
+            # 2. Execute in Parallel Sandbox
+            tasks = [self.sandbox.execute(agent.code, intent_data.get("params", {})) for agent in agents]
+            results = await asyncio.gather(*tasks)
+
+            # 3. Consensus (Pick first success for MVP, majority vote in full version)
+            successes = [r for r in results if r.success]
+
+            ms = (time.time() - t0) * 1000
+
+            if successes:
+                winner = successes[0]
+                logger.info(f"✅ Swarm Consensus Reached: {len(successes)}/{len(agents)} agents succeeded ({ms:.0f}ms)")
+
+                # Use code as visual if no better visualizer match
+                ascii_visual = f"```python\n{agents[0].code}\n```"
 
                 res = ForgeResult(
-                    success=True,
-                    service=service,
-                    agent_id=agent_id,
-                    execution_ms=ms,
-                    dna_crystallized=is_crystallized,
-                    cognitive_system=CognitiveSystem.SYSTEM_1 if ms < 500 else CognitiveSystem.SYSTEM_2,
-                    data=data,
+                    success=True, service=service, agent_id=agent_id, execution_ms=ms,
+                    dna_crystallized=False,
+                    cognitive_system=CognitiveSystem.SYSTEM_2,
+                    data=winner.data,
                     ascii_visual=ascii_visual
                 )
                 self.metrics.record(res)
                 return res
-                
-            except httpx.HTTPStatusError as e:
-                if e.response.status_code == 429 and attempt < max_retries - 1:
-                    wait = (2 ** attempt) + 0.5
-                    logger.warning(f"Rate Limited. Retrying in {wait}s...")
-                    await asyncio.sleep(wait)
-                    continue
-                logger.error(f"API Protocol Fault: {e}")
-                await self.nexus.engrave(service, {}, False)
-                return self._fail(service, str(e), t0, agent_id)
-            except CircuitOpenError as e:
-                logger.error(f"Circuit Open Protection: {e}")
-                return self._fail(service, str(e), t0, agent_id)
-            except Exception as e:
-                logger.error(f"General Execution Fault: {e}")
-                await self.nexus.engrave(service, {}, False)
-                return self._fail(service, str(e), t0, agent_id)
+            else:
+                errors = "; ".join([r.error for r in results if r.error])
+                logger.error(f"❌ Swarm Execution Failed: {errors}")
+                return self._fail(service, f"Swarm Failed: {errors}", t0, agent_id)
+
+        except Exception as e:
+            logger.error(f"Dynamic Forge Critical Failure: {e}")
+            return self._fail(service, f"Forge Error: {e}", t0, agent_id)
 
     async def swarm_execute(self, intents: List[Dict[str, Any]]) -> List[ForgeResult]:
         """Deploy a Quantum Swarm (Parallel Execution)."""
