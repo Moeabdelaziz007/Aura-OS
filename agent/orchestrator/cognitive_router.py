@@ -72,7 +72,10 @@ class HyperMindRouter:
         # baselines are stored separately to compute percentage change
         baselines = dna.inference.setdefault("cognitive_baselines", {})
         timestamp = dna.inference.setdefault("cognitive_last_update", 0)
-        now = asyncio.get_event_loop().time()
+        try:
+            now = asyncio.get_running_loop().time()
+        except RuntimeError:
+            now = asyncio.get_event_loop().time()
 
         # cooldown: at least 60 seconds between updates ("Cognitive Sleep")
         if now - timestamp < 60:

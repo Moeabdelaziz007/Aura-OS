@@ -61,6 +61,7 @@ class AetherNavigator:
         self._mmaps: Dict[str, mmap.mmap] = {}
         self._file_handles: Dict[str, Any] = {}
         self._hashes: Dict[str, str] = {}
+        self._parsed_cache: Dict[str, Dict[str, Any]] = {}
         self.dna_cache: Optional[DNABelief] = None
         self.nexus_cache: Optional[list[Dict[str, Any]]] = None
         self._lock = asyncio.Lock()
@@ -126,20 +127,23 @@ class AetherNavigator:
 
             if needs_update:
                 # Move blocking YAML parsing to a background thread
-                parsed = await asyncio.to_thread(self._parse_blocks, raw_contents)
+                parsed_updates = await asyncio.to_thread(self._parse_blocks, raw_contents)
+
+                # Update persistent cache with new data
+                self._parsed_cache.update(parsed_updates)
                 
                 self.dna_cache = DNABelief(
-                    soul=parsed.get("SOUL.md", {}),
-                    world=parsed.get("WORLD.md", {}),
-                    inference=parsed.get("INFERENCE.md", {}),
-                    agents=parsed.get("AGENTS.md", {}),
-                    causal=parsed.get("CAUSAL.md", {}),
-                    evolve=parsed.get("EVOLVE.md", {}),
-                    pulse=parsed.get("PULSE.md", {}),
-                    skills=parsed.get("SKILLS.md", {}),
-                    topology=parsed.get("TOPOLOGY.md", {}),
-                    memory=parsed.get("MEMORY.md", {}),
-                    version=parsed.get("SOUL.md", {}).get("version", "0.0.0")
+                    soul=self._parsed_cache.get("SOUL.md", {}),
+                    world=self._parsed_cache.get("WORLD.md", {}),
+                    inference=self._parsed_cache.get("INFERENCE.md", {}),
+                    agents=self._parsed_cache.get("AGENTS.md", {}),
+                    causal=self._parsed_cache.get("CAUSAL.md", {}),
+                    evolve=self._parsed_cache.get("EVOLVE.md", {}),
+                    pulse=self._parsed_cache.get("PULSE.md", {}),
+                    skills=self._parsed_cache.get("SKILLS.md", {}),
+                    topology=self._parsed_cache.get("TOPOLOGY.md", {}),
+                    memory=self._parsed_cache.get("MEMORY.md", {}),
+                    version=self._parsed_cache.get("SOUL.md", {}).get("version", "0.0.0")
                 )
             
             return self.dna_cache

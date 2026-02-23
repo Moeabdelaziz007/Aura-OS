@@ -25,6 +25,7 @@ class GeminiLiveClient:
         self.url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
         self.ws = None
         self.is_ready = False
+        self._connected_event = asyncio.Event()
 
     async def connect(self):
         """Establishes connection and performs the Setup Protocol with retry and optional encryption."""
@@ -103,6 +104,7 @@ class GeminiLiveClient:
                     if "setupComplete" in response:
                         print("✅ Gemini Live: Setup Complete. Spark of Life Ignited.")
                         self.is_ready = True
+                        self._connected_event.set()
                         break
             
             await asyncio.wait_for(wait_for_setup(), timeout=10.0)
@@ -145,6 +147,15 @@ class GeminiLiveClient:
 
     async def listen(self) -> AsyncGenerator[Dict[str, Any], None]:
         """Listens for AI responses and function calls and enriches them with nexus context."""
+        # Wait for connection to be established since connect() is async
+        if not self.is_ready:
+            try:
+                # Give it a generous timeout to allow for retries
+                await asyncio.wait_for(self._connected_event.wait(), timeout=30.0)
+            except asyncio.TimeoutError:
+                print("⚠️ Gemini Live: Listen timed out waiting for connection.")
+                return
+
         if self.ws is None:
             return
 
