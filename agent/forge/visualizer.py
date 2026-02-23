@@ -42,24 +42,31 @@ class Colors:
 # Sparkline Engine
 # ─────────────────────────────────────────────
 
-SPARK_CHARS = "▁▂▃▄▅▆▇█"
+SPARK_CHARS = " ▂▃▄▅▆▇█"
 
-def sparkline(values: List[float]) -> str:
-    """Convert a list of values to a single-line unicode sparkline."""
-    if not values or len(values) < 2:
-        return "─"
+def sparkline(data: List[float]) -> str:
+    """
+    يرسم خط اتجاه (Sparkline) بسيط باستخدام أحرف Unicode Block Elements.
+    """
+    if not data:
+        return ""
 
-    min_v = min(values)
-    max_v = max(values)
-    rng   = max_v - min_v
+    # إذا كانت كل القيم متساوية
+    if min(data) == max(data):
+        return SPARK_CHARS[3] * len(data)
 
-    if rng == 0:
-        return SPARK_CHARS[3] * len(values)
+    # تطبيع البيانات (Normalization)
+    min_val = min(data)
+    max_val = max(data)
+    range_val = max_val - min_val
 
     result = ""
-    for v in values:
-        idx = int((v - min_v) / rng * (len(SPARK_CHARS) - 1))
+    for val in data:
+        # تحويل القيمة إلى مؤشر في قائمة SPARK_CHARS
+        normalized = (val - min_val) / range_val
+        idx = math.floor(normalized * (len(SPARK_CHARS) - 1))
         result += SPARK_CHARS[idx]
+
     return result
 
 
@@ -206,10 +213,10 @@ def weather_card(data: Dict[str, Any]) -> str:
 def github_card(data: Dict[str, Any]) -> str:
     query = data.get("query", "")
     total = data.get("total_count", 0)
-    repos = data.get("Top_Repos", []) # Adjusted to match executors.py naming
+    repos = data.get("Top_Repos", [])
 
     lines = [
-        f"  🔍 GitHub: '{query}' — {total:,} results",
+        f"  🔍 GitHub: '{query}' — {total:,} نتائج",
         "  " + "─" * 46,
     ]
     for r in repos[:4]:
@@ -219,9 +226,13 @@ def github_card(data: Dict[str, Any]) -> str:
             
         name  = r.get("Name", "")[:35]
         lang  = r.get("Language", "Unknown")
-        star_bar = "★" * min(int(math.log10(stars + 1)), 5) if stars > 0 else "─"
+        
+        # Hype Level from stars
+        hype_level = min(5, stars // 5000) if stars > 100 else 0
+        hype_bar = "🔥" * hype_level + "🌑" * (5 - hype_level)
+        
         lines.append(f"  ⭐{stars:6,}  {Colors.bold(name)}")
-        lines.append(f"  {Colors.dim(star_bar)}        {Colors.dim(lang)}")
+        lines.append(f"  {Colors.dim(hype_bar)}        {Colors.dim(lang)}")
     return "\n".join(lines)
 
 

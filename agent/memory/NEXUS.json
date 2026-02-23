@@ -5,11 +5,28 @@
       "query": "AetherOS",
       "limit": 2
     },
-    "avg_latency_ms": 515.362024307251,
+    "avg_latency_ms": 537.6600027084351,
     "success_rate": 1.0,
-    "energy_credits": 10.0,
-    "use_count": 1,
-    "last_used": "2026-02-23T01:05:38.881033",
+    "energy_credits": 20.0,
+    "use_count": 2,
+    "last_used": "2026-02-23T01:38:22.745904",
     "created_at": "2026-02-23T01:05:38.881040"
+  },
+  "coingecko": {
+    "service": "coingecko",
+    "params_template": {
+      "coins": [
+        "bitcoin"
+      ],
+      "currencies": [
+        "usd"
+      ]
+    },
+    "avg_latency_ms": 404.7175645828247,
+    "success_rate": 1.0,
+    "energy_credits": 20.0,
+    "use_count": 2,
+    "last_used": "2026-02-23T01:38:22.364639",
+    "created_at": "2026-02-23T01:38:22.182067"
   }
 }
