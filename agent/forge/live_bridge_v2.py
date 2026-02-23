@@ -18,6 +18,7 @@ from google.genai import types
 from .aether_forge import AetherForge
 from .constraint_solver import ConstraintSolver, build_time_context
 from .models import VoiceFeatures, ScreenContext
+from .stream_utils import AudioStreamer, VisionStreamer
 
 logger = logging.getLogger("aether.sensory")
 
@@ -57,8 +58,8 @@ class GeminiLiveBridgeV2:
                 # Parallel Multimodal Hub
                 await asyncio.gather(
                     self._receive_loop(),
-                    # self._audio_input_loop(), # To be wired with PyAudio locally
-                    # self._vision_input_loop(), # To be wired with screen capture
+                    self._audio_input_loop(),
+                    self._vision_input_loop(),
                 )
         except Exception as e:
             logger.error(f"❌ Sensory Cortex failure: {e}")
@@ -86,6 +87,20 @@ class GeminiLiveBridgeV2:
             if response.tool_call:
                 # Potential for Native Tool Use in the Live session
                 pass
+
+    async def _audio_input_loop(self):
+        """Streams real-time microphone data."""
+        streamer = AudioStreamer()
+        async for chunk in streamer.get_audio_stream():
+            if not self._running: break
+            await self.send_audio_chunk(chunk)
+
+    async def _vision_input_loop(self):
+        """Streams real-time screen captures."""
+        streamer = VisionStreamer()
+        async for frame in streamer.get_vision_stream():
+            if not self._running: break
+            await self.send_frame(frame)
 
     async def send_audio_chunk(self, audio_data: bytes):
         """Sends PCM 16kHz audio to the bridge."""
