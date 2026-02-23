@@ -60,14 +60,17 @@ def sparkline(data: List[float]) -> str:
     max_val = max(data)
     range_val = max_val - min_val
 
-    result = ""
-    for val in data:
-        # تحويل القيمة إلى مؤشر في قائمة SPARK_CHARS
-        normalized = (val - min_val) / range_val
-        idx = math.floor(normalized * (len(SPARK_CHARS) - 1))
-        result += SPARK_CHARS[idx]
+    max_idx = len(SPARK_CHARS) - 1
+    factor = max_idx / range_val
 
-    return result
+    result_chars = []
+    for val in data:
+        idx = math.floor((val - min_val) * factor)
+        if idx > max_idx:
+            idx = max_idx
+        result_chars.append(SPARK_CHARS[idx])
+
+    return "".join(result_chars)
 
 
 # ─────────────────────────────────────────────
