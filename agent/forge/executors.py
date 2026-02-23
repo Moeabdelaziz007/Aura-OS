@@ -10,6 +10,9 @@ from typing import Any, Dict
 logger = logging.getLogger("AetherForge")
 
 class CoinGeckoExecutor:
+    base_url = "https://api.coingecko.com/api/v3"
+    intent_action = "price_check"
+
     async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         coins = params.get("coins", ["bitcoin", "ethereum", "solana"])
         currencies = params.get("currencies", ["usd"])
@@ -43,6 +46,9 @@ class CoinGeckoExecutor:
         return refined
 
 class GitHubExecutor:
+    base_url = "https://api.github.com"
+    intent_action = "github_search"
+
     async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         query = params.get("query", "AI agent python")
         limit = params.get("limit", 3)
@@ -73,6 +79,9 @@ class GitHubExecutor:
         }
 
 class WeatherExecutor:
+    base_url = "https://api.open-meteo.com/v1"
+    intent_action = "weather_check"
+
     async def execute(self, params: Dict[str, Any], client: httpx.AsyncClient) -> Dict[str, Any]:
         city = params.get("city", "Cairo")
         # Placeholder for OpenWeather logic
