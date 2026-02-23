@@ -28,6 +28,15 @@
 * **Capabilities:** Real-time bi-directional audio streaming, frame-based vision ingestion, and interruption awareness.
 * **Logic:** Triggered for "The Breath of Life" interaction and screen-contextual reasoning.
 
+## 🧬 Category 5: Sovereign Intelligence (The Alpha Evolve Suite)
+
+* **Skill:** `self-improving-agent` (`pskoett/self-improving-agent`)
+* **Capabilities:** Autonomous error logging, learning from successful patterns, and mutation-based self-healing.
+* **Skill:** `elite-longterm-memory` (`NextFrontierBuilds/elite-longterm-memory`)
+* **Capabilities:** Semantic recall, Vectorized data persistence, and Git-based context preservation.
+* **Skill:** `multimodal-observer` (`steipete/video-frames` + `WhaleFell/tesseract-ocr`)
+* **Capabilities:** Frame-by-frame video analysis, OCR extraction for UI dissolution.
+
 ---
 
 ## ⚖️ Execution Principles
