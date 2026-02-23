@@ -36,6 +36,14 @@
 * **Capabilities:** Semantic recall, Vectorized data persistence, and Git-based context preservation.
 * **Skill:** `multimodal-observer` (`steipete/video-frames` + `WhaleFell/tesseract-ocr`)
 * **Capabilities:** Frame-by-frame video analysis, OCR extraction for UI dissolution.
+* **Skill:** `vocal-reflex` (`araa47/local-whisper` + `Shaharsha/elevenlabs-tts`)
+* **Capabilities:** Low-latency localized STT and emotive TTS.
+* **Skill:** `system-healing` (`pskoett/self-improving-agent`)
+* **Capabilities:** Recursive self-optimization and error mutation tracking.
+* **Skill:** `longterm-memory` (`NextFrontierBuilds/elite-longterm-memory`)
+* **Capabilities:** Vectorized context retention and WAL sync.
+* **Skill:** `sovereign-browser` (`tezatezaz/clawbrowser`)
+* **Capabilities:** Autonomous DOM manipulation via Playwright.
 
 ---
 

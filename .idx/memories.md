@@ -21,6 +21,9 @@ AetherOS exists to make traditional graphical interfaces obsolete. We bypass the
 - **Senses:** Sensory Cortex (Gemini Live Bridge v2.0) - **Active**.
 - **Optimization:** System Indexing Hardened (v2.0 Performance Patch) - **Stable**.
 - **Execution:** Motor Cortex (Live Function Calling) - **Active**.
+- **Evolution:** Alpha Sovereign (Vectorized Intent & Stateless Lambdas) - **Active**.
+- **Stabilization:** Git Index Zeroed & .gitignore Hardened - **Stable**.
+- **Sovereign Skills:** Harvested 10+ advanced skills from ClawHub - **Integrated**.
 
 ## 📜 Mandate
 

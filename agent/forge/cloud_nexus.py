@@ -30,6 +30,10 @@ class CloudNexus:
     def _initialize(self):
         try:
             if not firebase_admin._apps:
+                if not os.path.exists(self.key_path):
+                    logger.warning(f"⚠️ Service account file not found at {self.key_path}. Skipping Firebase init.")
+                    return
+                
                 cred = credentials.Certificate(self.key_path)
                 firebase_admin.initialize_app(cred, {
                     'projectId': self.project_id,
