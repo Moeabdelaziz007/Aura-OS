@@ -1,6 +1,9 @@
 import asyncio
+import logging
 from typing import Any, Dict, List
 from .memory_parser import AetherNavigator
+
+logger = logging.getLogger(__name__)
 
 class HyperMindRouter:
     """
@@ -19,7 +22,7 @@ class HyperMindRouter:
         required_keys = ["anomaly"]
         for key in required_keys:
             if key not in context:
-                print(f"⚠️ calculate_vfe: Missing required key '{key}', using default value")
+                logger.warning(f"⚠️ calculate_vfe: Missing required key '{key}', using default value")
         
         if dna is None:
             dna = await self.bridge.load_dna_async()
@@ -43,7 +46,7 @@ class HyperMindRouter:
         required_keys = ["novelty", "goal_alignment"]
         for key in required_keys:
             if key not in context:
-                print(f"⚠️ calculate_efe: Missing required key '{key}', using default value")
+                logger.warning(f"⚠️ calculate_efe: Missing required key '{key}', using default value")
         
         dna = await self.bridge.load_dna_async()
         weights = dna.inference.get("cognitive_weights", {})
@@ -135,8 +138,8 @@ class HyperMindRouter:
         
         is_forge_task = any(target in intent_text for target in forge_targets)
         if is_forge_task:
-            print(f"🔮 [AETHER FORGE] Intent detected: '{intent_text}'")
-            print("   -> Bypassing conventional UI logic. Routing to Forge Synthesis...")
+            logger.info(f"🔮 [AETHER FORGE] Intent detected: '{intent_text}'")
+            logger.info("   -> Bypassing conventional UI logic. Routing to Forge Synthesis...")
             return "AETHER_FORGE"
         
         # pre-route enrichment: consult Aether-Nexus for similar memories
@@ -144,16 +147,16 @@ class HyperMindRouter:
             hits = await self.bridge.search_nexus(context)
             context["nexus_hits"] = hits
             if hits:
-                print(f"🔗 Nexus context: {len(hits)} nodes retrieved")
+                logger.info(f"🔗 Nexus context: {len(hits)} nodes retrieved")
         except Exception:
             pass
 
         f_score = await self.calculate_vfe(context, dna=dna)
         
-        print(f"🧠 AetherCore Inference: F={f_score:.4f}, Tau={tau}")
+        logger.info(f"🧠 AetherCore Inference: F={f_score:.4f}, Tau={tau}")
 
         if f_score >= tau:
-            print("🧘 VFE Breached! Engaging System 2 (Neural Swarm)...")
+            logger.info("🧘 VFE Breached! Engaging System 2 (Neural Swarm)...")
             return "SYSTEM_2_SWARM"
         
         return "SYSTEM_1_REFLEX"
