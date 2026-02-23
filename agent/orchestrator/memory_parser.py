@@ -5,12 +5,9 @@ import asyncio
 import numpy as np
 from dataclasses import dataclass
 from typing import Any, Optional, Dict, List
-try:
-    from sentence_transformers import SentenceTransformer
-    import faiss
-except ImportError:
-    SentenceTransformer = None
-    faiss = None
+# Heavy ML imports moved inside classes for Lazy Loading (Zero-Friction Startup)
+SentenceTransformer = None
+faiss = None
 
 # Optional YAML import with graceful fallback (parses to empty dicts if missing)
 try:

@@ -59,11 +59,38 @@ class AgentParliament:
         if not proposals:
             raise ValueError("Parliament cannot deliberate on empty proposals.")
         
-        logger.info(f"Parliament convened with {len(proposals)} proposals.")
-        # Winner based on confidence score (System 1 consensus)
-        winner = max(proposals, key=lambda x: x.confidence)
-        logger.info(f"Parliament Winner: Agent [{winner.agent_id}] -> {winner.reasoning}")
+        logger.info(f"⚖️ Parliament convened with {len(proposals)} proposals.")
+        
+        # Priority 1: Pick by highest confidence
+        # Priority 2: In case of tie, pick the one with lower claimed latency
+        winner = sorted(proposals, key=lambda x: (-x.confidence, getattr(x, 'expected_ms', 999)))[0]
+        
+        logger.info(f"🏆 Parliament Winner: Agent [{winner.agent_id}] -> {winner.reasoning}")
         return winner
+
+    def verify_structural_consensus(self, data1: Any, data2: Any) -> float:
+        """
+        Calculates a similarity score based on data structure for non-numeric types.
+        Returns a value between 0.0 and 100.0.
+        """
+        if type(data1) != type(data2):
+            return 0.0
+        
+        if isinstance(data1, dict):
+            keys1 = set(data1.keys())
+            keys2 = set(data2.keys())
+            if not keys1 and not keys2: return 100.0
+            intersection = keys1.intersection(keys2)
+            return (len(intersection) / len(keys1.union(keys2))) * 100.0
+        
+        if isinstance(data1, list):
+            if not data1 and not data2: return 100.0
+            # Compare first element structure if exists
+            if data1 and data2:
+                return self.verify_structural_consensus(data1[0], data2[0])
+            return 0.0
+            
+        return 100.0 if data1 == data2 else 0.0
 
 # ─────────────────────────────────────────────
 # 🧠 AETHER NEXUS — Global Synaptic Record
@@ -208,17 +235,26 @@ class AetherForge:
                     latency_ms=t_verifier
                 )
                 
-                # Consensus logic: Calculate deviation
-                deviation = self._calculate_deviation(primary_data, verifier_data)
+                # Consensus logic: Calculate deviation or structural similarity
+                is_numeric = self._extract_numeric_value(primary_data) is not None
+                
+                if is_numeric:
+                    deviation = self._calculate_deviation(primary_data, verifier_data)
+                    is_trustworthy = deviation < 5.0
+                    logger.info(f"🛡️ Parliament 2.0: Numeric Consensus reached. Deviation: {deviation:.2f}%")
+                else:
+                    similarity = self.parliament.verify_structural_consensus(primary_data, verifier_data)
+                    is_trustworthy = similarity > 80.0
+                    deviation = 100.0 - similarity
+                    logger.info(f"🛡️ Parliament 2.0: Structural Consensus reached. Similarity: {similarity:.2f}%")
 
                 verified_result = VerifiedResult(
                     primary=primary_proof,
                     verifier=verifier_proof,
                     consensus_value=primary_data,
                     deviation_pct=deviation,
-                    is_trustworthy=deviation < 5.0 # Threshold for trustworthiness
+                    is_trustworthy=is_trustworthy
                 )
-                logger.info(f"🛡️ Parliament 2.0: Consensus reached. Deviation: {deviation:.2f}%")
 
             # Kill losers
             for p in pending:
@@ -314,14 +350,23 @@ class AetherForge:
         # Use dynamic service map
         if intent.action in self.SERVICE_MAP:
             service = self.SERVICE_MAP[intent.action]
-            # Params generation for known services
+            executor_cls = self.REGISTRY.get(service)
+            
+            # Dynamic Params Generation
+            # If the executor has a specialized map, use it. Otherwise, pass target as generic.
             params = {}
-            if intent.action == "price_check":
-                params = {"coins": [intent.target], "currencies": ["usd"]}
-            elif intent.action == "github_search":
-                params = {"query": intent.target, "limit": 3}
-            elif intent.action == "weather_check":
-                params = {"city": intent.target}
+            if hasattr(executor_cls, "generate_params"):
+                params = executor_cls.generate_params(intent.target)
+            else:
+                # Fallback to standard mapping if not specialized
+                if intent.action == "price_check":
+                    params = {"coins": [intent.target], "currencies": ["usd"]}
+                elif intent.action == "github_search":
+                    params = {"query": intent.target, "limit": 3}
+                elif intent.action == "weather_check":
+                    params = {"city": intent.target}
+                else:
+                    params = {"query": intent.target}
         else:
             # Dynamic Intent!
             service = intent.target if intent.target != "unknown" else intent.action
