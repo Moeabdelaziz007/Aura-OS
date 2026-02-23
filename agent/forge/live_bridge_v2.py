@@ -26,13 +26,14 @@ logger = logging.getLogger("aether.sensory")
 class GeminiLiveBridgeV2:
     """The fluid Sensory Cortex of AetherOS."""
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, forge: Optional[AetherForge] = None):
         self.api_key = api_key or os.getenv("GOOGLE_API_KEY")
         self.forge = forge or AetherForge()
         self.solver = ConstraintSolver()
         self.motor = MotorCortex(forge=self.forge)
         self.session = None
         self._running = False
+        self._hot_intent_cache = {} # Inverted Bridge Cache
 
     async def start_session(self):
         """Initialize the bi-direction session."""
@@ -131,7 +132,23 @@ class GeminiLiveBridgeV2:
     async def send_frame(self, image_data: bytes):
         """Sends a visual frame to the bridge."""
         if self.session and self._running:
+            # 1. Predictive Inverted Bridge: Warm up the state before model asks
+            asyncio.create_task(self._predict_and_warmup(image_data))
+            
             await self.session.send(input={"data": image_data, "mime_type": "image/jpeg"}, end_of_turn=False)
+
+    async def _predict_and_warmup(self, frame_data: bytes):
+        """Analyze visual focus to pre-fetch context from CloudNexus."""
+        # conceptual implementation of Inverted Bridge / Predictive Pre-fetching
+        # 1. Analyze metadata (mocked focus area)
+        focus_area = "browser_settings_pane"  # Simulated visual recognition
+        
+        if focus_area not in self._hot_intent_cache:
+            logger.info(f"🔮 Inverted Bridge: Predictive focus detected on [{focus_area}]. Pre-fetching DNA...")
+            # Pre-fetch relevant state from Firestore via Forge
+            dna = await self.forge.nexus.get_agent_context(f"intent-{focus_area}")
+            self._hot_intent_cache[focus_area] = dna
+            logger.info(f"✨ Inverted Bridge: Context for [{focus_area}] is WARM.")
 
     async def stop(self):
         self._running = False
