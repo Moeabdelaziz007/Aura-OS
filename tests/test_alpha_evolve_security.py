@@ -13,7 +13,7 @@ sys.modules['dotenv'] = MagicMock()
 # Set env var
 os.environ["GEMINI_API_KEY"] = "fake_key"
 
-from agent.orchestrator.alpha_evolve import AlphaMindGenerator
+from agent.orchestrator.alpha_evolve import AlphaMindGenerator, HeuristicSandbox
 
 class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
@@ -71,6 +71,37 @@ class TestAlphaMindGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
         # Verify structure
         self.assertIn("<ANOMALY_CONTEXT>", self.captured_prompt)
         self.assertIn("<COMPONENT>", self.captured_prompt)
+
+class TestHeuristicSandboxSecurity(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.sandbox = HeuristicSandbox()
+
+    @patch('asyncio.create_subprocess_shell')
+    @patch('asyncio.create_subprocess_exec')
+    async def test_run_validation_no_shell_injection(self, mock_exec, mock_shell):
+        """
+        Verify that run_validation uses create_subprocess_exec (no shell)
+        and passes arguments as a list, preventing shell injection.
+        """
+        # Setup mock process
+        mock_process = MagicMock()
+        mock_process.communicate = AsyncMock(return_value=(b"stdout", b"stderr"))
+        mock_process.returncode = 0
+        mock_exec.return_value = mock_process
+
+        # This should fail if the code uses shell=True or create_subprocess_shell
+        command = ["ls", "-la", "/tmp"]
+        await self.sandbox.run_validation(command)
+
+        # Verification
+        mock_shell.assert_not_called()
+        mock_exec.assert_called_once()
+
+        # Check arguments: program, *args, stdout=..., stderr=..., cwd=...
+        args, kwargs = mock_exec.call_args
+        self.assertEqual(args[0], "ls")
+        self.assertEqual(args[1], "-la")
+        self.assertEqual(args[2], "/tmp")
 
 if __name__ == "__main__":
     unittest.main()
