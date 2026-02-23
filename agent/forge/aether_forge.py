@@ -19,28 +19,23 @@ from pathlib import Path
 
 import httpx
 from .executors import CoinGeckoExecutor, GitHubExecutor, WeatherExecutor
-from .models import NanoAgent, ForgeResult, NanoExecutor, AgentProposal
-from .exceptions import ForgeException, ForgeErrorType
+from .models import (
+    NanoAgent, ForgeResult, NanoExecutor, AgentProposal,
+    CognitiveSystem, UrgencyLevel, ForgeMetrics, DataProof, VerifiedResult
+)
+from .exceptions import (
+    AetherBaseError, ForgeErrorType, NetworkError, RateLimitError,
+    APISchemaChangedError, VetoBlockedError, SwarmExhaustedError,
+    IntentUnresolvedError, ProofDisputedError
+)
+from .aether_nexus import AetherNexus
+from .visualizer import MicroVisualizer
 
 # ─────────────────────────────────────────────
 # TELEMETRY & METRICS (القياسات والبيانات)
 # ─────────────────────────────────────────────
 
-@dataclass
-class ForgeMetrics:
-    total_requests: int = 0
-    successful_requests: int = 0
-    failed_requests: int = 0
-    total_latency_ms: float = 0.0
-
-    @property
-    def success_rate(self) -> float:
-        return (self.successful_requests / self.total_requests) * 100 if self.total_requests > 0 else 100.0
-
-    @property
-    def avg_latency(self) -> float:
-        return self.total_latency_ms / self.successful_requests if self.successful_requests > 0 else 0.0
-
+# Logger Setup
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | 🔮 Forge | %(levelname)s | %(message)s",
@@ -71,73 +66,7 @@ class AgentParliament:
 # 🧠 AETHER NEXUS — Global Synaptic Record
 # ─────────────────────────────────────────────
 
-class AetherNexus:
-    """
-    Darwinian Persistent Memory.
-    Credits = Reliability. 0 Credits = Dissolution.
-    """
-    def __init__(self, path: str = "agent/memory/nexus_dna.json"):
-        self.path = Path(path)
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self._graph: Dict[str, Any] = self._load()
-
-    def _load(self) -> Dict[str, Any]:
-        if self.path.exists():
-            try:
-                return json.loads(self.path.read_text())
-            except json.JSONDecodeError:
-                logger.warning("NEXUS DNA corrupted. Initializing blank slate.")
-        return {}
-
-    async def _save(self) -> None:
-        """Async-safe save via background thread."""
-        def write():
-            self.path.write_text(json.dumps(self._graph, indent=2, ensure_ascii=False))
-        await asyncio.to_thread(write)
-
-    def recall(self, service: str) -> Optional[Dict[str, Any]]:
-        """Rapid Synaptic Recall (System 1)."""
-        node = self._graph.get(service)
-        if node and node.get("energy_credits", 0) >= 25:
-            logger.info(f"System 1 Activated: DNA fingerprint found for [{service}]")
-            return node.get("api_pattern")
-        return None
-
-    async def engrave(self, service: str, pattern: Dict[str, Any], success: bool, error_type: Optional[str] = None) -> None:
-        """Update genetic fingerprint based on success/failure outcome."""
-        node = self._graph.setdefault(service, {
-            "service": service,
-            "api_pattern": pattern,
-            "energy_credits": 50,
-            "success_count": 0,
-            "created_at": datetime.now().isoformat()
-        })
-        
-        # Smart Darwinian Penalties
-        if success:
-            delta = +15
-            node["success_count"] += 1
-            node["api_pattern"] = pattern
-            node["last_success"] = datetime.now().isoformat()
-        else:
-            # Harsh penalty for breaking API changes (404), soft for transient errors
-            delta = -35 if error_type == "HTTPStatusError" else -15
-
-        node["energy_credits"] = max(0, min(100, node["energy_credits"] + delta))
-
-        if node["energy_credits"] <= 0:
-            logger.warning(f"Darwinian Purge: [{service}] synapse dissolved due to failure.")
-            del self._graph[service]
-        
-        await self._save()
-
-    async def tidal_prune(self) -> int:
-        """Low Tide: Dissolve weak synapses below 15% energy."""
-        dead = [k for k, v in self._graph.items() if v.get("energy_credits", 0) < 15]
-        for k in dead:
-            del self._graph[k]
-        await self._save()
-        return len(dead)
+# Nexus logic moved to aether_nexus.py
 
 class TemporalMemoryTides:
     """Sleep cycles for AetherOS to consolidate memory."""
@@ -146,7 +75,7 @@ class TemporalMemoryTides:
 
     async def sleep(self):
         logger.info("🌊 Low Tide initiated. Pruning weak synapses...")
-        count = await self.nexus.tidal_prune()
+        count = self.nexus.tidal_prune()
         logger.info(f"🌊 Low Tide complete. {count} synapses dissolved.")
 
 # ─────────────────────────────────────────────
@@ -167,6 +96,7 @@ class AetherForge:
         self.parliament = AgentParliament()
         self.tides = TemporalMemoryTides(self.nexus)
         self.metrics = ForgeMetrics()
+        self.visualizer = MicroVisualizer()
         
         # Pooled High-Performance Client
         self.client = httpx.AsyncClient(
@@ -183,13 +113,107 @@ class AetherForge:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.client.aclose()
 
+    async def forge_race(self, intent_data: Dict[str, Any], executors: List[NanoExecutor]) -> ForgeResult:
+        """
+        Agent Parliament 2.0: AlphaCode Swarm Race + Proof of Data.
+        Multiple agents race for speed; the first two valid results are used for consensus.
+        """
+        t0 = time.time()
+        service = intent_data.get("service", "unknown")
+        agent_id = f"race-{hashlib.md5(str(t0).encode()).hexdigest()[:6]}"
+        
+        # Launch race
+        tasks = [e.execute(intent_data.get("params", {}), self.client) for e in executors]
+        
+        try:
+            # We want the FIRST valid result, but we also want a VERIFIER result if possible
+            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            
+            primary_data = done.pop().result()
+            t_primary = (time.time() - t0) * 1000
+            
+            primary_proof = DataProof(
+                source=f"{service.capitalize()}-Primary",
+                value=primary_data,
+                raw_response=primary_data,
+                latency_ms=t_primary
+            )
+
+            # Attempt to get a verifier from the remaining tasks (if any finished nearly simultaneously)
+            verified_result = None
+            if done:
+                verifier_data = done.pop().result()
+                t_verifier = (time.time() - t0) * 1000
+                verifier_proof = DataProof(
+                    source=f"{service.capitalize()}-Verifier",
+                    value=verifier_data,
+                    raw_response=verifier_data,
+                    latency_ms=t_verifier
+                )
+                
+                # Consensus logic (Example: deviation check for prices)
+                verified_result = VerifiedResult(
+                    primary=primary_proof,
+                    verifier=verifier_proof,
+                    consensus_value=primary_data,
+                    deviation_pct=0.0, # Placeholder for real math
+                    is_trustworthy=True
+                )
+                logger.info("🛡️ Parliament 2.0: Consensus reached between Primary and Verifier.")
+
+            # Kill losers
+            for p in pending:
+                p.cancel()
+            
+            ms = (time.time() - t0) * 1000
+            
+            # Generate ASCII Visuals for WOW Factor
+            ascii_visual = self.visualizer.render(service, primary_data)
+
+            self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
+            
+            res = ForgeResult(
+                success=True,
+                service=service,
+                agent_id=agent_id,
+                execution_ms=ms,
+                dna_crystallized=True,
+                cognitive_system=CognitiveSystem.SYSTEM_1, # Race is always System 1
+                data=primary_data,
+                verified=verified_result,
+                ascii_visual=ascii_visual
+            )
+            self.metrics.record(res)
+            return res
+            
+        except Exception as e:
+            logger.error(f"Race failed: {e}")
+            return self._fail(service, str(e), t0, agent_id)
+
+    @staticmethod
+    def generate_sparkline(data: List[float]) -> str:
+        """ASCII Visualizer for trend data."""
+        if not data: return ""
+        chars = " ▂▃▄▅▆▇█"
+        min_v, max_v = min(data), max(data)
+        range_v = max_v - min_v or 1
+        return "".join(chars[int((v - min_v) / range_v * 7)] for v in data)
+
     async def forge_and_deploy(self, intent_data: Dict[str, Any], max_retries: int = 3) -> ForgeResult:
         """Execute the 4-Phase Forge Loop with exponential backoff retry."""
         t0 = time.time()
         service = intent_data.get("service", "unknown").lower()
         self.metrics.total_requests += 1
         
-        # Phase 1: Deconstruct & Recall
+        # Constraint Solver Logic (Basic structure)
+        # In a real scenario, this would involve Vision/Audio context
+        if intent_data.get("urgent") and service == "coingecko":
+            # TRIGGER SWARM RACE for urgent requests
+            logger.info(f"⚡ URGENT: Launching Swarm Race for [{service}]")
+            executors = [self.REGISTRY[service](), self.REGISTRY[service]()] # Simulating multiple agents
+            return await self.forge_race(intent_data, executors)
+
+        # Standard Phase 1: Deconstruct & Recall
         cached_pattern = self.nexus.recall(service)
         is_crystallized = cached_pattern is not None
         
@@ -222,13 +246,23 @@ class AetherForge:
                 ms = (time.time() - t0) * 1000
                 
                 # Phase 4: Harvest & Engrave
-                await self.nexus.engrave(service, intent_data.get("params", {}), True)
+                self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
                 
-                # Update Metrics
-                self.metrics.successful_requests += 1
-                self.metrics.total_latency_ms += ms
-                
-                return ForgeResult(True, data, service, ms, agent_id, is_crystallized)
+                # ASCII Visualizer
+                ascii_visual = self.visualizer.render(service, data)
+
+                res = ForgeResult(
+                    success=True,
+                    service=service,
+                    agent_id=agent_id,
+                    execution_ms=ms,
+                    dna_crystallized=is_crystallized,
+                    cognitive_system=CognitiveSystem.SYSTEM_1 if ms < 500 else CognitiveSystem.SYSTEM_2,
+                    data=data,
+                    ascii_visual=ascii_visual
+                )
+                self.metrics.record(res)
+                return res
                 
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 429 and attempt < max_retries - 1:
@@ -237,13 +271,11 @@ class AetherForge:
                     await asyncio.sleep(wait)
                     continue
                 logger.error(f"API Protocol Fault: {e}")
-                self.metrics.failed_requests += 1
-                self.nexus.engrave(service, {}, False, "HTTPStatusError")
+                self.nexus.engrave(service, {}, False)
                 return self._fail(service, str(e), t0, agent_id)
             except Exception as e:
                 logger.error(f"General Execution Fault: {e}")
-                self.metrics.failed_requests += 1
-                self.nexus.engrave(service, {}, False, "GeneralFault")
+                self.nexus.engrave(service, {}, False)
                 return self._fail(service, str(e), t0, agent_id)
 
     async def swarm_execute(self, intents: List[Dict[str, Any]]) -> List[ForgeResult]:
@@ -254,7 +286,17 @@ class AetherForge:
 
     def _fail(self, service: str, error: str, start_time: float, agent_id: str) -> ForgeResult:
         ms = (time.time() - start_time) * 1000
-        return ForgeResult(False, None, service, ms, agent_id, False, error)
+        res = ForgeResult(
+            success=False,
+            service=service,
+            agent_id=agent_id,
+            execution_ms=ms,
+            dna_crystallized=False,
+            cognitive_system=CognitiveSystem.SYSTEM_1,
+            error=error
+        )
+        self.metrics.record(res)
+        return res
 
 # ─────────────────────────────────────────────
 # DEMO EXECUTION

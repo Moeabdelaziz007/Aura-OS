@@ -1,3 +1,5 @@
-httpx>=0.25.0
-pytest>=7.0.0
-pytest-asyncio>=0.21.0
+httpx
+pytest
+pytest-asyncio
+python-dotenv
+cryptography
