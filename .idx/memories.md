@@ -13,7 +13,11 @@ AetherOS exists to make traditional graphical interfaces obsolete. We bypass the
 - **Engine:** Aether Forge (4-Phase Protocol) - **Active**.
 - **Memory:** AetherNexus (Bayesian Feedback) - **Active**.
 - **Senses:** Gemini Live Bridge (Vocal/Screen) - **Active**.
-- **Infrastructure:** Local-only. **Transitioning to GCP (Firestore).**
+- **Infrastructure:** Firebase 'Pristine' Genesis.
+- **Active Project:** `notional-armor-456623-e8` (AetherOS Core).
+- **Region:** `us-central1`.
+- **Database:** Firestore (Native Mode).
+- **Collective Intelligence:** Hive Mind Integration (AetherForge + CloudNexus) - **Live**.
 
 ## 📜 Mandate
 

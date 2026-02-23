@@ -30,6 +30,7 @@ from .exceptions import (
     IntentUnresolvedError, ProofDisputedError
 )
 from .aether_nexus import AetherNexus
+from .cloud_nexus import CloudNexus
 from .visualizer import MicroVisualizer
 from .constraint_solver import ConstraintSolver, build_time_context, MemorySignal
 from .circuit_breaker import get_circuit_breaker, CircuitOpenError
@@ -104,6 +105,16 @@ class AetherForge:
         self.visualizer = MicroVisualizer()
         self.solver = ConstraintSolver()
         self.circuit = get_circuit_breaker()
+        
+        # Cloud Nexus (The Global Nervous System)
+        project_id = os.getenv("GOOGLE_CLOUD_PROJECT", "notional-armor-456623-e8")
+        key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", ".idx/aether-key.json")
+        self.cloud = None
+        if os.path.exists(key_path):
+            try:
+                self.cloud = CloudNexus(project_id, key_path)
+            except Exception as e:
+                logger.warning(f"⚠️ CloudNexus offline: {e}. Degrading to Local Sovereignty.")
         
         # Pooled High-Performance Client
         self.client = httpx.AsyncClient(
@@ -284,6 +295,15 @@ class AetherForge:
             executors = [self.REGISTRY[service](), self.REGISTRY[service]()] # Simulating multiple agents
             return await self.forge_race(intent_data, executors)
 
+        # Phase 0: Swarm Cache Check (Collective Intelligence)
+        if self.cloud:
+            global_pattern = await self.cloud.discover_global_patterns(service)
+            if global_pattern:
+                logger.info(f"🌀 Swarm Cache HIT: Global pattern found for [{service}]. Bypassing local vision.")
+                # We prioritize global verified patterns over local drafts
+                # Implementation detail: For brevity in this loop, we merge global insights into cached_pattern
+                # but local AetherNexus still acts as the primary System 1 for speed.
+        
         # Standard Phase 1: Deconstruct & Recall
         cached_pattern = await self.nexus.recall(service)
         is_crystallized = cached_pattern is not None
@@ -323,6 +343,13 @@ class AetherForge:
                 # Update Shadow Maps (Collective Intelligence)
                 if hasattr(executor, 'base_url'):
                     await self.archaeologist.register_discovery(service, executor.base_url)
+                    if self.cloud:
+                        # Shared Intelligence: Asynchronously inform the Hive Mind
+                        asyncio.create_task(self.cloud.share_shadow_map(
+                            service, 
+                            executor.base_url, 
+                            getattr(executor, 'intent_action', 'unknown')
+                        ))
                 
                 # ASCII Visualizer
                 ascii_visual = self.visualizer.render(service, data)

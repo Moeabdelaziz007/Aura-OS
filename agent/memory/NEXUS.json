@@ -22,11 +22,11 @@
         "usd"
       ]
     },
-    "avg_latency_ms": 564.9519562721252,
+    "avg_latency_ms": 863.5321458180746,
     "success_rate": 1.0,
-    "energy_credits": 40.0,
-    "use_count": 4,
-    "last_used": "2026-02-23T01:53:29.790653",
+    "energy_credits": 60.0,
+    "use_count": 6,
+    "last_used": "2026-02-23T03:26:54.213141",
     "created_at": "2026-02-23T01:38:22.182067"
   }
 }
