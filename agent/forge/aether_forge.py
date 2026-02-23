@@ -12,6 +12,7 @@ import time
 import hashlib
 import os
 import logging
+import re
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Callable, Awaitable, Type, Protocol
@@ -22,7 +23,7 @@ from .executors import CoinGeckoExecutor, GitHubExecutor, WeatherExecutor
 from .models import (
     NanoAgent, ForgeResult, NanoExecutor, AgentProposal,
     CognitiveSystem, UrgencyLevel, ForgeMetrics, DataProof, VerifiedResult,
-    VoiceFeatures, ScreenContext
+    VoiceFeatures, ScreenContext, ResolvedIntent
 )
 from .exceptions import (
     AetherBaseError, ForgeErrorType, NetworkError, RateLimitError,
@@ -92,11 +93,8 @@ from .sandbox import NanoSandbox
 class AetherForge:
     """The main orchestration hub for Aether Forge Protocol."""
     
-    REGISTRY: Dict[str, Type[NanoExecutor]] = {
-        "coingecko": CoinGeckoExecutor,
-        "github": GitHubExecutor,
-        "weather": WeatherExecutor
-    }
+    # Static executors for initial discovery, will be dynamically built in __init__
+    STATIC_EXECUTORS = [CoinGeckoExecutor, GitHubExecutor, WeatherExecutor]
 
     def __init__(self, automated_tides: bool = True):
         self.nexus = AetherNexus()
@@ -111,6 +109,11 @@ class AetherForge:
         # Dynamic Forge Components
         self.compiler = NanoAgentCompiler()
         self.sandbox = NanoSandbox()
+
+        # Build Registry and Service Map dynamically
+        self.REGISTRY: Dict[str, Type[NanoExecutor]] = {}
+        self.SERVICE_MAP: Dict[str, str] = {}
+        self._build_registry()
 
         # Cloud Nexus (The Global Nervous System)
         project_id = os.getenv("GOOGLE_CLOUD_PROJECT", "notional-armor-456623-e8")
@@ -133,6 +136,19 @@ class AetherForge:
         if automated_tides:
             asyncio.create_task(self._start_tide_daemon())
 
+    def _build_registry(self):
+        """Dynamically build registry and service map from executor classes."""
+        for executor_cls in self.STATIC_EXECUTORS:
+            # Derive service name from class name (e.g., CoinGeckoExecutor -> coingecko)
+            service_name = executor_cls.__name__.lower().replace("executor", "")
+            self.REGISTRY[service_name] = executor_cls
+
+            if hasattr(executor_cls, "intent_action"):
+                self.SERVICE_MAP[executor_cls.intent_action] = service_name
+                logger.debug(f"Registered executor: {service_name} for action: {executor_cls.intent_action}")
+            else:
+                logger.warning(f"Executor {executor_cls.__name__} has no intent_action attribute.")
+
     async def _start_tide_daemon(self):
         """Background daemon for autonomous memory pruning."""
         while True:
@@ -145,7 +161,12 @@ class AetherForge:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.client.aclose()
 
-    async def forge_race(self, intent_data: Dict[str, Any], executors: List[NanoExecutor]) -> ForgeResult:
+    async def forge_race(
+        self,
+        intent_data: Dict[str, Any],
+        executors: List[NanoExecutor],
+        intent_obj: Optional[ResolvedIntent] = None
+    ) -> ForgeResult:
         """
         Agent Parliament 2.0: AlphaCode Swarm Race + Proof of Data.
         Multiple agents race for speed; the first two valid results are used for consensus.
@@ -156,7 +177,7 @@ class AetherForge:
         
         # Launch race with Circuit Breakers
         tasks = [
-            self.circuit.call(service, e.execute, intent_data.get("params", {}), self.client)
+            asyncio.create_task(self.circuit.call(service, e.execute, intent_data.get("params", {}), self.client))
             for e in executors
         ]
         
@@ -187,15 +208,17 @@ class AetherForge:
                     latency_ms=t_verifier
                 )
                 
-                # Consensus logic (Example: deviation check for prices)
+                # Consensus logic: Calculate deviation
+                deviation = self._calculate_deviation(primary_data, verifier_data)
+
                 verified_result = VerifiedResult(
                     primary=primary_proof,
                     verifier=verifier_proof,
                     consensus_value=primary_data,
-                    deviation_pct=0.0, # Placeholder for real math
-                    is_trustworthy=True
+                    deviation_pct=deviation,
+                    is_trustworthy=deviation < 5.0 # Threshold for trustworthiness
                 )
-                logger.info("🛡️ Parliament 2.0: Consensus reached between Primary and Verifier.")
+                logger.info(f"🛡️ Parliament 2.0: Consensus reached. Deviation: {deviation:.2f}%")
 
             # Kill losers
             for p in pending:
@@ -209,10 +232,7 @@ class AetherForge:
             await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
             
             # Record Learning
-            if hasattr(self.solver, "feedback"):
-                intent_id = intent_data.get("intent_id")
-                if intent_id:
-                    await self.solver.feedback.record_outcome(intent_id, True)
+            # Feedback is recorded centrally in resolve_and_forge to avoid double counting
             
             res = ForgeResult(
                 success=True,
@@ -230,13 +250,55 @@ class AetherForge:
             
         except Exception as e:
             logger.error(f"Race failed: {e}")
-            # Record failure in feedback loop
-            if hasattr(self.solver, "feedback"):
-                intent_id = intent_data.get("intent_id")
-                if intent_id:
-                    # We can't easily get the real intent object here, so we assume failure
-                    pass
+            # Failure recorded in resolve_and_forge via res.success=False
+
             return self._fail(service, str(e), t0, agent_id)
+
+    def _calculate_deviation(self, data1: Any, data2: Any) -> float:
+        """Calculates percentage deviation between two datasets."""
+        try:
+            val1 = self._extract_numeric_value(data1)
+            val2 = self._extract_numeric_value(data2)
+
+            if val1 is None or val2 is None:
+                return 0.0 # Cannot compare non-numeric
+
+            if val1 == 0 and val2 == 0:
+                return 0.0
+
+            avg = (val1 + val2) / 2
+            if avg == 0: return 0.0
+
+            return abs(val1 - val2) / avg * 100.0
+        except Exception:
+            return 0.0
+
+    def _extract_numeric_value(self, data: Any) -> Optional[float]:
+        """Recursively extract the first meaningful numeric value from a complex structure."""
+        if isinstance(data, (int, float)):
+            return float(data)
+        elif isinstance(data, str):
+            # Try to parse currency or number
+            clean = re.sub(r'[^\d\.]', '', data)
+            try:
+                return float(clean)
+            except ValueError:
+                return None
+        elif isinstance(data, dict):
+            # Prioritize 'Price_USD' or 'usd' keys for financial data
+            for key in ['Price_USD', 'usd', 'value', 'price']:
+                if key in data:
+                    val = self._extract_numeric_value(data[key])
+                    if val is not None: return val
+            # Otherwise iterate values
+            for v in data.values():
+                val = self._extract_numeric_value(v)
+                if val is not None: return val
+        elif isinstance(data, list):
+            for v in data:
+                val = self._extract_numeric_value(v)
+                if val is not None: return val
+        return None
 
     async def resolve_and_forge(
         self,
@@ -249,11 +311,9 @@ class AetherForge:
         time_ctx = build_time_context()
         intent = self.solver.resolve(query, voice, screen, time_ctx, memory)
         
-        # Mapping solver action to service
-        service_map = {"price_check": "coingecko", "github_search": "github", "weather_check": "weather"}
-        
-        if intent.action in service_map:
-            service = service_map[intent.action]
+        # Use dynamic service map
+        if intent.action in self.SERVICE_MAP:
+            service = self.SERVICE_MAP[intent.action]
             # Params generation for known services
             params = {}
             if intent.action == "price_check":
@@ -276,10 +336,14 @@ class AetherForge:
             "urgent": intent.urgency in (UrgencyLevel.CRITICAL, UrgencyLevel.HIGH)
         }
         
-        # Deploy
-        res = await self.forge_and_deploy(intent_data)
+        # Deploy, passing the full intent object
+        res = await self.forge_and_deploy(intent_data, intent_obj=intent)
         
-        # Record feedback loop outcome
+        # Record feedback loop outcome (System 2 / Normal Path)
+        # Note: Race condition already records feedback if it ran.
+        # But we can record here too if not urgent, or just rely on forge_and_deploy return logic.
+        # Ideally, we record here to catch all paths, but we must ensure we don't double record for Race.
+        # FeedbackLoop is likely idempotent enough (just updates weights).
         await self.solver.feedback.record_outcome(intent, res.success)
         
         return res
@@ -293,7 +357,12 @@ class AetherForge:
         range_v = max_v - min_v or 1
         return "".join(chars[int((v - min_v) / range_v * 7)] for v in data)
 
-    async def forge_and_deploy(self, intent_data: Dict[str, Any], max_retries: int = 3) -> ForgeResult:
+    async def forge_and_deploy(
+        self,
+        intent_data: Dict[str, Any],
+        max_retries: int = 3,
+        intent_obj: Optional[ResolvedIntent] = None
+    ) -> ForgeResult:
         """Execute the 4-Phase Forge Loop with exponential backoff retry."""
         t0 = time.time()
         service = intent_data.get("service", "unknown").lower()
@@ -301,11 +370,12 @@ class AetherForge:
         
         # Constraint Solver Logic (Basic structure)
         # In a real scenario, this would involve Vision/Audio context
-        if intent_data.get("urgent") and service == "coingecko":
+        if intent_data.get("urgent") and service in self.REGISTRY:
             # TRIGGER SWARM RACE for urgent requests
             logger.info(f"⚡ URGENT: Launching Swarm Race for [{service}]")
-            executors = [self.REGISTRY[service](), self.REGISTRY[service]()] # Simulating multiple agents
-            return await self.forge_race(intent_data, executors)
+            # Simulating multiple agents by instantiating twice
+            executors = [self.REGISTRY[service](), self.REGISTRY[service]()]
+            return await self.forge_race(intent_data, executors, intent_obj=intent_obj)
 
         # Phase 0: Swarm Cache Check (Collective Intelligence)
         if self.cloud:
@@ -368,7 +438,11 @@ class AetherForge:
                 return res
             except Exception as e:
                 logger.error(f"Static Execution Fault: {e}")
-                return self._fail(service, str(e), t0, agent_id)
+                # Wait before retry
+                await asyncio.sleep(0.5 * (attempt + 1))
+
+        # If all retries fail
+        return self._fail(service, f"Static Agent Failed after {max_retries} retries", t0, agent_id)
 
     async def _compile_and_execute_dynamic(self, service: str, intent_data: Dict[str, Any], t0: float, agent_id: str) -> ForgeResult:
         """Compiles a Swarm of Python agents on the fly and executes them for consensus."""

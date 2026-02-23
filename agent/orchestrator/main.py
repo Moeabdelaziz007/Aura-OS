@@ -17,6 +17,8 @@ from .cognitive_router import HyperMindRouter
 from .gemini_live_client import GeminiLiveClient
 from .alpha_evolve import monitor, evolve_engine
 from agent.forge.aether_forge import AetherForge
+from agent.forge.constraint_solver import MemorySignal
+from agent.forge.models import ForgeResult
 
 class ActionContext(BaseModel):
     """Validated context for cognitive routing."""
@@ -43,6 +45,7 @@ class AetherCoreOrchestrator:
         self.bridge = AetherNavigator()
         self.router = HyperMindRouter(self.bridge)
         self.forge = AetherForge()  # Initialize the Forge
+        self.memory_signal = MemorySignal() # Short-term session memory
         self.is_running = False
         self.api_key = os.getenv("GEMINI_API_KEY")
         self._cleanup_tasks = set()  # Track cleanup tasks for graceful shutdown
@@ -69,6 +72,35 @@ class AetherCoreOrchestrator:
         print("💓 Pulse Engine: Monitoring Neural Synchronicity...")
         while True:
             await asyncio.sleep(interval)
+
+    def _update_memory(self, result: ForgeResult):
+        """Updates short-term memory signal with forge result."""
+        # 1. Update Services
+        self.memory_signal.recent_services.append(result.service)
+        if len(self.memory_signal.recent_services) > 5:
+            self.memory_signal.recent_services.pop(0)
+
+        # 2. Extract Asset/Entity
+        asset = "unknown"
+        data = result.data or {}
+
+        # Heuristics for asset extraction based on service
+        if result.service == "coingecko":
+            # Data: {'BTC': {...}, 'trend_data': ...}. Keys are usually assets.
+            keys = [k for k in data.keys() if k != "trend_data"]
+            if keys:
+                asset = keys[0]
+        elif result.service == "github":
+            asset = data.get("Query", "unknown")
+        elif result.service == "weather":
+            asset = data.get("City", "unknown")
+
+        self.memory_signal.recent_assets.append(asset)
+        if len(self.memory_signal.recent_assets) > 5:
+            self.memory_signal.recent_assets.pop(0)
+
+        self.memory_signal.last_action = result.service
+        self.memory_signal.query_count_1h += 1
 
     async def handle_optic_nerve(self, websocket):
         """Processes real-time binary/JSON synaptic bridge signals."""
@@ -187,10 +219,16 @@ class AetherCoreOrchestrator:
                             intent_text = context_dict.get("intent_text", "Unknown Intent")
                             print(f"🔨 Aether Forge Activated: {intent_text}")
 
-                            # Execute the Forge Protocol
-                            forge_result = await self.forge.resolve_and_forge(query=intent_text)
+                            # Execute the Forge Protocol, passing Memory Signal
+                            forge_result = await self.forge.resolve_and_forge(
+                                query=intent_text,
+                                memory=self.memory_signal
+                            )
 
                             if forge_result.success:
+                                # Update Memory Signal
+                                self._update_memory(forge_result)
+
                                 response_text = f"Forge Execution Complete: {forge_result.service.upper()}\n"
 
                                 # Add ASCII Visual if available
