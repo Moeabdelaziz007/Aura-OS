@@ -4,8 +4,17 @@
 import asyncio
 import os
 import json
+import logging
 from typing import Any, Dict
 from datetime import datetime
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | 🧬 Executor | %(levelname)s | %(message)s",
+    datefmt="%H:%M:%S"
+)
+logger = logging.getLogger("EvolutionExecutor")
 
 
 class EvolutionExecutor:
@@ -88,6 +97,13 @@ class EvolutionExecutor:
         Returns:
             The result of the mutation execution
         """
+        # Validate mutation data
+        if not isinstance(mutation, dict):
+            raise ValueError("Mutation must be a dictionary")
+        
+        if "name" not in mutation:
+            raise ValueError("Mutation must contain a 'name' field")
+        
         # In a real implementation, this would run in a sandboxed environment
         # For now, we simulate execution
         code = mutation.get("code", "")
@@ -105,7 +121,11 @@ class EvolutionExecutor:
                     "mutation_name": mutation.get("name"),
                     "skill_category": mutation.get("skill_category")
                 }
+            except (SyntaxError, NameError, TypeError) as e:
+                logger.error(f"❌ Code execution error: {e}")
+                raise RuntimeError(f"Mutation execution failed: {e}")
             except Exception as e:
+                logger.error(f"❌ Unexpected execution error: {e}")
                 raise RuntimeError(f"Mutation execution failed: {e}")
         
         return {"executed": False, "reason": "No code provided"}
@@ -149,9 +169,16 @@ class EvolutionExecutor:
         """
         # Read existing SKILLS.md
         skills_content = ""
-        if os.path.exists(self.skills_path):
-            with open(self.skills_path, "r", encoding="utf-8") as f:
-                skills_content = f.read()
+        try:
+            if os.path.exists(self.skills_path):
+                with open(self.skills_path, "r", encoding="utf-8") as f:
+                    skills_content = f.read()
+        except (FileNotFoundError, PermissionError, OSError) as e:
+            logger.error(f"❌ Failed to read SKILLS.md: {e}")
+            raise RuntimeError(f"Cannot read skills file: {e}")
+        except UnicodeDecodeError as e:
+            logger.error(f"❌ Failed to decode SKILLS.md: {e}")
+            raise RuntimeError(f"Cannot decode skills file: {e}")
         
         # Create new skill entry
         skill_entry = f"""
@@ -168,10 +195,14 @@ evolution_timestamp: {datetime.utcnow().isoformat()}
 """
         
         # Append to SKILLS.md
-        with open(self.skills_path, "a", encoding="utf-8") as f:
-            f.write(skill_entry)
+        try:
+            with open(self.skills_path, "a", encoding="utf-8") as f:
+                f.write(skill_entry)
+        except (PermissionError, OSError) as e:
+            logger.error(f"❌ Failed to write to SKILLS.md: {e}")
+            raise RuntimeError(f"Cannot write to skills file: {e}")
         
-        print(f"📝 EvolutionExecutor: Consolidated skill {mutation.get('name')} to SKILLS.md")
+        logger.info(f"📝 EvolutionExecutor: Consolidated skill {mutation.get('name')} to SKILLS.md")
     
     async def _rollback_mutation(self, mutation: Dict[str, Any]) -> None:
         """
@@ -192,10 +223,15 @@ evolution_timestamp: {datetime.utcnow().isoformat()}
         """Save current state before mutation for potential rollback."""
         # In a real implementation, this would save a snapshot of the system state
         # For now, we just mark that we have a state
-        self._stable_state = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "skills_path": self.skills_path
-        }
+        try:
+            self._stable_state = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "skills_path": self.skills_path
+            }
+            logger.debug("🔄 Stable state saved")
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to save stable state: {e}")
+            self._stable_state = None
     
     async def _log_error(self, mutation: Dict[str, Any], error: Exception) -> None:
         """
@@ -215,7 +251,11 @@ evolution_timestamp: {datetime.utcnow().isoformat()}
         }
         
         # Log to console (in production, this would go to a dedicated pain signal channel)
-        print(f"🚨 PAIN SIGNAL: {json.dumps(pain_signal)}")
+        try:
+            pain_signal_json = json.dumps(pain_signal)
+            logger.error(f"🚨 PAIN SIGNAL: {pain_signal_json}")
+        except (TypeError, ValueError) as e:
+            logger.error(f"🚨 PAIN SIGNAL (serialization failed): {error}")
         
         # In a real implementation, this would trigger the EVOLVE.md self-healing circuit
         # The circuit would analyze the pain signal and generate corrective mutations
@@ -224,16 +264,20 @@ evolution_timestamp: {datetime.utcnow().isoformat()}
 if __name__ == "__main__":
     # Test the executor
     async def test():
-        executor = EvolutionExecutor()
-        
-        test_mutation = {
-            "name": "test_skill",
-            "code": "print('test')",
-            "skill_category": "test",
-            "description": "A test mutation"
-        }
-        
-        result = await executor.execute_mutation(test_mutation)
-        print(f"Test result: {result}")
+        try:
+            executor = EvolutionExecutor()
+            
+            test_mutation = {
+                "name": "test_skill",
+                "code": "print('test')",
+                "skill_category": "test",
+                "description": "A test mutation"
+            }
+            
+            result = await executor.execute_mutation(test_mutation)
+            print(f"Test result: {result}")
+        except Exception as e:
+            logger.error(f"❌ Test execution failed: {e}")
+            raise
     
     asyncio.run(test())

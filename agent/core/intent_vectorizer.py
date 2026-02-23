@@ -44,7 +44,11 @@ class IntentVectorizer:
         dot_product = np.dot(a, b)
         norm_a = np.linalg.norm(a)
         norm_b = np.linalg.norm(b)
-        return dot_product / (norm_a * norm_b)
+        # Prevent ZeroDivisionError when either vector is a zero vector
+        denominator = norm_a * norm_b
+        if denominator == 0:
+            return 0.0
+        return dot_product / denominator
 
     async def get_nearest_neighbors(self, query_text: str, candidates: List[Dict[str, Any]], top_k: int = 3) -> List[Dict[str, Any]]:
         """

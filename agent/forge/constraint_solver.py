@@ -252,9 +252,11 @@ class ConstraintSolver:
         # ── Keyword matching (query text) ──────────────────── 40%
         kw_score = 0.0
         all_keywords = template.keywords_ar + template.keywords_en
-        for kw in all_keywords:
-            if kw in query_lower:
-                kw_score += 1.0 / len(all_keywords)
+        # Prevent ZeroDivisionError when all_keywords is empty
+        if all_keywords:
+            for kw in all_keywords:
+                if kw in query_lower:
+                    kw_score += 1.0 / len(all_keywords)
         score += kw_score * 0.40
 
         # ── Screen context matching ────────────────────────── 30%
@@ -265,9 +267,11 @@ class ConstraintSolver:
                 " ".join(a.lower() for a in screen.detected_assets)
             )
             ctx_score = 0.0
-            for signal in template.context_signals:
-                if signal.lower() in screen_text:
-                    ctx_score += 1.0 / len(template.context_signals)
+            # Prevent ZeroDivisionError when context_signals is empty
+            if template.context_signals:
+                for signal in template.context_signals:
+                    if signal.lower() in screen_text:
+                        ctx_score += 1.0 / len(template.context_signals)
             score += ctx_score * 0.30
 
         # ── Voice transcript bonus ─────────────────────────── 15%

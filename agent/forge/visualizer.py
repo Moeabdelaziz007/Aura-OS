@@ -60,6 +60,10 @@ def sparkline(data: List[float]) -> str:
     max_val = max(data)
     range_val = max_val - min_val
 
+    # Prevent ZeroDivisionError when range_val is zero (all values equal)
+    if range_val == 0:
+        return SPARK_CHARS[3] * len(data)
+
     max_idx = len(SPARK_CHARS) - 1
     factor = max_idx / range_val
 

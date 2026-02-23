@@ -149,15 +149,27 @@ class AetherForge:
         if os.path.exists(key_path):
             try:
                 self.cloud = CloudNexus(project_id, key_path)
+                logger.info("☁️ CloudNexus initialized successfully")
+            except (FileNotFoundError, PermissionError) as e:
+                logger.warning(f"⚠️ CloudNexus credential error: {e}. Degrading to Local Sovereignty.")
+            except (ConnectionError, TimeoutError) as e:
+                logger.warning(f"⚠️ CloudNexus connection error: {e}. Degrading to Local Sovereignty.")
+            except ImportError as e:
+                logger.warning(f"⚠️ CloudNexus dependency missing: {e}. Degrading to Local Sovereignty.")
             except Exception as e:
                 logger.warning(f"⚠️ CloudNexus offline: {e}. Degrading to Local Sovereignty.")
         
         # Pooled High-Performance Client
-        self.client = httpx.AsyncClient(
-            timeout=10.0,
-            limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
-            trust_env=False # Bypass slow proxy detection
-        )
+        try:
+            self.client = httpx.AsyncClient(
+                timeout=10.0,
+                limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
+                trust_env=False # Bypass slow proxy detection
+            )
+            logger.debug("🌐 HTTP client initialized successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize HTTP client: {e}")
+            raise RuntimeError(f"HTTP client initialization failed: {e}")
         
         self.agents_forged = 0
         if automated_tides:
@@ -179,8 +191,12 @@ class AetherForge:
     async def _start_tide_daemon(self):
         """Background daemon for autonomous memory pruning."""
         while True:
-            await asyncio.sleep(3600)  # Pulse every hour
-            await self.tides.sleep()
+            try:
+                await asyncio.sleep(3600)  # Pulse every hour
+                await self.tides.sleep()
+            except Exception as e:
+                logger.error(f"❌ Tide daemon error: {e}")
+                # Continue running despite errors
 
     async def __aenter__(self):
         return self
@@ -212,7 +228,16 @@ class AetherForge:
             # We want the FIRST valid result
             done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
             
-            res_obj = done.pop().result()
+            # Get result from first completed task
+            first_done = done.pop()
+            try:
+                res_obj = first_done.result()
+            except Exception as e:
+                logger.error(f"❌ Race task failed: {e}")
+                for p in pending:
+                    p.cancel()
+                return self._fail(service, f"Race task failed: {e}", t0, agent_id)
+            
             primary_data = res_obj.raw_response if hasattr(res_obj, "raw_response") else res_obj
             t_primary = (time.time() - t0) * 1000
             
@@ -263,9 +288,16 @@ class AetherForge:
             ms = (time.time() - t0) * 1000
             
             # Generate ASCII Visuals for WOW Factor
-            ascii_visual = self.visualizer.render(service, primary_data)
+            try:
+                ascii_visual = self.visualizer.render(service, primary_data)
+            except Exception as e:
+                logger.warning(f"⚠️ Visualizer failed: {e}. Using fallback.")
+                ascii_visual = f"Data: {str(primary_data)[:200]}"
 
-            await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
+            try:
+                await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to engrave to nexus: {e}")
             
             # Record Learning
             # Feedback is recorded centrally in resolve_and_forge to avoid double counting
@@ -284,10 +316,21 @@ class AetherForge:
             self.metrics.record(res)
             return res
             
+        except CircuitOpenError as e:
+            logger.error(f"⚡ Circuit breaker open for race: {e}")
+            for p in pending:
+                p.cancel()
+            return self._fail(service, f"Circuit breaker open: {e}", t0, agent_id)
+        except (ConnectionError, TimeoutError) as e:
+            logger.error(f"🌐 Race network error: {e}")
+            for p in pending:
+                p.cancel()
+            return self._fail(service, f"Network error: {e}", t0, agent_id)
         except Exception as e:
             logger.error(f"Race failed: {e}")
+            for p in pending:
+                p.cancel()
             # Failure recorded in resolve_and_forge via res.success=False
-
             return self._fail(service, str(e), t0, agent_id)
 
     def _calculate_deviation(self, data1: Any, data2: Any) -> float:
@@ -344,8 +387,18 @@ class AetherForge:
         memory: Optional[MemorySignal] = None
     ) -> ForgeResult:
         """Resolve ambiguous query via constraints then forge."""
-        time_ctx = build_time_context()
-        intent = self.solver.resolve(query, voice, screen, time_ctx, memory)
+        try:
+            time_ctx = build_time_context()
+        except Exception as e:
+            logger.error(f"❌ Failed to build time context: {e}")
+            time_ctx = {}
+        
+        try:
+            intent = self.solver.resolve(query, voice, screen, time_ctx, memory)
+        except Exception as e:
+            logger.error(f"❌ Intent resolution failed: {e}")
+            # Return a failure result with the error
+            return self._fail("intent_resolution", f"Intent resolution failed: {e}", time.time(), "resolve_error")
         
         # Use dynamic service map
         if intent.action in self.SERVICE_MAP:
@@ -355,18 +408,22 @@ class AetherForge:
             # Dynamic Params Generation
             # If the executor has a specialized map, use it. Otherwise, pass target as generic.
             params = {}
-            if hasattr(executor_cls, "generate_params"):
-                params = executor_cls.generate_params(intent.target)
-            else:
-                # Fallback to standard mapping if not specialized
-                if intent.action == "price_check":
-                    params = {"coins": [intent.target], "currencies": ["usd"]}
-                elif intent.action == "github_search":
-                    params = {"query": intent.target, "limit": 3}
-                elif intent.action == "weather_check":
-                    params = {"city": intent.target}
+            try:
+                if hasattr(executor_cls, "generate_params"):
+                    params = executor_cls.generate_params(intent.target)
                 else:
-                    params = {"query": intent.target}
+                    # Fallback to standard mapping if not specialized
+                    if intent.action == "price_check":
+                        params = {"coins": [intent.target], "currencies": ["usd"]}
+                    elif intent.action == "github_search":
+                        params = {"query": intent.target, "limit": 3}
+                    elif intent.action == "weather_check":
+                        params = {"city": intent.target}
+                    else:
+                        params = {"query": intent.target}
+            except Exception as e:
+                logger.warning(f"⚠️ Params generation failed: {e}. Using default params.")
+                params = {"query": intent.target}
         else:
             # Dynamic Intent!
             service = intent.target if intent.target != "unknown" else intent.action
@@ -389,7 +446,10 @@ class AetherForge:
         # But we can record here too if not urgent, or just rely on forge_and_deploy return logic.
         # Ideally, we record here to catch all paths, but we must ensure we don't double record for Race.
         # FeedbackLoop is likely idempotent enough (just updates weights).
-        await self.solver.feedback.record_outcome(intent, res.success)
+        try:
+            await self.solver.feedback.record_outcome(intent, res.success)
+        except Exception as e:
+            logger.warning(f"⚠️ Failed to record feedback: {e}")
         
         return res
 
@@ -424,15 +484,24 @@ class AetherForge:
 
         # Phase 0: Swarm Cache Check (Collective Intelligence)
         if self.cloud:
-            global_pattern = await self.cloud.discover_global_patterns(service)
-            if global_pattern:
-                logger.info(f"🌀 Swarm Cache HIT: Global pattern found for [{service}]. Bypassing local vision.")
-                # We prioritize global verified patterns over local drafts
-                # Implementation detail: For brevity in this loop, we merge global insights into cached_pattern
-                # but local AetherNexus still acts as the primary System 1 for speed.
+            try:
+                global_pattern = await self.cloud.discover_global_patterns(service)
+                if global_pattern:
+                    logger.info(f"🌀 Swarm Cache HIT: Global pattern found for [{service}]. Bypassing local vision.")
+                    # We prioritize global verified patterns over local drafts
+                    # Implementation detail: For brevity in this loop, we merge global insights into cached_pattern
+                    # but local AetherNexus still acts as the primary System 1 for speed.
+            except (ConnectionError, TimeoutError) as e:
+                logger.warning(f"⚠️ Cloud discovery failed for [{service}]: {e}. Proceeding with local cache.")
+            except Exception as e:
+                logger.warning(f"⚠️ Unexpected cloud discovery error: {e}. Proceeding with local cache.")
         
         # Standard Phase 1: Deconstruct & Recall
-        cached_pattern = await self.nexus.recall(service)
+        try:
+            cached_pattern = await self.nexus.recall(service)
+        except Exception as e:
+            logger.warning(f"⚠️ Nexus recall failed for [{service}]: {e}. Proceeding without cache.")
+            cached_pattern = None
         is_crystallized = cached_pattern is not None
         
         # Phase 2: Synthesize & Deliberate
@@ -467,10 +536,16 @@ class AetherForge:
                 data = res_obj.raw_response if hasattr(res_obj, "raw_response") else res_obj
                 ms = (time.time() - t0) * 1000
                 
-                await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
+                try:
+                    await self.nexus.engrave(service, intent_data.get("params", {}), True, ms)
+                except Exception as e:
+                    logger.warning(f"⚠️ Failed to engrave to nexus: {e}")
                 
                 if hasattr(executor, 'base_url'):
-                    await self.archaeologist.register_discovery(service, executor.base_url)
+                    try:
+                        await self.archaeologist.register_discovery(service, executor.base_url)
+                    except Exception as e:
+                        logger.warning(f"⚠️ Failed to register discovery: {e}")
                 
                 ascii_visual = self.visualizer.render(service, data)
                 
@@ -481,8 +556,18 @@ class AetherForge:
                 )
                 self.metrics.record(res)
                 return res
+            except CircuitOpenError as e:
+                logger.error(f"⚡ Circuit breaker open for [{service}]: {e}")
+                break  # Don't retry if circuit is open
+            except (ConnectionError, TimeoutError) as e:
+                logger.error(f"🌐 Network error on attempt {attempt + 1}: {e}")
+                # Wait before retry
+                await asyncio.sleep(0.5 * (attempt + 1))
+            except (httpx.HTTPStatusError, httpx.RequestError) as e:
+                logger.error(f"📡 HTTP error on attempt {attempt + 1}: {e}")
+                await asyncio.sleep(0.5 * (attempt + 1))
             except Exception as e:
-                logger.error(f"Static Execution Fault: {e}")
+                logger.error(f"❌ Static Execution Fault on attempt {attempt + 1}: {e}")
                 # Wait before retry
                 await asyncio.sleep(0.5 * (attempt + 1))
 
@@ -496,11 +581,18 @@ class AetherForge:
         try:
             # 1. Compile Swarm (3 Variants)
             # In production, we'd vary the prompt temperature for diversity
-            variants = await self.compiler.compile_variants(
-                intent=intent_data.get("query"),
-                context=intent_data,
-                n=3
-            )
+            try:
+                variants = await self.compiler.compile_variants(
+                    intent=intent_data.get("query"),
+                    context=intent_data,
+                    n=3
+                )
+            except (ConnectionError, TimeoutError) as e:
+                logger.error(f"❌ Compiler network error: {e}")
+                return self._fail(service, f"Compiler network error: {e}", t0, agent_id)
+            except Exception as e:
+                logger.error(f"❌ Compiler error: {e}")
+                return self._fail(service, f"Compiler error: {e}", t0, agent_id)
 
             # Filter valid agents
             agents = [v for v in variants if isinstance(v, CompiledAgent)]
@@ -511,8 +603,21 @@ class AetherForge:
             logger.info(f"🐝 Swarm Generated: {len(agents)} Nano-Agents ready.")
 
             # 2. Execute in Parallel Sandbox
-            tasks = [self.sandbox.execute(agent.code, intent_data.get("params", {})) for agent in agents]
-            results = await asyncio.gather(*tasks)
+            try:
+                tasks = [self.sandbox.execute(agent.code, intent_data.get("params", {})) for agent in agents]
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                # Convert exceptions to error results
+                processed_results = []
+                for i, r in enumerate(results):
+                    if isinstance(r, Exception):
+                        processed_results.append(type('obj', (object,), {'success': False, 'error': str(r), 'data': None})())
+                    else:
+                        processed_results.append(r)
+                results = processed_results
+            except Exception as e:
+                logger.error(f"❌ Sandbox execution error: {e}")
+                return self._fail(service, f"Sandbox execution error: {e}", t0, agent_id)
 
             # 3. Consensus (Pick first success for MVP, majority vote in full version)
             successes = [r for r in results if r.success]

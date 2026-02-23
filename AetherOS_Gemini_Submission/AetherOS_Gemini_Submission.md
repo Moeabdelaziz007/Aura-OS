@@ -3,6 +3,52 @@
 
 ---
 
+## ⚠️ Disclaimer: Performance Metrics and Data Clarification
+
+**Important Notice Regarding Performance Claims**
+
+The performance metrics presented in this submission—including execution latency (50ms), success rates (95%+), and cost projections ($0.001/request)—are **architectural projections based on the API-Native design paradigm**, not measured benchmarks from production deployment.
+
+### Actual Telemetry Data
+
+As of the submission date, the system telemetry ([`telemetry_analysis.json`](telemetry_analysis.json)) reflects the following actual measured values:
+
+| Metric | Projected | Actual Measured |
+|--------|-----------|-----------------|
+| **Total Requests** | N/A | **1 request** |
+| **Average Latency** | 50ms | **2.25ms** |
+| **Success Rate** | 95%+ | **100%** (1/1 requests) |
+| **P95/P99 Latency** | N/A | **Not available** |
+| **Resource Metrics** | N/A | **Not collected** |
+| **Mutations (Evolution)** | Active | **0 recorded** |
+| **Anomalies Detected** | N/A | **5 (all pending)** |
+
+The limited telemetry data (1 request) indicates minimal system activity or incomplete telemetry collection. The projected metrics represent theoretical performance targets based on:
+- The architectural advantages of direct API communication vs UI simulation
+- The elimination of DOM traversal and browser automation overhead
+- The compiled ephemeral agent execution model
+
+### Competitive Comparison Data
+
+Competitive comparison data (LangChain, AutoGPT, CrewAI, etc.) is based on:
+- Published competitor specifications and documentation
+- Publicly available benchmark results
+- Industry-reported performance metrics for UI-simulation based agents
+
+These comparisons illustrate the theoretical performance differential between API-Native and UI-Simulation architectures, not head-to-head benchmark testing.
+
+### Self-Healing Capabilities
+
+The AlphaEvolve self-healing circuit and Digital Darwinism (VerMCTS) framework are **implemented in the codebase** but require:
+- Activation of the evolution system for production use
+- Sufficient system activity to generate meaningful mutation data
+- Configuration of mutation budgets and A/B testing parameters
+
+The evolution metrics currently show zero mutations recorded, indicating the system is in initial deployment phase with evolution features pending activation.
+
+---
+
+
 ## Executive Summary
 
 AetherOS is a Sovereign API-Native OS that dissolves UIs entirely, speaking directly to APIs through compiled ephemeral agents. Unlike traditional UI simulation agents that execute in 120+ seconds, AetherOS achieves 50ms execution latency—a 2,400x speed improvement. The system features self-healing via Digital Darwinism (VerMCTS), achieving 95%+ success rates with automatic mutation consolidation.
