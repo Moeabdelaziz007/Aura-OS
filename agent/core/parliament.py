@@ -7,7 +7,7 @@ Orchestrates the cognitive race between Nano-Agents.
 import asyncio
 import logging
 from typing import List, Dict, Any, Callable
-from .lambda_agent import NanoAgent
+from agent.core.lambda_agent import NanoAgent
 
 logger = logging.getLogger("aether.parliament")
 

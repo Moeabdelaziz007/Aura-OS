@@ -17,12 +17,15 @@ logger = logging.getLogger("aether.cloud_nexus")
 class CloudNexus:
     """The Firestore bridge for global pattern synchronization."""
     
-    def __init__(self, project_id: str, key_path: str):
-        self.project_id = project_id
-        self.key_path = key_path
+    def __init__(self, project_id: Optional[str] = None, key_path: Optional[str] = None):
+        self.project_id = project_id or os.getenv("GOOGLE_CLOUD_PROJECT")
+        self.key_path = key_path or os.getenv("FIREBASE_SERVICE_ACCOUNT")
         self._db = None
         
-        self._initialize()
+        if self.project_id and self.key_path:
+            self._initialize()
+        else:
+            logger.warning("⚠️ CloudNexus: Missing credentials. Operating in Offline/Passive mode.")
 
     def _initialize(self):
         try:
