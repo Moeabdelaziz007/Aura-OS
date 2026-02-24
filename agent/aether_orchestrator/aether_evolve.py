@@ -415,7 +415,7 @@ class AetherNeuralMonitor:
             except Exception as e:
                 print(f"⚠️ AetherNeuralMonitor: Failed to create log file: {e}")
 
-    def log_anomaly(self, component: str, error_type: str, message: str, stack_trace: Optional[str] = None):
+    def log_anomaly(self, component: str, error_type: str, message: str, stack_trace: Optional[str] = None, status: str = "DETECTED"):
         """记录系统异常到 anomaly_log.json."""
         anomaly = {
             "timestamp": datetime.now().isoformat(),
@@ -423,7 +423,7 @@ class AetherNeuralMonitor:
             "error_type": error_type,
             "message": message,
             "stack_trace": stack_trace,
-            "status": "DETECTED"
+            "status": status
         }
         
         try:

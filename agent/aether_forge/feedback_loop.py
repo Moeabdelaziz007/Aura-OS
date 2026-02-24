@@ -56,7 +56,7 @@ class AetherFeedbackLoop:
 
     def __init__(self, filepath: Path = CALIBRATION_FILE):
         self._filepath     = filepath
-        self._calibrations: Dict[str, TemplateCalibration] = {}
+        self._calibrations: Dict[str, AetherTemplateCalibration] = {}
         self._lock          = asyncio.Lock()
         self._load_sync()
         logger.info(f"🔄 FeedbackLoop initialized | {len(self._calibrations)} templates")
@@ -100,9 +100,9 @@ class AetherFeedbackLoop:
                 return f"System uncertain ({cal.accuracy:.0%} accuracy on '{intent.action}'). Clarity needed."
             return None
 
-    def _get_or_create(self, action: str) -> TemplateCalibration:
+    def _get_or_create(self, action: str) -> AetherTemplateCalibration:
         if action not in self._calibrations:
-            self._calibrations[action] = TemplateCalibration(template_action=action)
+            self._calibrations[action] = AetherTemplateCalibration(template_action=action)
         return self._calibrations[action]
 
     async def _flush_atomic(self) -> None:
@@ -125,6 +125,6 @@ class AetherFeedbackLoop:
             with open(self._filepath, encoding="utf-8") as f:
                 raw = json.load(f)
             for action, v in raw.items():
-                self._calibrations[action] = TemplateCalibration(**v)
+                self._calibrations[action] = AetherTemplateCalibration(**v)
         except Exception as e:
             logger.warning(f"Calibration load failed: {e}")

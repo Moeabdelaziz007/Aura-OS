@@ -10,6 +10,8 @@ from .exceptions import AetherBaseError, ForgeErrorType
 from .circuit_breaker import AetherCircuitBreaker, get_circuit_breaker
 from .feedback_loop import AetherFeedbackLoop
 from .constraint_solver import AetherConstraintSolver
+from .live_bridge_v2 import AetherGeminiLiveBridgeV2
+from .motor_cortex import AetherMotorCortex
 
 __all__ = [
     "AetherForge",
@@ -26,4 +28,6 @@ __all__ = [
     "get_circuit_breaker",
     "AetherFeedbackLoop",
     "AetherConstraintSolver",
+    "AetherGeminiLiveBridgeV2",
+    "AetherMotorCortex",
 ]

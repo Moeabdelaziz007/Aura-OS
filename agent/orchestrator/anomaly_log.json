@@ -38,5 +38,13 @@
     "message": "division by zero",
     "stack_trace": null,
     "status": "DETECTED"
+  },
+  {
+    "timestamp": "2026-02-24T14:55:08.039368",
+    "component": "test",
+    "error_type": "test_error",
+    "message": "test message",
+    "stack_trace": null,
+    "status": "RESOLVED"
   }
 ]
