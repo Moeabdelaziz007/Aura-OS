@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Test Gemini endpoint
         run: |
@@ -18,7 +18,7 @@ jobs:
           curl -s -D - 'https://generativelanguage.googleapis.com/v1beta2/models' || echo "ERROR contacting API" >> report.txt
           grep -i "error" report.txt || echo "API reachable" >> report.txt
       - name: Upload report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gemini-api-check
           path: report.txt
