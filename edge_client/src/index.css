@@ -1,0 +1,392 @@
+/*
+ * 🌌 AetherOS — Edge Client Design System
+ *
+ * Industrial Sci-Fi / Cyberpunk Glassmorphism
+ * Dark carbon fiber base, cyan neon accents, frosted glass cards
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ─── CSS Variables ──────────────────── */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: rgba(18, 18, 30, 0.75);
+  --border-glass: rgba(0, 212, 255, 0.15);
+  --border-glow: rgba(0, 212, 255, 0.4);
+  --text-primary: #e8e8f0;
+  --text-secondary: #8888aa;
+  --text-dim: #555577;
+  --accent-cyan: #00d4ff;
+  --accent-teal: #00e6b0;
+  --accent-gold: #ffd700;
+  --accent-red: #ff4466;
+  --accent-green: #00ff88;
+  --glass-blur: 16px;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.08);
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ─── Reset & Base ───────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0, 230, 176, 0.03) 0%, transparent 50%),
+    var(--bg-primary);
+}
+
+/* ─── App Layout ─────────────────────── */
+.aether-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ─── Status Bar ─────────────────────── */
+.aether-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(10, 10, 15, 0.9);
+  border-bottom: 1px solid var(--border-glass);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.aether-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-glyph {
+  font-size: 24px;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aether-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.status-dot.connected {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+.status-dot.disconnected {
+  background: var(--accent-red);
+  box-shadow: 0 0 8px rgba(255, 68, 102, 0.6);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.status-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.clear-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-btn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+/* ─── Canvas (Component Render Area) ── */
+.aether-canvas {
+  flex: 1;
+  padding: 32px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-content: flex-start;
+}
+
+/* ─── Empty State ────────────────────── */
+.empty-state {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px;
+  text-align: center;
+}
+
+.empty-glyph {
+  font-size: 72px;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+  margin-bottom: 24px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.empty-state h2 {
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  direction: rtl;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* ─── Glassmorphism Card ─────────────── */
+.aether-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius);
+  padding: 20px;
+  min-width: 320px;
+  max-width: 480px;
+  box-shadow: var(--shadow-glow);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.aether-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.12);
+}
+
+.aether-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.aether-card-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.aether-card-icon {
+  font-size: 18px;
+}
+
+.aether-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+.aether-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── Component-Specific Styles ──────── */
+
+/* Crypto */
+.crypto-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.crypto-name { font-weight: 500; font-size: 14px; }
+.crypto-price { font-family: var(--font-mono); font-size: 14px; }
+.crypto-change.up { color: var(--accent-green); }
+.crypto-change.down { color: var(--accent-red); }
+
+/* Tasks */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.task-priority { font-size: 12px; }
+.task-info { flex: 1; display: flex; flex-direction: column; }
+.task-title { font-size: 13px; font-weight: 500; }
+.task-id { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+.task-status { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Weather */
+.weather-hero {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.weather-temp {
+  font-size: 36px;
+  font-weight: 200;
+  font-family: var(--font-mono);
+}
+
+.weather-feel {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.weather-details {
+  display: flex;
+  gap: 20px;
+}
+
+.weather-detail {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* News */
+.news-row {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.news-title { font-size: 13px; font-weight: 500; display: block; margin-bottom: 2px; }
+.news-source { font-size: 11px; color: var(--text-dim); }
+
+/* Code */
+.code-card .code-block {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--accent-cyan);
+}
+
+/* Calendar */
+.calendar-row {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.calendar-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-cyan);
+  min-width: 50px;
+}
+
+.calendar-title { font-size: 13px; }
+
+/* Info */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.info-key { font-size: 12px; color: var(--text-dim); }
+.info-value { font-size: 12px; font-family: var(--font-mono); }
+
+/* Chart placeholder */
+.chart-placeholder {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-dim);
+  border: 1px dashed var(--border-glass);
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Footer ─────────────────────────── */
+.aether-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid var(--border-glass);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.component-count {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* ─── Animations ─────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── Responsive ─────────────────────── */
+@media (max-width: 768px) {
+  .aether-canvas {
+    padding: 16px;
+  }
+  .aether-card {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
