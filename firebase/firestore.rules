@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 🔐 AetherOS Swarm Executions Collection
+    match /swarm_executions/{executionId} {
+      allow read: if request.auth != null && 
+                     (request.auth.uid == resource.data.userId || 
+                      request.auth.token.admin == true);
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['agentId', 'taskType', 'status', 'startTime', 'userId']);
+      
+      allow update: if request.auth != null && 
+                     (request.auth.uid == resource.data.userId || 
+                      request.auth.token.admin == true) &&
+                     request.resource.data.userId == resource.data.userId;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 🧠 AetherOS Swarm Patterns Collection
+    match /swarm_patterns/{patternId} {
+      allow read: if request.auth != null;
+      
+      allow create: if request.auth != null && 
+                       request.auth.token.admin == true &&
+                       request.resource.data.keys().hasAll(['patternId', 'patternType', 'successRate', 'usageCount']);
+      
+      allow update: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 📊 AetherOS Telemetry Collection
+    match /telemetry/{telemetryId} {
+      allow read: if request.auth != null && 
+                     (request.auth.token.admin == true || 
+                      request.auth.token.analyst == true);
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.keys().hasAll(['timestamp', 'metricType', 'value']);
+      
+      allow update: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 🎯 AetherOS Swarm Orchestrations Collection
+    match /swarm_orchestrations/{orchestrationId} {
+      allow read: if request.auth != null && 
+                     (request.auth.uid == resource.data.userId || 
+                      request.auth.token.admin == true);
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['swarmId', 'nodesCount', 'strategy', 'status', 'userId']);
+      
+      allow update: if request.auth != null && 
+                     (request.auth.uid == resource.data.userId || 
+                      request.auth.token.admin == true) &&
+                     request.resource.data.userId == resource.data.userId;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 📈 AetherOS Analytics Collection
+    match /swarm_analytics/{analyticsId} {
+      allow read: if request.auth != null && 
+                     (request.auth.token.admin == true || 
+                      request.auth.token.analyst == true);
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.keys().hasAll(['period', 'totalExecutions', 'timestamp']);
+      
+      allow update: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 🏥 AetherOS Health Checks Collection
+    match /health_checks/{checkId} {
+      allow read: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.keys().hasAll(['timestamp', 'status', 'projectId']);
+      
+      allow update: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 🔧 AetherOS Configuration Collection
+    match /configuration/{configId} {
+      allow read: if request.auth != null;
+      
+      allow create: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow update: if request.auth != null && 
+                     request.auth.token.admin == true;
+      
+      allow delete: if request.auth != null && 
+                     request.auth.token.admin == true;
+    }
+    
+    // 🗃️ AetherOS Memory Collections (Developer Memory Migration)
+    match /memory/{memoryId} {
+      allow read: if request.auth != null && 
+                     (request.auth.uid == resource.data.ownerId || 
+                      request.auth.token.admin == true);
+      
+      allow create: if request.auth != null && 
+                       request.resource.data.ownerId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['type', 'content', 'timestamp', 'ownerId']);
+      
+      allow update: if request.auth != null && 
+                     (request.auth.uid == resource.data.ownerId || 
+                      request.auth.token.admin == true) &&
+                     request.resource.data.ownerId == resource.data.ownerId;
+      
+      allow delete: if request.auth != null && 
+                     (request.auth.uid == resource.data.ownerId || 
+                      request.auth.token.admin == true);
+    }
+    
+    // 🔍 Validation Functions
+    function isValidExecutionData(data) {
+      return data.keys().hasAll(['agentId', 'taskType', 'status', 'userId']) &&
+             data.status in ['running', 'completed', 'failed'] &&
+             data.taskType in ['api_call', 'data_processing', 'agent_compilation', 'generic'];
+    }
+    
+    function isValidPatternData(data) {
+      return data.keys().hasAll(['patternId', 'patternType', 'successRate', 'usageCount']) &&
+             data.successRate >= 0 && data.successRate <= 1 &&
+             data.usageCount >= 0;
+    }
+    
+    function isValidTelemetryData(data) {
+      return data.keys().hasAll(['timestamp', 'metricType', 'value']) &&
+             data.value is number;
+    }
+  }
+}
