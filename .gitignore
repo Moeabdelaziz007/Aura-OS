@@ -45,3 +45,4 @@ yarn-error.log*
 .env.production.local
 .idx/aether-key.json
 .idx/
+agent/orchestrator/anomaly_log.json
