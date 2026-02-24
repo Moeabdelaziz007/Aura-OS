@@ -7,7 +7,7 @@ class TestMotorCortex(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.mock_forge = MagicMock()
         self.mock_forge.forge_and_deploy = AsyncMock()
-        self.motor = MotorCortex(forge=self.mock_forge)
+        self.motor = AetherMotorCortex(forge=self.mock_forge)
 
     async def test_api_request_dispatch(self):
         print("🦾 Testing API Request Dispatch...")

@@ -1,6 +1,12 @@
 httpx
 pytest
 pytest-asyncio
+pytest-cov
+pytest-mock
 python-dotenv
 cryptography
 psutil
+firebase-admin
+numpy
+flake8
+pylint

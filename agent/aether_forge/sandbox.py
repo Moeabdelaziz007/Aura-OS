@@ -84,12 +84,12 @@ class AetherNanoSandbox:
 
             # Check if 'execute' function exists
             if "execute" not in local_scope:
-                return ExecutionResult(False, error="Code must define an 'execute(params)' function.")
+                return AetherExecutionResult(False, error="Code must define an 'execute(params)' function.")
 
             func = local_scope["execute"]
 
             if not callable(func):
-                return ExecutionResult(False, error="'execute' is not callable.")
+                return AetherExecutionResult(False, error="'execute' is not callable.")
 
             # Run the agent function
             if asyncio.iscoroutinefunction(func):
@@ -98,9 +98,9 @@ class AetherNanoSandbox:
                 # Allow sync functions too, run in thread to avoid blocking
                 result = await asyncio.to_thread(func, params)
 
-            return ExecutionResult(True, data=result)
+            return AetherExecutionResult(True, data=result)
 
         except Exception as e:
             tb = traceback.format_exc()
             logger.error(f"Sandbox Execution Failed: {e}\n{tb}")
-            return ExecutionResult(False, error=str(e))
+            return AetherExecutionResult(False, error=str(e))

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aether-os"
+version = "0.1.0"
+description = "AetherOS - The Intelligent Agent Operating System"
+authors = [
+    {name = "Aether Team", email = "team@aetheros.ai"},
+]
+dependencies = [
+    "httpx",
+    "python-dotenv",
+    "cryptography",
+    "psutil",
+    "firebase-admin",
+    "numpy",
+]
+requires-python = ">=3.10"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "coverage[toml]",
+]
+lint = [
+    "flake8",
+    "pylint",
+    "mypy",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agent*"]
+namespaces = true

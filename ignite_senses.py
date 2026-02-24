@@ -26,7 +26,7 @@ async def ignite_sensory_cortex():
     print("   Igniting Gemini Multimodal Live Bridge...")
     print("━"*60 + "\n")
 
-    bridge = GeminiLiveBridgeV2(api_key=api_key)
+    bridge = AetherGeminiLiveBridgeV2(api_key=api_key)
     
     try:
         # Start the bi-directional stream

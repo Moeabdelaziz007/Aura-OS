@@ -131,7 +131,7 @@ class AetherGeminiLiveBridge:
 
 async def run_bridge_demo():
     """Testing the Bridge logic."""
-    bridge = GeminiLiveBridge(api_key="SIMULATED_KEY")
+    bridge = AetherGeminiLiveBridge(api_key="SIMULATED_KEY")
     
     print("\n[🎙️ User]: 'سعر البيتكوين وفصل لي التشارت'")
     response = await bridge.process_voice_command("سعر البيتكوين وفصل لي التشارت", "TradingView visible on screen")

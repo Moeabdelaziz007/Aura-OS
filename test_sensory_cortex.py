@@ -5,7 +5,7 @@ from agent.aether_forge.live_bridge_v2 import AetherGeminiLiveBridgeV2
 async def test_bridge_handshake():
     """Verifies bridge initialization and session management."""
     print("🛰️ Testing Sensory Cortex Handshake...")
-    bridge = GeminiLiveBridgeV2(api_key="MOCK_KEY")
+    bridge = AetherGeminiLiveBridgeV2(api_key="MOCK_KEY")
     
     # Check initialization
     assert bridge.forge is not None
