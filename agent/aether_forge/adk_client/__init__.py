@@ -94,8 +94,6 @@ from .types import (
     TelemetryCallback,
     TelemetryEvent,
     PoolConfig,
-    RetryConfig as TypesRetryConfig,
-    RetryStrategy as TypesRetryStrategy,
     JSON
 )
 
@@ -199,16 +197,4 @@ __all__ = [
     "ADKErrorFactory",
     "is_retryable_error",
     "get_error_message"
-]
-
-    "ConsoleSink",
-    "FileSink",
-    "TelemetrySink",
-    "InMemoryTelemetrySink",
-    "AetherTelemetryHandler",
-    
-    # Client
-    "ADKClient",
-    "create_client",
-    "create_client_async"
 ]

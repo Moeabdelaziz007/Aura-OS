@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aetheros"
+version = "2.0.0"
+description = "AetherOS - AI Operating System"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx",
+    "pytest",
+    "pytest-asyncio",
+    "python-dotenv",
+    "cryptography",
+    "psutil",
+    "numpy",
+    "google-generativeai",
+    "google-cloud-aiplatform",
+    "pydantic",
+    "PyYAML",
+    "websockets"
+]
+
+[tool.setuptools]
+packages = ["agent"]

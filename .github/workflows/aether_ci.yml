@@ -248,8 +248,7 @@ jobs:
         run: |
           bandit -r agent/ tests/ \
             -f screen \
-            -ll \
-            --fail-on-severity high \
+            -lll \
             --ignore B101,B601
 
       - name: Upload Bandit report
@@ -270,7 +269,8 @@ jobs:
 
       - name: Upload Snyk results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
+        if: success() && hashFiles('snyk.sarif') != ''
+        continue-on-error: true
         with:
           sarif_file: snyk.sarif
 

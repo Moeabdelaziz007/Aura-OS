@@ -4,3 +4,4 @@ pytest-asyncio
 python-dotenv
 cryptography
 psutil
+numpy

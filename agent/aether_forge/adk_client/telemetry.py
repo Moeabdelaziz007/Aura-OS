@@ -17,6 +17,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 from contextlib import contextmanager
+from abc import ABC, abstractmethod
+import traceback
 
 from .types import TelemetryCallback, AsyncTelemetryCallback, TelemetryEvent
 
@@ -422,5 +424,3 @@ class AetherTelemetryHandler:
         self._telemetry_sinks.append(sink)
 
 
-# Import traceback for error logging
-import traceback

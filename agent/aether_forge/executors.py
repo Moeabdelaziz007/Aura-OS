@@ -36,12 +36,7 @@ class CoinGeckoExecutor:
                 "Price_USD": f"${val.get('usd', 0):,.2f}",
                 "Trend_24h": f"{'🟢' if change > 0 else '🔴'} {change:.2f}%",
                 "MarketCap": f"${val.get('usd_market_cap', 0)/1e9:.1f}B",
-                "trend_data": [0.1, 0.4, 0.3, 0.8, 0.9, 0.7, 1.0] # Mock for GIF demo
             }
-        # Flat access for sparkline in models.py
-        if refined:
-            first_coin = list(refined.keys())[0]
-            refined["trend_data"] = refined[first_coin]["trend_data"]
             
         return refined
 

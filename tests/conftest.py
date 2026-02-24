@@ -7,9 +7,22 @@ This module provides common pytest fixtures used across all test modules.
 import pytest
 import asyncio
 import json
+import sys
+import types
 from unittest.mock import Mock, AsyncMock, MagicMock, patch
 from datetime import datetime
 from pathlib import Path
+
+# Mock heavy dependencies before imports
+# Use ModuleType for google to allow submodule mocking
+sys.modules["google"] = types.ModuleType("google")
+sys.modules["google.genai"] = MagicMock()
+sys.modules["google.generativeai"] = MagicMock()
+sys.modules["google.cloud"] = MagicMock()
+sys.modules["google.cloud.firestore"] = MagicMock()
+sys.modules["firebase_admin"] = MagicMock()
+sys.modules["firebase_admin.credentials"] = MagicMock()
+sys.modules["firebase_admin.firestore"] = MagicMock()
 
 
 # =============================================================================
