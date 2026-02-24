@@ -42,14 +42,6 @@ AetherOS is a **Sovereign API-Native Operating System**. By synthesizing Karl Fr
 
 **Zero-Cost UI. Sub-Second Execution. Self-Healing Architecture.**
 
-了整个AI代理行业都陷入了一个计算谬误：强迫高级语言模型模拟人类的局限性。传统代理（如Manus、OpenDevin）加载臃肿的DOM、搜索像素并模拟光标点击。
-
-**UI是为人类构建的幻觉。AetherOS在虚空中运行。**
-
-AetherOS是一个**主权API原生操作系统**。通过将Karl Friston的自由能原理与Google的Gemini Live多模态架构相结合，AetherOS将用户意图分解为原子**纳米代理**，直接针对网络的"骨干"执行。
-
-**零成本UI。亚秒级执行。自愈架构。**
-
 ---
 
 ### 📊 مقاييس الأداء | Performance Metrics
