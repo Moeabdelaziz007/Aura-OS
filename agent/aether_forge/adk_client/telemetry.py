@@ -17,6 +17,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Callable, Dict, List, Optional
 from contextlib import contextmanager
+from abc import ABC, abstractmethod
 
 from .types import TelemetryCallback, AsyncTelemetryCallback, TelemetryEvent
 

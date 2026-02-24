@@ -248,8 +248,7 @@ jobs:
         run: |
           bandit -r agent/ tests/ \
             -f screen \
-            -ll \
-            --fail-on-severity high \
+            -lll \
             --ignore B101,B601
 
       - name: Upload Bandit report

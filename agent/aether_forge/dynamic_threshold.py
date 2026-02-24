@@ -335,6 +335,5 @@ def get_dynamic_threshold() -> DynamicThreshold:
 
 def reset_dynamic_threshold() -> None:
     """Reset the global threshold instance."""
-    global _threshold_instance
     if _threshold_instance:
         _threshold_instance.reset()
