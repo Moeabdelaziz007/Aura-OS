@@ -1,6 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 
+function escapeXml(unsafe) {
+  if (unsafe === null || unsafe === undefined) return '';
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
 export default function handler(req, res) {
   // 1. Read real telemetry data with mock fallback
   let telemetry = {};
@@ -49,10 +59,10 @@ export default function handler(req, res) {
       <text x="20" y="30" font-family="monospace" font-size="14" fill="#888" letter-spacing="2">AETHER_OS // TELEMETRY</text>
       <line x1="20" y1="40" x2="380" y2="40" stroke="${healthColor}" stroke-width="1" filter="url(#glow)"/>
 
-      <text x="20" y="70" font-family="monospace" font-size="12" fill="#fff">Cognitive State : <tspan fill="${healthColor}" filter="url(#glow)">[ ${currentState} ]</tspan></text>
-      <text x="20" y="100" font-family="monospace" font-size="12" fill="#fff">Aether-Nexus Links: <tspan fill="#00ff00">${synapses}</tspan></text>
-      <text x="20" y="130" font-family="monospace" font-size="12" fill="#fff">Free Energy (ΔF): <tspan fill="#00ff00">${freeEnergy}</tspan></text>
-      <text x="20" y="160" font-family="monospace" font-size="12" fill="#fff">Swarm Executions: <tspan fill="#00ff00">${nanoAgents}</tspan></text>
+      <text x="20" y="70" font-family="monospace" font-size="12" fill="#fff">Cognitive State : <tspan fill="${healthColor}" filter="url(#glow)">[ ${escapeXml(currentState)} ]</tspan></text>
+      <text x="20" y="100" font-family="monospace" font-size="12" fill="#fff">Aether-Nexus Links: <tspan fill="#00ff00">${escapeXml(synapses)}</tspan></text>
+      <text x="20" y="130" font-family="monospace" font-size="12" fill="#fff">Free Energy (ΔF): <tspan fill="#00ff00">${escapeXml(freeEnergy)}</tspan></text>
+      <text x="20" y="160" font-family="monospace" font-size="12" fill="#fff">Swarm Executions: <tspan fill="#00ff00">${escapeXml(nanoAgents)}</tspan></text>
 
       <circle cx="360" cy="25" r="4" fill="${healthColor}" filter="url(#glow)">
         <animate attributeName="opacity" values="1;0;1" dur="1.5s" repeatCount="indefinite"/>
