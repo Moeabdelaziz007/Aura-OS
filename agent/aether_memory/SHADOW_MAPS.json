@@ -4,24 +4,4 @@
     "endpoints": [
       "/simple/price",
       "/coins/list",
-      "https://api.coingecko.com/api/v3"
-    ],
-    "confidence": 0.99
-  },
-  "github": {
-    "base_url": "https://api.github.com",
-    "endpoints": [
-      "/search/repositories",
-      "/repos/{owner}/{repo}",
-      "https://api.github.com"
-    ],
-    "confidence": 0.95
-  },
-  "weather": {
-    "base_url": "https://api.open-meteo.com/v1",
-    "endpoints": [
-      "/forecast"
-    ],
-    "confidence": 0.9
-  }
-}
+      "https://api.coingecko.com/api/v3",

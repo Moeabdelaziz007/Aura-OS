@@ -1,512 +1,100 @@
-# 🌌 AetherOS: نظام التشغيل السيادي المرتكز على API | The Sovereign API-Native OS
+# AetherOS
 
-![AetherOS Hero Banner](./assets/hero_banner.png)
-
-![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen)
-![Architecture](https://img.shields.io/badge/Architecture-API--Native-orange)
-![Self-Healing](https://img.shields.io/badge/Self--Healing-AetherEvolve-red)
-![Gemini Challenge](https://img.shields.io/badge/Google-Gemini-Live--Challenge-gold)
-
-> **"Manus clicks buttons. AetherOS dissolves them."**
-> *"Manus ينقر الأزرار.. AetherOS يذيبها."*
-
-تم بناؤه لـ **تحدي Google Gemini Live Agents** | Built for the **Google Gemini Live Agents Challenge**.
+<div align="center">
+  <img src="assets/aetheros_logo.png" alt="AetherOS Logo" width="200" height="200" />
+  <br />
+  <h1>AetherOS</h1>
+  <p><strong>من العدم، الأثير يُبدع — Power from Nothing</strong></p>
+  <br />
+</div>
 
 ---
 
-## 📋 جدول المحتويات | Table of Contents
+## 🌌 What is AetherOS?
 
-1. [نظرة عامة | Overview](#1-overview--نظرة-عامة)
-2. [المقاييس empiricalProof.md | Metrics](#2-المقاييس--metrics)
-3. [البنية المعمارية | Architecture](#3-البنية-المعمارية--architecture)
-4. [الابتكارات التقنية | Technical Breakthroughs](#4-الابتكارات-التقنية--technical-breakthroughs)
-5. [العيّنات والأمثلة | Examples](#5-العيّنات-والأمثلة--examples)
-6. [تثبيت وتشغيل | Installation](#6-تثبيت-وتشغيل--installation)
-7. [مساهمة | Contributing](#7-مساهمة--contributing)
-8. [السجل والتحديثات | Changelog](#8-السجل-والتحديثات--changelog)
-9. [الترخيص | License](#9-الترخيص--license)
+AetherOS is a **Voice-Native Operating System** built for the era of generative AI. Unlike traditional operating systems that rely on point-and-click interfaces, AetherOS is designed to be spoken to. It bridges the gap between natural language intent and sovereign execution.
+
+At its core, AetherOS is a "Voice-to-Code" engine that listens to your commands, synthesizes ephemeral software agents (Nano-Agents) on the fly, and executes them to manipulate the digital world. It is the realization of a fluid, multimodal interface where your voice is the only peripheral you need.
 
 ---
 
-## 1. Overview | نظرة عامة
+## 🏗️ Architecture Overview
 
-### 🎯 المشكلة والحل | Problem & Solution
+AetherOS is built on a sophisticated 6-layer architecture designed for resilience, adaptability, and speed:
 
-The entire AI agent industry is trapped in a computational fallacy: forcing highly advanced language models to simulate human limitations. Conventional agents (Manus, OpenDevin) load bloated DOMs, search for pixels, and simulate cursor clicks.
-
-**UI is an illusion built for humans. AetherOS operates in the Void.**
-
-AetherOS is a **Sovereign API-Native Operating System**. By synthesizing Karl Friston's Free Energy Principle with Google's Gemini Live multimodal architecture, AetherOS deconstructs user intent into atomic **Nano-Agents** that execute directly against the "backbone" of the web.
-
-**Zero-Cost UI. Sub-Second Execution. Self-Healing Architecture.**
-
----
-
-### 📊 مقاييس الأداء | Performance Metrics
-
-من [`vector3_empirical_proof.md`](AetherOS_Gemini_Submission/vector3_empirical_proof.md):
-
-| المقياس | القيمة | الهدف | الحالة | Metric | Value | Target | Status |
-|---------|--------|-------|--------|--------|-------|--------|--------|
-| **متوسط زمن الاستجابة** | 2.25ms | < 50ms | ✅ 22x أفضل | **Avg Latency** | 2.25ms | < 50ms | ✅ 22x better |
-| **P95 زمن الاستجابة** | N/A | < 100ms | ⚠️ قيد التطوير | **P95 Latency** | N/A | < 100ms | ⚠️ In Development |
-| **معدل النجاح** | 100% | > 95% | ✅ 5% أفضل | **Success Rate** | 100% | > 95% | ✅ 5% better |
-| **معدل الخطأ** | 0% | < 5% | ✅ 5% أفضل | **Error Rate** | 0% | < 5% | ✅ 5% better |
-| **إجمالي الطلبات** | 1 | N/A | 📊 نشط | **Total Requests** | 1 | N/A | 📊 Active |
-
-#### 📈 مقاييس المهارات | Skill Metrics
-
-| المقياس | القيمة | الملاحظات | Metric | Value | Notes |
-|---------|--------|-----------|--------|-------|-------|
-| **إجمالي المهارات** | 9 | 5 System 1, 3 System 2, 1 هجين | **Total Skills** | 9 | 5 System 1, 3 System 2, 1 hybrid |
-| **متوسط الكفاءة** | 0.888 | عالية الكفاءة | **Avg Proficiency** | 0.888 | High proficiency |
-| **عدد عالي الكفاءة** | 7 | مهارات ≥ 0.85 | **High Proficiency** | 7 | skills ≥ 0.85 |
-| **مهارات System 1** | 5 | تنفيذ انعكاسي | **System 1 Skills** | 5 | Reflexive execution |
-| **مهارات System 2** | 3 | تنفيذ تأملي | **System 2 Skills** | 3 | Reflective execution |
-
-#### 🚨 مقاييس الشذوذات | Anomaly Metrics
-
-| المقياس | القيمة | الملاحظات | Metric | Value | Notes |
-|---------|--------|-----------|--------|-------|-------|
-| **إجمالي الشذوذات** | 5 | جميعها مكتشفة | **Total Anomalies** | 5 | All detected |
-| **الشذوذات المحلولة** | 0 | 100% معلقة | **Resolved** | 0 | 100% pending |
-| **الشذوذات المعلقة** | 5 | تتطلب اهتماماً | **Pending** | 5 | Requires attention |
-| **أكثر خطأ شيوعاً** | ZeroDivisionError | 4 occurrences (80%) | **Most Common** | ZeroDivisionError | 4/5 (80%) |
+1.  **Sensory Cortex (Gemini Live Bridge v2.0):** The multimodal input layer that processes real-time audio and visual streams using Google's Gemini Live API. It handles "Visual Delta" packets and high-fidelity audio input.
+2.  **Motor Cortex:** The action dispatch engine. It translates high-level intents into concrete API calls, DOM manipulations, or system commands.
+3.  **Aether Forge (The Core):** The heart of the system. It implements the **4-Phase Forge Protocol**:
+    -   **Deconstruct:** Analyzes intent and identifies required capabilities.
+    -   **Synthesize:** Compiles dynamic Python code (Nano-Agents) for new tasks.
+    -   **Deploy:** Executes agents in parallel swarms with circuit breaker protection.
+    -   **Harvest:** Collects results and updates the system memory.
+4.  **Aether Nexus:** The global synaptic record. It stores crystallized execution patterns ("DNA") that have proven successful, allowing the system to learn and become faster over time.
+5.  **Constraint Solver:** A Bayesian inference engine that resolves ambiguous user intents by weighing voice urgency, screen context, and historical patterns.
+6.  **Aether Evolve:** A self-healing mechanism that monitors system anomalies and autonomously patches its own code to fix bugs and optimize performance.
 
 ---
 
-## 2. المقاييس | Metrics
+## 🚀 Quick Start
 
-### 📊 مقارنة الأداء | Performance Comparison
+To start the AetherOS Synaptic Bridge:
 
-من [`competitive_matrix.json`](AetherOS_Gemini_Submission/competitive_matrix.json):
-
-```
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                         ⚡ SPEED COMPARISON | مقارنة السرعة                         │
-├─────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                     │
-│  AetherOS     ███                                                                 │
-│  LangChain               ████████████████████████████████                          │
-│  AutoGPT                       ████████████████████████████████████████████████     │
-│  CrewAI                        ████████████████████████████████████████████        │
-│  OpenClaw                           ██████████████████████████████████████████████  │
-│  Manus AI                           ██████████████████████████████████████████       │
-│                                                                                     │
-│         0ms              10,000ms              20,000ms              30,000ms      │
-│                                                                                     │
-└─────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-| Metric | AetherOS | LangChain | AutoGPT | CrewAI | OpenClaw | Manus AI |
-|--------|----------|-----------|---------|--------|----------|----------|
-| **Latency** | **50ms** | 15,000ms | 30,000ms | 20,000ms | 25,000ms | 18,000ms |
-| **Success Rate** | **95%** | 80% | 75% | 85% | 78% | 82% |
-| **Cost/Request** | **$0.001** | $0.08 | $0.12 | $0.09 | $0.10 | $0.07 |
-| **Self-Healing** | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| **Architecture** | API-Native | UI-Sim | UI-Sim | UI-Sim | UI-Sim | UI-Sim |
-
-### 🎯 ادعاءات 10x | The 10x Claims
-
-| Claim | Factor | Details |
-|-------|--------|---------|
-| **Speed** | 2,400x faster | 50ms vs 120s (legacy UI agents) |
-| **Cost** | 70-120x cheaper | $0.001 vs $0.07-0.12 |
-| **Reliability** | 20% higher | 95% vs 75-85% |
-| **Maintenance** | Zero manual | Auto-healing vs constant debugging |
-
----
-
-## 3. البنية المعمارية | Architecture
-
-![AetherOS Architecture Layers](./assets/architecture_layers.png)
-
-AetherOS is not a script; it is a thermodynamically balanced digital organism.
-
-### 🧠 1. محدد القيود التكيفي | Adaptive Constraint Solver (The Senses)
-
-AetherOS does not ask you to type complex prompts. Using **Gemini Live**, it fuses multimodal constraints (Screen Vision + Audio Urgency + Temporal Context). The wave function of your intent collapses instantly.
-
-لا يطلب منك AetherOS كتابة أوامر معقدة. باستخدام **Gemini Live**، يدمج القيود متعددة الوسائط (رؤية الشاشة + إلحاح الصوت + السياق الزمني). تتلاشى دالة الموجة لنيتك فوراً.
-
-### 🌀 2. المصنع وSwarm الكمي | The Forge & Quantum Swarm (The Engine)
-
-Instead of sequential steps, AetherOS is a Just-In-Time (JIT) compiler. It synthesizes a swarm of single-purpose Nano-Agents and deploys them in parallel.
-
-- **Speed:** The first agent to return a valid payload wins.
-- **Proof of Data:** A secondary agent mathematically verifies the payload before presenting it.
-
-### 🛡️ 3. السلامة على مستوى الإنتاج | Production-Grade Safety (The Steel Thread)
-
-Speed without control is catastrophic. AetherOS implements an enterprise-grade safety suite:
-
-السرعة بدون تحكم كارثية. ينفذ AetherOS مجموعة سلامة على مستوى المؤسسة:
-
-- **Circuit Breaker Protocol:** يراقب كل API. إذا تجاوزت الفشلوتج حدوداً، ينتقل للدائرة المفتوحة.
-- **SOUL Veto:** حارس دستوري AI يقيم كل طفرة قبل التنفيذ.
-
-### 🧬 4. AetherNexus والتعلم البايزي | AetherNexus & Bayesian Learning (Digital DNA)
-
-A fully async-safe, atomic memory graph driven by Digital Darwinism.
-
-ذاكرة رسومية آمنة تماماً وغير متزامنة مدفوعة داروينز الرقمي.
-
-- **Bayesian Feedback Loop:** يتعلم النظام من كل تنفيذ، يعدل أوزان النية ديناميكياً.
-- **Temporal Tides:** الروابط العصبية غير المستخدمة تتلاشى بمرور الوقت.
-
----
-
-## 4. الابتكارات التقنية | Technical Breakthroughs
-
-### 🔬 VerMCTS (Verified Monte Carlo Tree Search)
-
-From [`agent/memory/EVOLVE.md`](agent/memory/EVOLVE.md):
-
-```
-┌────────────────────────────────────────────────────────────────────┐
-│                    GIF-MCTS LOOP | حلقة GIF-MCTS                   │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐   │
-│   │ Generate │ -> │  Improve │ -> │   Fix    │ -> │ Verify  │   │
-│   │  (Gen)  │    │   (GIF)  │    │   (GIF)  │    │(NeuroSage)│   │
-│   └──────────┘    └──────────┘    └──────────┘    └──────────┘   │
-│        ^                                                         │
-│        │                                                         │
-│        └─────────────────────────────────────────────────┘       │
-│                    (Iterate until verified)                      │
-└────────────────────────────────────────────────────────────────────┘
-```
-
-### 🧠 NeuroSage - الحارس الرمزي | Symbolic Guard
-
-From [`agent/forge/circuit_breaker.py`](agent/forge/circuit_breaker.py):
-
-```python
-class NeuroSage:
-    """Symbolic guard for mutation verification."""
-    
-    def verify(self, mutation) -> bool:
-        """
-        Uses structural causal models to verify mutations.
-        Returns True if mutation passes safety checks.
-        """
-        # 1. Check code safety
-        # 2. Verify computational complexity
-        # 3. Validate resource usage
-        return self.symbolic_check(mutation)
-```
-
-### ⚖️ برلمان الوكلاء | Agent Parliament
-
-From [`agent/forge/aether_forge.py`](agent/forge/aether_forge.py:53):
-
-```python
-class AgentParliament:
-    """Democratic consensus between Nano-Agents."""
-    
-    async def deliberate(self, proposals: List[AgentProposal]) -> AgentProposal:
-        """Selects best proposal via confidence-weighted voting."""
-        winner = sorted(proposals, key=lambda x: (-x.confidence, x.expected_ms))[0]
-        return winner
-```
-
-### 📡 Archaeology Engine - اكتشاف API
-
-From [`agent/forge/archaeology.py`](agent/forge/archaeology.py):
-
-```
-┌────────────────────────────────────────────────────────────────────┐
-│                 API ARCHAEOLOGY PROCESS | عملية اكتشاف API         │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│   1. Network Analysis    🔍 -> Discovered endpoints               │
-│   2. Response Parsing   📄 -> Schema extraction                  │
-│   3. Authentication Map  🔐 -> Auth patterns                      │
-│   4. Rate Limit Detect   ⏱️  -> Thresholds                        │
-│   5. Documentation Gen   📚 -> API contract                        │
-│                                                                    │
-└────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 5. العيّنات والأمثلة | Examples
-
-### 🎯 مثال Micro-UI التوليدي | Generative Micro-UI Example
-
-```
-🌌 AETHER FORGE — ✅ DISSOLVED
-  🎯 Service     : COINGECKO
-  ⚡ Speed       : 377ms
-  🧠 Cognition   : ⚡ System 1 (Instant)
-  
-  ╔════════════════════════════════════════╗
-  ║  🪙  BITCOIN                           ║
-  ║  Price:   $66,236.00      ▼ -2.54%     ║
-  ║  Trend:   █▇▆▅▄▃▂▁▁       BEARISH ⚠️   ║
-  ╚════════════════════════════════════════╝
-```
-
-### 🌦️ Weather Forecasting
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     🌦️  AETHER FORGE — WEATHER ACTIVE                        ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  📍 Cairo, Egypt                    Updated: 2026-02-24 03:21 UTC            ║
-║                                                                              ║
-║  ┌─────────────────── CURRENT CONDITIONS ───────────────────┐               ║
-║  │  Temperature    Humidity    Wind                                        ║
-║  │  ┌──────────┐   ┌────────┐  ┌─────────┐                                 ║
-║  │  │  24°C    │   │  65%   │  │ 12 km/h │                                 ║
-║  │  │ ▓▓▓▓░░░░ │   │ ▓▓▓▓▓░ │  │ NE      │                                 ║
-║  │  │ Warm     │   │Moderate│  │ Breezy  │                                 ║
-║  └───────────────────────────────────────────────────────────┘               ║
-║                                                                              ║
-║  Mon   Tue   Wed   Thu   Fri   Sat   Sun                                   ║
-║  🌤️    ☀️    🌧️    🌧️    ⛈️    🌤️    ☀️                                    ║
-║  24°   26°   22°   20°   19°   23°   25°                                  ║
-║                                                                              ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  📊 Service: OpenWeatherMap API  │  ⚡ Speed: 142ms  │  🧠 Cognition: S1    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
-### 🔍 GitHub Code Search
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     🔍  AETHER FORGE — SEARCH COMPLETE                        ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Query: "async def process_voice" → 47 results across 12 repositories      ║
-║                                                                              ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐ ║
-║  │  📁 aether-forge/voice_engine.py                        ⭐ 98% match    │ ║
-║  │  ─────────────────────────────────────────────────────────────────────  │ ║
-║  │   42 │  async def process_voice(                                        │ ║
-║  │   43 │      self,                                                       │ ║
-║  │   44 │      audio: bytes,                                               │ ║
-║  │   45 │      context: VoiceContext,                                      │ ║
-║  │   46 │  ) -> VoiceResult:                                               │ ║
-║  │   47 │      """Process voice input through the forge pipeline."""       │ ║
-║  │  Language: Python │ Size: 2.4KB │ Last modified: 2 hours ago            │ ║
-║  └─────────────────────────────────────────────────────────────────────────┘ ║
-║                                                                              ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐ ║
-║  │  📁 gemini-live-bridge/stream_handler.py                ⭐ 87% match    │ ║
-║  │  ─────────────────────────────────────────────────────────────────────  │ ║
-║  │  156│  async def process_voice(                                         │ ║
-║  │  157│      stream: AudioStream,                                         │ ║
-║  │  158│      callback: Callable[[str], None],                             │ ║
-║  │  159│  ) -> AsyncGenerator[VoiceChunk, None]:                          │ ║
-║  │  Language: Python │ Size: 1.8KB │ Last modified: 5 days ago             │ ║
-║  └─────────────────────────────────────────────────────────────────────────┘ ║
-║                                                                              ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  📊 Service: GitHub REST API v3  │  ⚡ Speed: 287ms  │  🧠 Cognition: S2    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
-### 🖥️ System Diagnostics
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     🖥️  AETHER FORGE — DIAGNOSTICS RUNNING                    ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  ┌────────────────────── SYSTEM OVERVIEW ──────────────────────┐            ║
-║  │  Host: aether-forge-prod-01    Uptime: 14d 7h 32m           │            ║
-║  │  OS: Ubuntu 22.04 LTS         Kernel: 5.15.0-91-generic   │            ║
-║  └──────────────────────────────────────────────────────────────┘            ║
-║                                                                              ║
-║  ┌────────────────────── CPU UTILIZATION ──────────────────────┐            ║
-║  │  Overall: 67%                                                │            ║
-║  │  ┌────────────────────────────────────────────────────────┐ │            ║
-║  │  │▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│ │            ║
-║  │  └────────────────────────────────────────────────────────┘ │            ║
-║  │  Core 0: 78%  Core 1: 72%  Core 2: 54%  Core 3: 68%         │            ║
-║  └──────────────────────────────────────────────────────────────┘            ║
-║                                                                              ║
-║  ┌────────────────────── MEMORY USAGE ────────────────────────┐             ║
-║  │  Used: 12.4 GB / 16.0 GB (78%)                              │             ║
-║  │  ┌───────────────────────────────────────────────────────┐ │             ║
-║  │  │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│ │             ║
-║  │  └───────────────────────────────────────────────────────┘ │             ║
-║  │  aether_forge.py: 4.2GB [HEALTHY]  gemini_bridge.py: 2.1GB │             ║
-║  └─────────────────────────────────────────────────────────────┘             ║
-║                                                                              ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  📊 Service: Aether Internal Telemetry  │  ⚡ Speed: 23ms  │  🧠 Cognition: S1║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
-### 📰 News Aggregation
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     📰  AETHER FORGE — NEWS AGGREGATED                        ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  Category: Technology & AI  │  Timeframe: Last 24h                           ║
-║                                                                              ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐ ║
-║  │  🔴 BREAKING                                                            │ ║
-║  │  "OpenAI Announces GPT-5 with Multimodal Reasoning Capabilities"        │ ║
-║  │  Source: TechCrunch          Credibility: ████████░░ 85%               │ ║
-║  │  Sentiment: [📈 POSITIVE]     Published: 2 hours ago                    │ ║
-║  │  Related: 12 articles  │  Shares: 45.2K  │  Comments: 1.8K             │ ║
-║  └─────────────────────────────────────────────────────────────────────────┘ ║
-║                                                                              ║
-║  ┌─────────────────────────────────────────────────────────────────────────┐ ║
-║  │  🟡 TRENDING                                                            │ ║
-║  │  "Google DeepMind Achieves Breakthrough in Protein Folding"             │ ║
-║  │  Source: Nature              Credibility: ██████████ 98%               │ ║
-║  │  Sentiment: [📈 POSITIVE]     Published: 5 hours ago                    │ ║
-║  └─────────────────────────────────────────────────────────────────────────┘ ║
-║                                                                              ║
-║  📊 SENTIMENT DISTRIBUTION                                                  ║
-║  Positive ████████████████████░░░░  62%  (↑12% vs yesterday)              ║
-║  Neutral  ████████░░░░░░░░░░░░░░░  28%  (↓5% vs yesterday)               ║
-║  Negative ████░░░░░░░░░░░░░░░░░░░  10%  (↓7% vs yesterday)               ║
-║                                                                              ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  📊 Service: NewsAPI + Aggregators  │  ⚡ Speed: 412ms  │  🧠 Cognition: S2  ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
-
-### 🔄 سير العمل | Workflow
-
-```python
-# Voice Command | أمر صوتي
-user_input = "Book me a flight from SFO to JFK tomorrow"
-
-# Step 1: Intent Parsing (50ms) | تحليل النية
-intent = parse_intent(user_input)
-# Output: {"action": "book_flight", "origin": "SFO", "destination": "JFK", "date": "tomorrow"}
-
-# Step 2: Agent Compilation (50ms) | تجميع الوكيل
-agent = compile_agent(intent)
-# Output: Ephemeral agent with direct API access
-
-# Step 3: API Execution (1,900ms) | تنفيذ API
-result = agent.execute()
-# Output: {"flight_id": "UA1234", "price": "$299", "status": "confirmed"}
-
-# Total Time: 2,000ms (2 seconds) | الوقت الإجمالي
-# Success Rate: 95%+ | معدل النجاح
-```
-
----
-
-## 6. تثبيت وتشغيل | Installation
-
-### المتطلبات | Prerequisites
-
+### Prerequisites
 - Python 3.10+
-- Gemini API Key (Pro أو Flash)
-- الرغبة في السيادة|autonomy
+- A Google Cloud Project with Gemini API enabled
+- `ffmpeg` (for audio processing)
 
-### الخطوات | Steps
+### Installation
 
-```bash
-# 1. استنساخ المشروع | Clone the Repository
-git clone https://github.com/Moeabdelaziz007/AetherOS.git
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Antigravity-AI/AetherOS.git
+    cd AetherOS
+    ```
 
-# 2. الدخول للمجلد | Enter Directory
-cd AetherOS
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-# 3. تثبيت المتطلبات | Install Dependencies
-pip install -r requirements.txt
+3.  **Configure Environment:**
+    Create a `.env` file in the root directory:
+    ```bash
+    GOOGLE_API_KEY=your_gemini_api_key_here
+    GOOGLE_CLOUD_PROJECT=your_project_id
+    ```
 
-# 4. تشغيل النظام | Run the System
-python3 -m agent.forge.aether_forge
-```
+4.  **Ignite the System:**
+    ```bash
+    python -m agent.aether_orchestrator.main
+    ```
 
-### للتحكم بالOrchestrator | Running the Orchestrator
-
-```bash
-# تشغيل مع WebSocket | Run with WebSocket Server
-python3 -m agent.orchestrator.main
-```
-
----
-
-## 7. مساهمة | Contributing
-
-نرحب بمساهماتكم! يرجى اتباع الإرشادات التالية:
-
-We welcome contributions! Please follow these guidelines:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### 🌟 فريق التطوير | Development Team
-
-| الدور | الاسم | Role | Name |
-|------|-------|------|------|
-| Architect | Mohamed H. Abdelaziz (Amrikyy) | المعمار | محمد.h. Abdelaziz |
-| AI Systems | Lead Developer | الأنظمة الذكية | المطور الرئيسي |
-| Security | Cybersecurity Engineer | الأمن السيبراني | مهندس الأمن |
+The system will start the WebSocket server on `ws://127.0.0.1:8000` and begin listening for incoming sensory data.
 
 ---
 
-## 8. السجل والتحديثات | Changelog
+## 🛠️ Technology Stack
 
-### v2.0.0 - current (2026-02-23)
-
-- ✅ إضافة Vector 3: Empirical Proof
-- ✅ تحسين وثائق Gemini Submission
-- ✅ إضافة دعم Gemini Live
-- ✅ تحسين نظام AetherEvolve
-
-### v1.5.0 (2026-02-15)
-
-- ✅ إضافة برلمان الوكلاء
-- ✅ تحسين Circuit Breaker
-- ✅ إضافة نظام TELEMETRY
-
-### v1.0.0 (2026-02-01)
-
-- ✅ الإصدار الأولي
-- ✅ نظام Aether Forge الأساسي
-- ✅ دعم Gemini API
+-   **Core Intelligence:** Google Gemini Live API (Multimodal Streaming)
+-   **Orchestration:** Python (AsyncIO)
+-   **Memory & State:** Firebase / Firestore
+-   **Frontend:** React (Vite)
+-   **Protocol:** WebSockets (Custom Synaptic Protocol with Binary Packets)
 
 ---
 
-## 9. الترخيص | License
+## 👥 Team
 
-MIT License - انظر [`LICENSE`](LICENSE) للتفاصيل.
-
----
-
-## 📞 تواصل | Contact
-
-- **GitHub**: [Moeabdelaziz007](https://github.com/Moeabdelaziz007)
-- **Email**: mohamed@example.com
+-   **Moe** — Creator & Architect
 
 ---
 
-## 🙏 شكر وتقدير | Acknowledgments
+## 📄 License
 
-Built for the Gemini Competition with 🧠 by Antigravity & Moeabdelaziz007.
-
-> *"Building the future with First Principles. Deconstructing reality into algorithms."*
-> *"بناء المستقبل مع المبادئ الأولى. تفكيك الواقع إلى خوارزميات."*
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-### 🔗 روابط سريعة | Quick Links
-
-- [📖 الوثائق الكاملة | Full Documentation](./docs/)
-- [🧪 الاختبارات | Tests](./tests/)
-- [🚀 خطط التطوير | Roadmap](./plans/)
-- [📊 تحليل البيانات | Telemetry](./agent/memory/TELEMETRY.json)
-- [🔍 تحليل الشذوذات | Anomaly Analysis](./agent/orchestrator/anomaly_log.json)
-
----
-
-*آخر تحديث: 2026-02-23 | Last updated: 2026-02-23*
+<div align="center">
+  <sub>Built with 💜 by Antigravity AI</sub>
+</div>

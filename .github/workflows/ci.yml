@@ -13,7 +13,7 @@ jobs:
       MOCK_SWARM: "1"  # shadow mode
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,7 +27,7 @@ jobs:
 
       - name: Run router unit tests
         run: |
-          python -m agent.orchestrator.test_router
+          python -m agent.aether_orchestrator.test_router
 
       - name: Simulate shadow swarm node
         run: |

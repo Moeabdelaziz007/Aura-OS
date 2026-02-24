@@ -1,4 +1,7 @@
 """
+⚠️ DEPRECATED: This module (v1.0) is deprecated.
+Please use `live_bridge_v2.py` for the official Gemini Live API implementation.
+
 🌌 AetherOS — Gemini Live Bridge
 ================================
 The final sensory bridge. Connects the multimodal voice stream to the Aether Forge.
@@ -8,7 +11,14 @@ Implements the Collapse -> Forge -> Render -> Speak pipeline.
 import asyncio
 import logging
 import os
+import warnings
 from typing import Optional, Dict, Any
+
+warnings.warn(
+    "gemini_live_bridge.py is deprecated and will be removed in a future version. Use live_bridge_v2.py instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 # Assuming google-generativeai is installed
 try:

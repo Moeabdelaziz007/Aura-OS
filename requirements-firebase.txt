@@ -8,34 +8,33 @@ google-cloud-firestore==2.13.1  # Firebase Firestore SDK
 google-cloud-storage==2.12.0    # Firebase Storage SDK
 
 # Google ADK Integration
-google-ai-python-sdk==1.1.0
-google-generativeai==0.3.2
+# google-ai-python-sdk==1.1.0  <-- REMOVED: Does not exist
+google-generativeai>=0.3.2     # Use google-generativeai instead
 
 # Core Dependencies (unchanged)
-httpx==0.25.2
+httpx==0.28.1
 pytest==7.4.3
 pytest-asyncio==0.21.1
 python-dotenv==1.0.0
-cryptography==41.0.7
+cryptography==46.0.5
 psutil==5.9.6
 pydantic==2.5.0
 PyYAML==6.0.1
 websockets==12.0
-numpy==1.24.3
+numpy==1.26.4
 
 # Firebase-specific Dependencies
-firebase-tools==13.0.0
-google-auth==2.23.4
-google-auth-httplib2==0.1.1
-google-auth-oauthlib==1.1.0
+# firebase-tools==13.0.0 # CLI tool, not pip package
+google-auth>=2.23.4
+google-auth-httplib2>=0.1.1
+google-auth-oauthlib>=1.1.0
 
 # Monitoring and Analytics
 google-cloud-logging==3.8.0
 google-cloud-monitoring==2.16.0
 
 # Security and Validation
-pyjwt==2.8.0
-cryptography==41.0.7
+pyjwt>=2.8.0
 bcrypt==4.0.1
 
 # Development Tools
