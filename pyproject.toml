@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aetheros"
+version = "0.1.0"
+description = "AetherOS Agentic Orchestrator"
+readme = "README.md"
+authors = [
+    { name = "AetherOS Team", email = "team@aetheros.ai" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "httpx",
+    "python-dotenv",
+    "cryptography",
+    "psutil",
+    "pydantic",
+    "PyYAML",
+    "websockets",
+    "numpy",
+    "google-generativeai",
+    "google-cloud-aiplatform",
+    "firebase-admin",
+    "firebase-functions",
+    "google-cloud-firestore",
+    "google-cloud-storage",
+    "google-cloud-logging",
+    "google-cloud-monitoring",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Moeabdelaziz007/AetherOS"
+"Bug Tracker" = "https://github.com/Moeabdelaziz007/AetherOS/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agent*"]
+namespaces = true
