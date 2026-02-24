@@ -7,7 +7,7 @@ import asyncio
 import time
 import sys
 from typing import Dict, Any
-from agent.forge import AetherForge
+from agent.aether_forge import AetherForge
 
 async def print_slow(text: str, delay: float = 0.03):
     """Bilingual typewriter effect."""

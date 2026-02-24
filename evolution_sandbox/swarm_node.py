@@ -40,7 +40,7 @@ class QuantumWeaverNode:
             try:
                 # rudimentary EFE approximation using SKILLS
                 # Use AETHER_SKILLS_PATH environment variable if set, otherwise use relative path
-                skills_path = pathlib.Path(os.getenv("AETHER_SKILLS_PATH", "agent/memory/SKILLS.md"))
+                skills_path = pathlib.Path(os.getenv("AETHER_SKILLS_PATH", "agent/aether_memory/SKILLS.md"))
                 
                 # If relative path doesn't exist, try to resolve from current file location
                 if not skills_path.exists():

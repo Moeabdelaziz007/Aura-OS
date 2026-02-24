@@ -1,7 +1,7 @@
 import asyncio
 import time
 import logging
-from agent.forge import AetherForge
+from agent.aether_forge import AetherForge
 
 # Configure logging to show timestamps with milliseconds
 logging.basicConfig(

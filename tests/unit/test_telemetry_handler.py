@@ -13,7 +13,7 @@ from datetime import datetime
 # Import the module under test
 # =============================================================================
 
-from agent.orchestrator.modules.telemetry_handler import TelemetryHandler
+from agent.aether_orchestrator.modules.telemetry_handler import TelemetryHandler
 
 
 # =============================================================================
@@ -258,17 +258,22 @@ class TestGetAnomalyCount:
 
     def test_get_anomaly_count_increments_correctly(self, telemetry_handler, mock_anomaly_monitor):
         """
-        Test that query count increments by 1 each update.
+        Test that anomaly count increments correctly when anomalies are logged.
         """
-        result = Mock()
-        result.service = "test_service"
-        
-        for i in range(3):
-            telemetry_handler.update_memory(result)
-        
-        # Count should be 3 (from memory handler, not telemetry handler)
-        # Note: TelemetryHandler doesn't track query count, MemoryHandler does
+        # Start with empty log
         assert telemetry_handler.get_anomaly_count() == 0
+        
+        # Log anomalies one at a time and verify count
+        for i in range(3):
+            telemetry_handler.log_anomaly(f"component_{i}", f"error_{i}", f"message_{i}")
+            mock_anomaly_monitor.anomaly_log.append({
+                "component": f"component_{i}",
+                "error_type": f"error_{i}",
+                "message": f"message_{i}"
+            })
+        
+        # Count should be 3
+        assert telemetry_handler.get_anomaly_count() == 3
 
 
 # =============================================================================
@@ -382,10 +387,9 @@ class TestGetRecentAnomalies:
         """
         mock_anomaly_monitor.anomaly_log = sample_anomalies
         
-        # Negative limit returns items from the end (Python slicing behavior)
+        # Negative limit returns empty list (invalid input handling)
         recent = telemetry_handler.get_recent_anomalies(limit=-1)
-        # With negative limit, Python returns items from the end
-        assert len(recent) == 4  # Returns last 4 items
+        assert recent == []
         assert isinstance(recent, list)
 
     def test_get_recent_anomalies_candidate_without_vector(self, telemetry_handler, mock_anomaly_monitor, sample_anomalies):

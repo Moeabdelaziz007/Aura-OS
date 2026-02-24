@@ -1,6 +1,6 @@
 import asyncio
 import unittest
-from agent.core.parliament import AgentParliament
+from agent.aether_core.aether_parliament import AetherAgentParliament
 
 class TestAetherSovereign(unittest.IsolatedAsyncioTestCase):
     
@@ -15,10 +15,10 @@ class TestAetherSovereign(unittest.IsolatedAsyncioTestCase):
 
     async def test_parliament_race(self):
         print("\n🏛️ Testing Agent Parliament Race...")
-        parliament = AgentParliament(size=5)
+        parliament = AetherAgentParliament(size=5)
         
         # We intent 'fast' to ensure race is noticeable
-        result = await parliament.convene("fast_intent", {}, self.dummy_logic)
+        result = await parliament.aether_convene("fast_intent", {}, self.dummy_logic)
         
         self.assertTrue(result["success"])
         self.assertIn("par-agent-", result["agent_id"])
@@ -29,8 +29,8 @@ class TestAetherSovereign(unittest.IsolatedAsyncioTestCase):
         import gc
         before = gc.get_count()
         
-        parliament = AgentParliament(size=2)
-        await parliament.convene("cleanup_test", {}, self.dummy_logic)
+        parliament = AetherAgentParliament(size=2)
+        await parliament.aether_convene("cleanup_test", {}, self.dummy_logic)
         
         # Explicitly checking if parliament triggers GC
         # (Difficult to assert exact counts but verifies no crash)

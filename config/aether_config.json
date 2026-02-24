@@ -1,0 +1,127 @@
+{
+  "aether_version": "1.0.0",
+  "aether_modules": [
+    {
+      "name": "core",
+      "path": "agent/aether_core",
+      "enabled": true,
+      "description": "Core Aether primitives including Intent, Lambda, Telemetry, and Parliament"
+    },
+    {
+      "name": "forge",
+      "path": "agent/aether_forge",
+      "enabled": true,
+      "description": "Nano-agent synthesis and execution factory"
+    },
+    {
+      "name": "memory",
+      "path": "agent/aether_memory",
+      "enabled": true,
+      "description": "AetherCore DNA and persistent memory patterns"
+    },
+    {
+      "name": "orchestrator",
+      "path": "agent/aether_orchestrator",
+      "enabled": true,
+      "description": "Cognitive routing and kernel operations"
+    }
+  ],
+  "aether_evolution": {
+    "enabled": true,
+    "mutation_rate": 0.1,
+    "sandbox_enabled": true,
+    "consensus_required": true,
+    "min_variants": 3,
+    "evolution_interval_seconds": 3600
+  },
+  "voice_engine": {
+    "provider": "google",
+    "model": "gemini-2.0-flash-exp",
+    "enabled": true,
+    "max_tokens": 8192,
+    "temperature": 0.7,
+    "timeout_seconds": 30
+  },
+  "vision_engine": {
+    "provider": "google",
+    "model": "gemini-2.0-flash-exp",
+    "enabled": true,
+    "max_image_size_mb": 20,
+    "timeout_seconds": 30
+  },
+  "reasoning_engine": {
+    "provider": "google",
+    "model": "gemini-2.0-flash-exp",
+    "enabled": true,
+    "max_tokens": 8192,
+    "temperature": 0.7,
+    "timeout_seconds": 60
+  },
+  "swarm_controller": {
+    "node_count": 5,
+    "scaling_policy": "auto",
+    "min_nodes": 3,
+    "max_nodes": 10,
+    "load_threshold": 0.8,
+    "scale_up_cooldown_seconds": 60,
+    "scale_down_cooldown_seconds": 300
+  },
+  "safety_engine": {
+    "enabled": true,
+    "rules": [
+      {
+        "name": "code_injection_prevention",
+        "severity": "critical",
+        "enabled": true,
+        "description": "Prevent injection of malicious code patterns"
+      },
+      {
+        "name": "api_rate_limiting",
+        "severity": "high",
+        "enabled": true,
+        "description": "Limit API call frequency to prevent abuse"
+      },
+      {
+        "name": "memory_overflow_protection",
+        "severity": "critical",
+        "enabled": true,
+        "description": "Prevent memory from exceeding safe limits"
+      },
+      {
+        "name": "sandbox_isolation",
+        "severity": "critical",
+        "enabled": true,
+        "description": "Ensure all code execution is sandboxed"
+      },
+      {
+        "name": "consensus_validation",
+        "severity": "high",
+        "enabled": true,
+        "description": "Validate consensus before applying mutations"
+      }
+    ]
+  },
+  "memory_system": {
+    "max_size_mb": 1024,
+    "retention_policy": "lru",
+    "persistence_enabled": true,
+    "persistence_path": ".idx/memories.md",
+    "skills_path": ".idx/Skills.md",
+    "compression_enabled": true,
+    "cache_ttl_seconds": 300
+  },
+  "telemetry": {
+    "enabled": true,
+    "log_level": "info",
+    "metrics_enabled": true,
+    "trace_enabled": true,
+    "output_path": ".idx/TELEMETRY.json"
+  },
+  "forge": {
+    "max_concurrent_agents": 10,
+    "agent_ttl_seconds": 300,
+    "circuit_breaker_enabled": true,
+    "circuit_breaker_threshold": 5,
+    "circuit_breaker_timeout_seconds": 60
+  }
+}

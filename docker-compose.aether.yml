@@ -1,0 +1,461 @@
+# AetherOS Docker Compose Configuration
+# Orchestrator and Swarm Services Deployment
+
+version: '3.8'
+
+# ============================================================================
+# Services Configuration
+# ============================================================================
+services:
+  # ------------------------------------------------------------------------
+  # Service 1: Aether Orchestrator
+  # ------------------------------------------------------------------------
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.aether
+      target: runtime
+      args:
+        BUILD_DATE: ${BUILD_DATE:-2024-01-01}
+        VERSION: ${VERSION:-1.0.0}
+        VCS_REF: ${VCS_REF:-unknown}
+    image: aetheros/orchestrator:${VERSION:-latest}
+    container_name: aether-orchestrator
+    hostname: orchestrator
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      # Python configuration
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      
+      # Aether configuration
+      - AETHER_HOME=/app
+      - AETHER_CONFIG_PATH=/app/config
+      - AETHER_LOG_LEVEL=${AETHER_LOG_LEVEL:-INFO}
+      - AETHER_ENV=${AETHER_ENV:-production}
+      - AETHER_TELEMETRY_ENABLED=${AETHER_TELEMETRY_ENABLED:-true}
+      
+      # API configuration
+      - AETHER_API_HOST=0.0.0.0
+      - AETHER_API_PORT=8080
+      - AETHER_GRPC_PORT=9090
+      - AETHER_WEBSOCKET_PORT=8765
+      
+      # Gemini Live configuration
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.0-flash-exp}
+      
+      # Redis configuration (optional)
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      
+      # Database configuration (optional)
+      - DATABASE_URL=${DATABASE_URL:-}
+      
+      # Telemetry configuration
+      - TELEMETRY_ENDPOINT=${TELEMETRY_ENDPOINT:-}
+      - TELEMETRY_ENABLED=${TELEMETRY_ENABLED:-true}
+    
+    # Port mappings
+    ports:
+      - "8080:8080"   # HTTP API
+      - "9090:9090"   # gRPC API
+      - "8765:8765"   # WebSocket
+    
+    # Volume mounts
+    volumes:
+      # Configuration
+      - ./config:/app/config:ro
+      
+      # Data persistence
+      - aether-data:/app/data
+      
+      # Logs
+      - aether-logs:/app/logs
+      
+      # Aether memory
+      - ./.idx:/app/.idx:ro
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Service dependencies
+    depends_on:
+      redis:
+        condition: service_healthy
+    
+    # Networks
+    networks:
+      - aether-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ------------------------------------------------------------------------
+  # Service 2: Swarm Node 1
+  # ------------------------------------------------------------------------
+  swarm-node-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.swarm
+      target: runtime
+      args:
+        BUILD_DATE: ${BUILD_DATE:-2024-01-01}
+        VERSION: ${VERSION:-1.0.0}
+        VCS_REF: ${VCS_REF:-unknown}
+    image: aetheros/swarm:${VERSION:-latest}
+    container_name: aether-swarm-node-1
+    hostname: swarm-node-1
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      # Python configuration
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      
+      # Swarm configuration
+      - SWARM_HOME=/app
+      - SWARM_NODE_ID=swarm-node-1
+      - SWARM_ORCHESTRATOR_URL=http://orchestrator:8080
+      - SWARM_HEARTBEAT_INTERVAL=30
+      - SWARM_EXECUTION_TIMEOUT=300
+      - SWARM_LOG_LEVEL=${SWARM_LOG_LEVEL:-INFO}
+      - SWARM_MODE=worker
+      
+      # Task execution
+      - SWARM_MAX_CONCURRENT_TASKS=5
+      - SWARM_TASK_TIMEOUT=600
+    
+    # Port mappings
+    ports:
+      - "9001:9000"   # Swarm API
+      - "9002:9001"   # Metrics
+    
+    # Volume mounts
+    volumes:
+      # Data persistence
+      - swarm-data-1:/app/data
+      
+      # Logs
+      - swarm-logs-1:/app/logs
+      
+      # Task storage
+      - swarm-tasks-1:/app/tasks
+      
+      # Results storage
+      - swarm-results-1:/app/results
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Service dependencies
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+    
+    # Networks
+    networks:
+      - aether-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ------------------------------------------------------------------------
+  # Service 3: Swarm Node 2
+  # ------------------------------------------------------------------------
+  swarm-node-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.swarm
+      target: runtime
+      args:
+        BUILD_DATE: ${BUILD_DATE:-2024-01-01}
+        VERSION: ${VERSION:-1.0.0}
+        VCS_REF: ${VCS_REF:-unknown}
+    image: aetheros/swarm:${VERSION:-latest}
+    container_name: aether-swarm-node-2
+    hostname: swarm-node-2
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Environment variables
+    environment:
+      # Python configuration
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      
+      # Swarm configuration
+      - SWARM_HOME=/app
+      - SWARM_NODE_ID=swarm-node-2
+      - SWARM_ORCHESTRATOR_URL=http://orchestrator:8080
+      - SWARM_HEARTBEAT_INTERVAL=30
+      - SWARM_EXECUTION_TIMEOUT=300
+      - SWARM_LOG_LEVEL=${SWARM_LOG_LEVEL:-INFO}
+      - SWARM_MODE=worker
+      
+      # Task execution
+      - SWARM_MAX_CONCURRENT_TASKS=5
+      - SWARM_TASK_TIMEOUT=600
+    
+    # Port mappings
+    ports:
+      - "9003:9000"   # Swarm API
+      - "9004:9001"   # Metrics
+    
+    # Volume mounts
+    volumes:
+      # Data persistence
+      - swarm-data-2:/app/data
+      
+      # Logs
+      - swarm-logs-2:/app/logs
+      
+      # Task storage
+      - swarm-tasks-2:/app/tasks
+      
+      # Results storage
+      - swarm-results-2:/app/results
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    # Service dependencies
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+    
+    # Networks
+    networks:
+      - aether-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ------------------------------------------------------------------------
+  # Service 4: Redis (Cache and Message Broker)
+  # ------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: aether-redis
+    hostname: redis
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Command with persistence
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-aether123}
+    
+    # Port mapping
+    ports:
+      - "6379:6379"
+    
+    # Volume mounts
+    volumes:
+      - redis-data:/data
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    
+    # Networks
+    networks:
+      - aether-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ------------------------------------------------------------------------
+  # Service 5: Nginx (Reverse Proxy - Optional)
+  # ------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: aether-nginx
+    hostname: nginx
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Port mappings
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    # Volume mounts
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Service dependencies
+    depends_on:
+      - orchestrator
+    
+    # Networks
+    networks:
+      - aether-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ============================================================================
+# Networks Configuration
+# ============================================================================
+networks:
+  aether-network:
+    driver: bridge
+    name: aether-network
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# ============================================================================
+# Volumes Configuration
+# ============================================================================
+volumes:
+  # Orchestrator volumes
+  aether-data:
+    name: aether-data
+    driver: local
+  
+  aether-logs:
+    name: aether-logs
+    driver: local
+  
+  # Swarm node 1 volumes
+  swarm-data-1:
+    name: swarm-data-1
+    driver: local
+  
+  swarm-logs-1:
+    name: swarm-logs-1
+    driver: local
+  
+  swarm-tasks-1:
+    name: swarm-tasks-1
+    driver: local
+  
+  swarm-results-1:
+    name: swarm-results-1
+    driver: local
+  
+  # Swarm node 2 volumes
+  swarm-data-2:
+    name: swarm-data-2
+    driver: local
+  
+  swarm-logs-2:
+    name: swarm-logs-2
+    driver: local
+  
+  swarm-tasks-2:
+    name: swarm-tasks-2
+    driver: local
+  
+  swarm-results-2:
+    name: swarm-results-2
+    driver: local
+  
+  # Redis volume
+  redis-data:
+    name: redis-data
+    driver: local
+  
+  # Nginx volume
+  nginx-logs:
+    name: nginx-logs
+    driver: local

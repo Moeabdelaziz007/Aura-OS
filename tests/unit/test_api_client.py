@@ -13,7 +13,7 @@ from unittest.mock import Mock, AsyncMock, patch
 # Import the module under test
 # =============================================================================
 
-from agent.orchestrator.modules.api_client import APIClient
+from agent.aether_orchestrator.modules.api_client import APIClient
 
 
 # =============================================================================
@@ -50,7 +50,7 @@ def mock_gemini_client_class():
     """
     Mock the GeminiLiveClient class.
     """
-    with patch('agent.orchestrator.gemini_live_client.GeminiLiveClient') as mock_class:
+    with patch('agent.aether_orchestrator.gemini_live_client.GeminiLiveClient') as mock_class:
         yield mock_class
 
 

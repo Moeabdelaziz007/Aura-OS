@@ -1,0 +1,143 @@
+# AetherOS Swarm Node - Minimal Dockerfile
+# Optimized for lightweight swarm execution with minimal footprint
+
+# ============================================================================
+# STAGE 1: Builder
+# ============================================================================
+FROM python:3.11-slim AS builder
+
+# Set build arguments
+ARG BUILD_DATE
+ARG VERSION=1.0.0
+ARG VCS_REF
+
+# Set environment variables for build
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install minimal build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libssl-dev \
+    libffi-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create build directory
+WORKDIR /build
+
+# Copy requirements
+COPY swarm_infrastructure/requirements.txt ./swarm_infrastructure/
+COPY evolution_sandbox/swarm_node.py ./evolution_sandbox/
+COPY swarm_infrastructure/evolution_sandbox/executor.py ./swarm_infrastructure/evolution_sandbox/
+
+# Install Python dependencies
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r swarm_infrastructure/requirements.txt
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies into venv
+RUN pip install --no-cache-dir -r swarm_infrastructure/requirements.txt
+
+# Pre-compile Python files
+RUN python -m compileall evolution_sandbox/ swarm_infrastructure/
+
+# ============================================================================
+# STAGE 2: Runtime
+# ============================================================================
+FROM python:3.11-slim AS runtime
+
+# Metadata labels
+LABEL maintainer="AetherOS Team" \
+      org.opencontainers.image.title="AetherOS Swarm Node" \
+      org.opencontainers.image.description="AetherOS Swarm Execution Node" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.vendor="AetherOS"
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH="/app:$PYTHONPATH" \
+    SWARM_HOME="/app" \
+    SWARM_NODE_ID="" \
+    SWARM_ORCHESTRATOR_URL="http://orchestrator:8080" \
+    SWARM_HEARTBEAT_INTERVAL=30 \
+    SWARM_EXECUTION_TIMEOUT=300 \
+    SWARM_LOG_LEVEL="INFO"
+
+# Install minimal runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    libssl3 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user for security
+RUN groupadd -r swarm && useradd -r -g swarm swarm
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Create application directory structure
+WORKDIR /app
+RUN mkdir -p /app/data /app/logs /app/tasks /app/results
+
+# Copy source code from builder
+COPY --from=builder --chown=swarm:swarm /build/evolution_sandbox /app/evolution_sandbox
+COPY --from=builder --chown=swarm:swarm /build/swarm_infrastructure /app/swarm_infrastructure
+
+# Copy entrypoint script
+COPY docker/swarm-entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Change ownership to non-root user
+RUN chown -R swarm:swarm /app
+
+# Switch to non-root user
+USER swarm
+
+# Expose ports
+# 9000: Swarm node API endpoint
+# 9001: Metrics endpoint
+EXPOSE 9000 9001
+
+# Health check configuration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:9000/health || exit 1
+
+# Volume mounts
+VOLUME ["/app/data", "/app/logs", "/app/tasks", "/app/results"]
+
+# Set working directory
+WORKDIR /app
+
+# Default command
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["python", "evolution_sandbox/swarm_node.py"]
+
+# ============================================================================
+# STAGE 3: Executor (Optional - for task execution)
+# ============================================================================
+FROM runtime AS executor
+
+# Additional runtime dependencies for task execution
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set executor environment
+ENV SWARM_MODE="executor" \
+    SWARM_MAX_CONCURRENT_TASKS=5 \
+    SWARM_TASK_TIMEOUT=600

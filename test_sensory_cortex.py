@@ -1,6 +1,6 @@
 import asyncio
 import pytest
-from agent.forge.live_bridge_v2 import GeminiLiveBridgeV2
+from agent.aether_forge.live_bridge_v2 import AetherGeminiLiveBridgeV2
 
 async def test_bridge_handshake():
     """Verifies bridge initialization and session management."""

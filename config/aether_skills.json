@@ -1,0 +1,72 @@
+{
+  "skill_registry": {
+    "skills": []
+  },
+  "skill_promotion_criteria": {
+    "min_success_rate": 0.85,
+    "min_usage_count": 10,
+    "min_confidence_score": 0.8,
+    "promotion_window_hours": 24
+  },
+  "skill_consolidation": {
+    "similarity_threshold": 0.85,
+    "merge_strategy": "highest_performance",
+    "consolidation_interval_hours": 168,
+    "max_similar_skills": 3
+  },
+  "skill_categories": [
+    {
+      "id": "api_discovery",
+      "name": "API Discovery",
+      "description": "Skills related to discovering and analyzing APIs"
+    },
+    {
+      "id": "code_generation",
+      "name": "Code Generation",
+      "description": "Skills for generating code snippets and functions"
+    },
+    {
+      "id": "data_analysis",
+      "name": "Data Analysis",
+      "description": "Skills for analyzing and processing data"
+    },
+    {
+      "id": "test_generation",
+      "name": "Test Generation",
+      "description": "Skills for creating automated tests"
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "description": "Skills for generating and updating documentation"
+    },
+    {
+      "id": "debugging",
+      "name": "Debugging",
+      "description": "Skills for identifying and fixing bugs"
+    },
+    {
+      "id": "optimization",
+      "name": "Optimization",
+      "description": "Skills for improving code performance"
+    },
+    {
+      "id": "integration",
+      "name": "Integration",
+      "description": "Skills for integrating with external services"
+    }
+  ],
+  "skill_lifecycle": {
+    "draft_ttl_hours": 72,
+    "promoted_ttl_hours": 720,
+    "deprecated_ttl_hours": 2160,
+    "auto_cleanup_enabled": true
+  },
+  "skill_metrics": {
+    "track_execution_time": true,
+    "track_success_rate": true,
+    "track_user_feedback": true,
+    "track_usage_frequency": true,
+    "metrics_retention_days": 90
+  }
+}

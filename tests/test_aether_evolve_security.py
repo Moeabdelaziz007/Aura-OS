@@ -13,7 +13,7 @@ sys.modules['dotenv'] = MagicMock()
 # Set env var
 os.environ["GEMINI_API_KEY"] = "fake_key"
 
-from agent.orchestrator.aether_evolve import MutationGenerator, AetherHeuristicSandbox
+from agent.aether_orchestrator.aether_evolve import MutationGenerator, AetherHeuristicSandbox
 
 class TestMutationGeneratorSecurity(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):

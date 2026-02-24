@@ -13,7 +13,7 @@ from unittest.mock import patch
 # Import the module under test
 # =============================================================================
 
-from agent.core.intent_vectorizer import IntentVectorizer
+from agent.aether_core.aether_intent import AetherIntentVectorizer
 
 
 # =============================================================================
@@ -23,17 +23,17 @@ from agent.core.intent_vectorizer import IntentVectorizer
 @pytest.fixture
 def intent_vectorizer_local():
     """
-    Create an IntentVectorizer instance with local mode.
+    Create an AetherIntentVectorizer instance with local mode.
     """
-    return IntentVectorizer(use_remote=False)
+    return AetherIntentVectorizer(use_remote=False)
 
 
 @pytest.fixture
 def intent_vectorizer_remote():
     """
-    Create an IntentVectorizer instance with remote mode.
+    Create an AetherIntentVectorizer instance with remote mode.
     """
-    return IntentVectorizer(use_remote=True)
+    return AetherIntentVectorizer(use_remote=True)
 
 
 @pytest.fixture
@@ -79,13 +79,13 @@ def sample_candidates():
 # =============================================================================
 
 class TestIntentVectorizerInitialization:
-    """Test cases for IntentVectorizer initialization."""
+    """Test cases for AetherIntentVectorizer initialization."""
 
     def test_initialization_local_mode(self):
         """
         Test initialization with local mode.
         """
-        vectorizer = IntentVectorizer(use_remote=False)
+        vectorizer = AetherIntentVectorizer(use_remote=False)
         assert vectorizer.use_remote is False
         assert vectorizer.embedding_dim == 768
 
@@ -93,7 +93,7 @@ class TestIntentVectorizerInitialization:
         """
         Test initialization with remote mode.
         """
-        vectorizer = IntentVectorizer(use_remote=True)
+        vectorizer = AetherIntentVectorizer(use_remote=True)
         assert vectorizer.use_remote is True
         assert vectorizer.embedding_dim == 768
 
@@ -101,7 +101,7 @@ class TestIntentVectorizerInitialization:
         """
         Test that embedding dimension defaults to 768.
         """
-        vectorizer = IntentVectorizer()
+        vectorizer = AetherIntentVectorizer()
         assert vectorizer.embedding_dim == 768
 
 
@@ -118,7 +118,7 @@ class TestVectorize:
         Test vectorizing text in local mode.
         """
         text = "check bitcoin price"
-        vector = await intent_vectorizer_local.vectorize(text)
+        vector = await intent_vectorizer_local.aether_vectorize(text)
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -130,7 +130,7 @@ class TestVectorize:
         Test vectorizing text in remote mode.
         """
         text = "check bitcoin price"
-        vector = await intent_vectorizer_remote.vectorize(text)
+        vector = await intent_vectorizer_remote.aether_vectorize(text)
         
         # Remote mode returns zero vector (placeholder)
         assert isinstance(vector, list)
@@ -143,8 +143,8 @@ class TestVectorize:
         Test that local vectorization is deterministic.
         """
         text = "deterministic text"
-        vector1 = await intent_vectorizer_local.vectorize(text)
-        vector2 = await intent_vectorizer_local.vectorize(text)
+        vector1 = await intent_vectorizer_local.aether_vectorize(text)
+        vector2 = await intent_vectorizer_local.aether_vectorize(text)
         
         # Same text should produce same vector
         assert vector1 == vector2
@@ -157,8 +157,8 @@ class TestVectorize:
         text1 = "text one"
         text2 = "text two"
         
-        vector1 = await intent_vectorizer_local.vectorize(text1)
-        vector2 = await intent_vectorizer_local.vectorize(text2)
+        vector1 = await intent_vectorizer_local.aether_vectorize(text1)
+        vector2 = await intent_vectorizer_local.aether_vectorize(text2)
         
         # Different texts should produce different vectors
         assert vector1 != vector2
@@ -168,7 +168,7 @@ class TestVectorize:
         """
         Test vectorizing empty string.
         """
-        vector = await intent_vectorizer_local.vectorize("")
+        vector = await intent_vectorizer_local.aether_vectorize("")
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -179,7 +179,7 @@ class TestVectorize:
         Test vectorizing text with special characters.
         """
         text = "text with !@#$%^&*() and symbols"
-        vector = await intent_vectorizer_local.vectorize(text)
+        vector = await intent_vectorizer_local.aether_vectorize(text)
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -190,7 +190,7 @@ class TestVectorize:
         Test vectorizing text with unicode characters.
         """
         text = "مرحبا بالعالم 🌍"
-        vector = await intent_vectorizer_local.vectorize(text)
+        vector = await intent_vectorizer_local.aether_vectorize(text)
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -201,7 +201,7 @@ class TestVectorize:
         Test vectorizing very long text.
         """
         text = "x" * 10000
-        vector = await intent_vectorizer_local.vectorize(text)
+        vector = await intent_vectorizer_local.aether_vectorize(text)
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -212,7 +212,7 @@ class TestVectorize:
         Test vectorizing whitespace-only text.
         """
         text = "   \t\n  "
-        vector = await intent_vectorizer_local.vectorize(text)
+        vector = await intent_vectorizer_local.aether_vectorize(text)
         
         assert isinstance(vector, list)
         assert len(vector) == 768
@@ -230,7 +230,7 @@ class TestCalculateSimilarity:
         Test similarity of identical vectors.
         """
         vec = [0.5, 0.3, 0.7] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec, vec)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec, vec)
         
         # Identical vectors should have similarity of 1.0
         assert similarity == pytest.approx(1.0, rel=1e-6)
@@ -241,7 +241,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [1.0, 0.0] + [0.0] * 766
         vec_b = [0.0, 1.0] + [0.0] * 766
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Orthogonal vectors should have similarity of 0.0
         assert similarity == pytest.approx(0.0, abs=1e-6)
@@ -252,7 +252,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [1.0, 0.5] + [0.0] * 766
         vec_b = [-1.0, -0.5] + [0.0] * 766
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Opposite vectors should have similarity of -1.0
         assert similarity == pytest.approx(-1.0, rel=1e-6)
@@ -263,7 +263,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [0.0] * 768
         vec_b = [0.5, 0.3, 0.7] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Zero vector should return 0.0 (zero division fix)
         assert similarity == 0.0
@@ -274,7 +274,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [0.5, 0.3, 0.7] + [0.0] * 765
         vec_b = [0.0] * 768
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Zero vector should return 0.0 (zero division fix)
         assert similarity == 0.0
@@ -285,7 +285,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [0.0] * 768
         vec_b = [0.0] * 768
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Both zero vectors should return 0.0 (zero division fix)
         assert similarity == 0.0
@@ -296,7 +296,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [0.5, 0.0, 0.0] + [0.0] * 765
         vec_b = [0.3, 0.0, 0.0] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Should handle partial zero vectors
         assert isinstance(similarity, float)
@@ -308,7 +308,7 @@ class TestCalculateSimilarity:
         """
         vec_a = [0.5, 0.3, 0.7] + [0.0] * 765
         vec_b = [0.2, 0.8, 0.1] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         assert -1.0 <= similarity <= 1.0
 
@@ -321,7 +321,7 @@ class TestCalculateSimilarity:
         
         # Should raise ValueError due to shape mismatch
         with pytest.raises(ValueError):
-            intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+            intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
 
 
 # =============================================================================
@@ -337,7 +337,7 @@ class TestGetNearestNeighbors:
         Test basic nearest neighbor search.
         """
         query = "check price"
-        results = await intent_vectorizer_local.get_nearest_neighbors(
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(
             query, sample_candidates, top_k=2
         )
         
@@ -351,7 +351,7 @@ class TestGetNearestNeighbors:
         Test that results are sorted by similarity descending.
         """
         query = "check price"
-        results = await intent_vectorizer_local.get_nearest_neighbors(
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(
             query, sample_candidates, top_k=3
         )
         
@@ -365,7 +365,7 @@ class TestGetNearestNeighbors:
         Test that top_k parameter limits results.
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(
             query, sample_candidates, top_k=1
         )
         
@@ -377,7 +377,7 @@ class TestGetNearestNeighbors:
         Test when top_k is greater than number of candidates.
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(
             query, sample_candidates, top_k=100
         )
         
@@ -390,7 +390,7 @@ class TestGetNearestNeighbors:
         Test with empty candidates list.
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, [], top_k=3)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, [], top_k=3)
         
         assert results == []
 
@@ -408,7 +408,7 @@ class TestGetNearestNeighbors:
             }
         ]
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, candidates, top_k=2)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, candidates, top_k=2)
         
         # Should only return candidates with vectors
         assert len(results) == 1
@@ -420,7 +420,7 @@ class TestGetNearestNeighbors:
         Test that original candidate fields are preserved.
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(
             query, sample_candidates, top_k=1
         )
         
@@ -435,7 +435,7 @@ class TestGetNearestNeighbors:
         Test with default top_k value (3).
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, sample_candidates)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, sample_candidates)
         
         # Default top_k is 3
         assert len(results) == 3
@@ -446,7 +446,7 @@ class TestGetNearestNeighbors:
         Test with top_k of 0.
         """
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, sample_candidates, top_k=0)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, sample_candidates, top_k=0)
         
         assert results == []
 
@@ -461,7 +461,7 @@ class TestGetNearestNeighbors:
             {"intent": "no vector 3"}
         ]
         query = "search"
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, candidates, top_k=3)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, candidates, top_k=3)
         
         # Should return empty list
         assert results == []
@@ -481,7 +481,7 @@ class TestEdgeCases:
         """
         # Should raise TypeError
         with pytest.raises(TypeError):
-            await intent_vectorizer_local.vectorize(None)
+            await intent_vectorizer_local.aether_vectorize(None)
 
     @pytest.mark.asyncio
     async def test_vectorize_numeric_input(self, intent_vectorizer_local):
@@ -490,7 +490,7 @@ class TestEdgeCases:
         """
         # Should raise TypeError
         with pytest.raises(TypeError):
-            await intent_vectorizer_local.vectorize(123)
+            await intent_vectorizer_local.aether_vectorize(123)
 
     def test_calculate_similarity_empty_vectors(self, intent_vectorizer_local):
         """
@@ -500,7 +500,7 @@ class TestEdgeCases:
         vec_b = []
         
         # Empty vectors are handled gracefully (returns 0.0)
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         assert similarity == 0.0
 
     def test_calculate_similarity_single_element_vectors(self, intent_vectorizer_local):
@@ -509,7 +509,7 @@ class TestEdgeCases:
         """
         vec_a = [1.0]
         vec_b = [1.0]
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         assert similarity == pytest.approx(1.0, rel=1e-6)
 
@@ -519,7 +519,7 @@ class TestEdgeCases:
         """
         vec_a = [-0.5, -0.3, -0.7] + [0.0] * 765
         vec_b = [-0.2, -0.8, -0.1] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         assert isinstance(similarity, float)
         assert -1.0 <= similarity <= 1.0
@@ -530,7 +530,7 @@ class TestEdgeCases:
         """
         vec_a = [1e10, 2e10, 3e10] + [0.0] * 765
         vec_b = [4e10, 5e10, 6e10] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Should still produce valid result
         assert isinstance(similarity, float)
@@ -542,7 +542,7 @@ class TestEdgeCases:
         """
         vec_a = [1e-10, 2e-10, 3e-10] + [0.0] * 765
         vec_b = [4e-10, 5e-10, 6e-10] + [0.0] * 765
-        similarity = intent_vectorizer_local.calculate_similarity(vec_a, vec_b)
+        similarity = intent_vectorizer_local.aether_calculate_similarity(vec_a, vec_b)
         
         # Should still produce valid result
         assert isinstance(similarity, float)
@@ -553,15 +553,15 @@ class TestEdgeCases:
         """
         Test nearest neighbors with duplicate vectors.
         """
-        vector = [0.1, 0.2, 0.3] + [0.0] * 765
+        # Use the vectorizer to generate the vector for consistency
+        query = "duplicate test"
+        vector = await intent_vectorizer_local.aether_vectorize(query)
         candidates = [
             {"intent": "same 1", "vector": vector},
             {"intent": "same 2", "vector": vector},
             {"intent": "same 3", "vector": vector}
         ]
-        # Use query that produces same vector as candidates
-        query = "same 1"  # This will produce the same vector as the candidates
-        results = await intent_vectorizer_local.get_nearest_neighbors(query, candidates, top_k=3)
+        results = await intent_vectorizer_local.aether_get_nearest_neighbors(query, candidates, top_k=3)
         
         # All should have similarity of 1.0 (convert generator to list)
         assert all(r["similarity_score"] == pytest.approx(1.0, rel=1e-6) for r in list(results))
@@ -572,11 +572,11 @@ class TestEdgeCases:
         Test that same text produces same vector across instances.
         """
         text = "consistent text"
-        vectorizer1 = IntentVectorizer(use_remote=False)
-        vectorizer2 = IntentVectorizer(use_remote=False)
+        vectorizer1 = AetherIntentVectorizer(use_remote=False)
+        vectorizer2 = AetherIntentVectorizer(use_remote=False)
         
-        vec1 = await vectorizer1.vectorize(text)
-        vec2 = await vectorizer2.vectorize(text)
+        vec1 = await vectorizer1.aether_vectorize(text)
+        vec2 = await vectorizer2.aether_vectorize(text)
         
         # Should be identical
         assert vec1 == vec2

@@ -1,7 +1,7 @@
 import asyncio
 import unittest
 from unittest.mock import AsyncMock, MagicMock
-from agent.forge.motor_cortex import MotorCortex
+from agent.aether_forge.motor_cortex import AetherMotorCortex
 
 class TestMotorCortex(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):

@@ -9,45 +9,45 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from agent.core.telemetry import LatencyTracker, TelemetryManager, LatencyTimer
+from agent.aether_core.aether_telemetry import AetherLatencyTracker, AetherTelemetryManager, AetherLatencyTimer
 
 
 def test_latency_tracker_basic():
     """Test basic latency tracking functionality."""
     print("Testing LatencyTracker basic functionality...")
     
-    tracker = LatencyTracker(window_size=100)
+    tracker = AetherLatencyTracker(window_size=100)
     
     # Record some sample latencies
     sample_latencies = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     for latency in sample_latencies:
-        tracker.record_latency(latency)
+        tracker.aether_record_latency(latency)
     
     # Test average
-    avg = tracker.calculate_avg_latency()
+    avg = tracker.aether_calculate_avg_latency()
     expected_avg = sum(sample_latencies) / len(sample_latencies)
     assert abs(avg - expected_avg) < 0.01, f"Expected avg {expected_avg}, got {avg}"
     print(f"  ✓ Average latency: {avg:.2f}ms")
     
     # Test P50 (median)
-    p50 = tracker.calculate_p50_latency()
+    p50 = tracker.aether_calculate_p50_latency()
     assert p50 == 55.0, f"Expected P50 55.0, got {p50}"
     print(f"  ✓ P50 latency: {p50:.2f}ms")
     
     # Test P95
-    p95 = tracker.calculate_p95_latency()
+    p95 = tracker.aether_calculate_p95_latency()
     # With 10 samples, index = 9.5 -> 9 -> value 100
     assert p95 == 100.0, f"Expected P95 100.0, got {p95}"
     print(f"  ✓ P95 latency: {p95:.2f}ms")
     
     # Test P99
-    p99 = tracker.calculate_p99_latency()
+    p99 = tracker.aether_calculate_p99_latency()
     # With 10 samples, index = 9.9 -> 9 -> value 100
     assert p99 == 100.0, f"Expected P99 100.0, got {p99}"
     print(f"  ✓ P99 latency: {p99:.2f}ms")
     
     # Test percentile metrics dict
-    metrics = tracker.get_percentile_metrics()
+    metrics = tracker.aether_get_percentile_metrics()
     assert "p50_latency_ms" in metrics
     assert "p95_latency_ms" in metrics
     assert "p99_latency_ms" in metrics
@@ -58,7 +58,7 @@ def test_latency_tracker_large_dataset():
     """Test with a larger dataset for more accurate percentiles."""
     print("\nTesting LatencyTracker with large dataset...")
     
-    tracker = LatencyTracker(window_size=1000)
+    tracker = AetherLatencyTracker(window_size=1000)
     
     # Generate 1000 samples with a normal distribution-like pattern
     import random
@@ -69,12 +69,12 @@ def test_latency_tracker_large_dataset():
         base = random.gauss(50, 30)
         latency = max(5, min(200, base))
         latencies.append(latency)
-        tracker.record_latency(latency)
+        tracker.aether_record_latency(latency)
     
     # Test percentiles
-    p50 = tracker.calculate_p50_latency()
-    p95 = tracker.calculate_p95_latency()
-    p99 = tracker.calculate_p99_latency()
+    p50 = tracker.aether_calculate_p50_latency()
+    p95 = tracker.aether_calculate_p95_latency()
+    p99 = tracker.aether_calculate_p99_latency()
     
     # Verify ordering
     assert p50 is not None and p95 is not None and p99 is not None
@@ -92,20 +92,20 @@ def test_latency_tracker_rolling_window():
     """Test rolling window behavior."""
     print("\nTesting LatencyTracker rolling window...")
     
-    tracker = LatencyTracker(window_size=10)
+    tracker = AetherLatencyTracker(window_size=10)
     
     # Add 20 samples
     for i in range(20):
-        tracker.record_latency(i)
+        tracker.aether_record_latency(i)
     
     # Should only have last 10 samples (10-19)
-    samples = tracker.get_latency_samples()
+    samples = tracker.aether_get_latency_samples()
     assert len(samples) == 10, f"Expected 10 samples, got {len(samples)}"
     assert samples == list(range(10, 20)), f"Expected [10-19], got {samples}"
     print(f"  ✓ Rolling window maintains correct size: {len(samples)} samples")
     
     # Verify percentiles based on rolling window
-    p50 = tracker.calculate_p50_latency()
+    p50 = tracker.aether_calculate_p50_latency()
     assert p50 == 14.5, f"Expected P50 14.5, got {p50}"
     print(f"  ✓ P50 from rolling window: {p50:.2f}ms")
 
@@ -114,7 +114,7 @@ def test_resource_metrics():
     """Test resource metrics tracking."""
     print("\nTesting resource metrics tracking...")
     
-    tracker = LatencyTracker(window_size=10)
+    tracker = AetherLatencyTracker(window_size=10)
     
     # Record latencies with resource data
     expected_cpu = []
@@ -135,9 +135,9 @@ def test_resource_metrics():
             "memory_mb": memory,
             "energy_mj": energy
         }
-        tracker.record_latency(50 + i, resource_data)
+        tracker.aether_record_latency(50 + i, resource_data)
     
-    metrics = tracker.get_resource_metrics()
+    metrics = tracker.aether_get_resource_metrics()
     
     assert metrics["sample_count"] == 5, f"Expected 5 samples, got {metrics['sample_count']}"
     
@@ -162,19 +162,19 @@ def test_empty_tracker():
     """Test tracker behavior with no samples."""
     print("\nTesting empty tracker...")
     
-    tracker = LatencyTracker()
+    tracker = AetherLatencyTracker()
     
-    assert tracker.calculate_p50_latency() is None
-    assert tracker.calculate_p95_latency() is None
-    assert tracker.calculate_p99_latency() is None
-    assert tracker.calculate_avg_latency() is None
+    assert tracker.aether_calculate_p50_latency() is None
+    assert tracker.aether_calculate_p95_latency() is None
+    assert tracker.aether_calculate_p99_latency() is None
+    assert tracker.aether_calculate_avg_latency() is None
     
-    metrics = tracker.get_percentile_metrics()
+    metrics = tracker.aether_get_percentile_metrics()
     assert metrics["p50_latency_ms"] is None
     assert metrics["p95_latency_ms"] is None
     assert metrics["p99_latency_ms"] is None
     
-    resource_metrics = tracker.get_resource_metrics()
+    resource_metrics = tracker.aether_get_resource_metrics()
     assert resource_metrics["sample_count"] == 0
     
     print(f"  ✓ Empty tracker returns None for percentiles")
@@ -184,19 +184,19 @@ def test_clear_tracker():
     """Test clearing the tracker."""
     print("\nTesting tracker clear...")
     
-    tracker = LatencyTracker()
+    tracker = AetherLatencyTracker()
     
     # Add samples
     for i in range(10):
-        tracker.record_latency(i)
+        tracker.aether_record_latency(i)
     
-    assert len(tracker.get_latency_samples()) == 10
+    assert len(tracker.aether_get_latency_samples()) == 10
     
     # Clear
-    tracker.clear()
+    tracker.aether_clear()
     
-    assert len(tracker.get_latency_samples()) == 0
-    assert tracker.calculate_p50_latency() is None
+    assert len(tracker.aether_get_latency_samples()) == 0
+    assert tracker.aether_calculate_p50_latency() is None
     
     print(f"  ✓ Tracker cleared successfully")
 
@@ -206,12 +206,12 @@ def test_latency_timer():
     print("\nTesting LatencyTimer context manager...")
     
     async def run_timer():
-        async with LatencyTimer() as timer:
+        async with AetherLatencyTimer() as timer:
             await asyncio.sleep(0.01)  # 10ms sleep
         
         # Verify latency was recorded
-        tracker = await TelemetryManager.get_latency_tracker()
-        samples = tracker.get_latency_samples()
+        tracker = await AetherTelemetryManager.aether_get_latency_tracker()
+        samples = tracker.aether_get_latency_samples()
         assert len(samples) >= 1
         # Should be approximately 10ms (with some overhead)
         assert samples[-1] >= 8, f"Latency too low: {samples[-1]}ms"
@@ -227,23 +227,23 @@ def test_telemetry_manager_integration():
     
     async def run_integration():
         # Clear tracker
-        tracker = await TelemetryManager.get_latency_tracker()
-        tracker.clear()
+        tracker = await AetherTelemetryManager.aether_get_latency_tracker()
+        tracker.aether_clear()
         
         # Record some latencies
-        await TelemetryManager.record_request_latency(50.0)
-        await TelemetryManager.record_request_latency(75.0)
-        await TelemetryManager.record_request_latency(100.0)
+        await AetherTelemetryManager.aether_record_request_latency(50.0)
+        await AetherTelemetryManager.aether_record_request_latency(75.0)
+        await AetherTelemetryManager.aether_record_request_latency(100.0)
         
         # Verify samples were recorded
-        tracker = await TelemetryManager.get_latency_tracker()
-        assert len(tracker.get_latency_samples()) == 3
+        tracker = await AetherTelemetryManager.aether_get_latency_tracker()
+        assert len(tracker.aether_get_latency_samples()) == 3
         
         # Verify percentiles
-        p50 = tracker.calculate_p50_latency()
+        p50 = tracker.aether_calculate_p50_latency()
         assert p50 == 75.0
         
-        p95 = tracker.calculate_p95_latency()
+        p95 = tracker.aether_calculate_p95_latency()
         assert p95 == 100.0
         
         print(f"  ✓ TelemetryManager integration: P50={p50:.2f}ms, P95={p95:.2f}ms")

@@ -17,7 +17,7 @@ sys.modules["agent.core.telemetry"] = MagicMock()
 # We might need to mock more things if other submodules fail to import.
 # But let's try.
 
-from agent.forge.models import (
+from agent.aether_forge.models import (
     VoiceFeatures,
     NanoAgent,
     DNAPattern,
@@ -25,9 +25,9 @@ from agent.forge.models import (
     ForgeResult,
     VerifiedResult,
     DataProof,
-    CognitiveSystem,
-    TelemetryManager
+    CognitiveSystem
 )
+from agent.core.telemetry import TelemetryManager
 
 class TestVoiceFeatures(unittest.TestCase):
     def test_urgency_score_calculation(self):

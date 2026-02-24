@@ -1,0 +1,42 @@
+{
+  "total_requests": 1,
+  "successful_forges": 1,
+  "failed_forges": 0,
+  "avg_latency_ms": 75.0,
+  "last_active": "2026-02-23T11:08:10.720693",
+  "current_state": "Reflexive (System 1)",
+  "latency_sample_count": 3,
+  "p50_latency_ms": 75.0,
+  "p95_latency_ms": 100.0,
+  "p99_latency_ms": 100.0,
+  "resource_metrics": {
+    "avg_cpu_percent": 33.333333333333336,
+    "avg_memory_mb": 6559.24609375,
+    "total_energy_mj": 0.0,
+    "sample_count": 3
+  },
+  "last_latency_update": "2026-02-24T00:28:21.617917Z",
+  "evolution_metrics": {
+    "total_mutations": 1,
+    "successful_mutations": 1,
+    "failed_mutations": 0,
+    "success_rate": 1.0,
+    "mutations_by_type": {
+      "ZeroDivisionError": 1
+    },
+    "mutations_by_component": {
+      "Orchestrator": 1
+    },
+    "recent_mutations": [
+      {
+        "mutation_id": "test_mut_001",
+        "timestamp": "2026-02-23T16:46:37.712995",
+        "mutation_type": "ZeroDivisionError",
+        "component": "Orchestrator",
+        "success": true
+      }
+    ]
+  },
+  "mutation_pipeline_active": true,
+  "last_mutation_cycle": "2026-02-23T16:46:37.734443"
+}

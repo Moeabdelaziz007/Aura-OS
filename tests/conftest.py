@@ -84,7 +84,7 @@ def mock_router():
 @pytest.fixture
 def mock_memory_signal():
     """Mock MemorySignal instance."""
-    from agent.forge.constraint_solver import MemorySignal
+    from agent.aether_forge.constraint_solver import MemorySignal
     return MemorySignal(
         recent_services=[],
         recent_assets=[],
@@ -100,10 +100,14 @@ def mock_memory_signal():
 @pytest.fixture
 def mock_forge_result():
     """Mock ForgeResult instance."""
-    from agent.forge.models import ForgeResult
+    from agent.aether_forge.models import ForgeResult, CognitiveSystem
     return ForgeResult(
         success=True,
         service="coingecko",
+        agent_id="test-agent-001",
+        execution_ms=150.0,
+        dna_crystallized=False,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
         data={"BTC": {"price": 50000, "change": 2.5}},
         ascii_visual="BTC: $50,000 (+2.5%)",
         error=None
@@ -148,7 +152,7 @@ def mock_websocket():
 @pytest.fixture
 def mock_voice_features():
     """Mock VoiceFeatures instance."""
-    from agent.forge.models import VoiceFeatures
+    from agent.aether_forge.models import VoiceFeatures
     return VoiceFeatures(
         speech_rate_wpm=150.0,
         pitch_variance=0.5,
@@ -166,7 +170,7 @@ def mock_voice_features():
 @pytest.fixture
 def mock_screen_context():
     """Mock ScreenContext instance."""
-    from agent.forge.models import ScreenContext
+    from agent.aether_forge.models import ScreenContext
     return ScreenContext(
         raw_description="Binance trading interface showing BTC price",
         detected_assets=["BTC", "SOL"],
@@ -183,7 +187,7 @@ def mock_screen_context():
 @pytest.fixture
 def mock_time_context():
     """Mock TimeContext instance."""
-    from agent.forge.models import TimeContext
+    from agent.aether_forge.models import TimeContext
     return TimeContext(
         hour=14,
         is_market_hours=True,
@@ -213,7 +217,7 @@ def mock_anomaly_monitor():
 @pytest.fixture
 def mock_synaptic_message():
     """Mock SynapticMessage instance."""
-    from agent.forge.models import SynapticMessage
+    from agent.aether_forge.models import SynapticMessage
     return SynapticMessage(
         intent_text="check bitcoin price",
         data={"poison": None}

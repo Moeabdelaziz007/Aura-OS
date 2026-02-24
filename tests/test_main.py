@@ -8,24 +8,26 @@ import time
 # Set dummy API key to avoid error during initialization
 os.environ["GEMINI_API_KEY"] = "dummy_key"
 
-from agent.orchestrator.main import AetherCoreOrchestrator, GeminiLiveClient
+from agent.aether_orchestrator.main import AetherCoreOrchestrator
+from agent.aether_orchestrator.gemini_live_client import GeminiLiveClient
+
 
 class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         # Mock dependencies before creating orchestrator
-        with patch('agent.orchestrator.main.AetherNavigator') as MockNav:
+        with patch('agent.aether_orchestrator.main.AetherNavigator') as MockNav:
             self.mock_nav = MockNav.return_value
             self.mock_nav.load_dna_async = AsyncMock()
             self.mock_nav.load_dna_async.return_value = MagicMock(version="0.0.0")
 
-            with patch('agent.orchestrator.main.HyperMindRouter') as MockRouter:
+            with patch('agent.aether_orchestrator.main.HyperMindRouter') as MockRouter:
                 self.mock_router = MockRouter.return_value
 
                 self.orchestrator = AetherCoreOrchestrator()
                 self.orchestrator.bridge = self.mock_nav
                 self.orchestrator.router = self.mock_router
 
-    @patch('agent.orchestrator.main.GeminiLiveClient')
+    @patch('agent.aether_orchestrator.gemini_live_client.GeminiLiveClient')
     async def test_handle_optic_nerve_raw_jpeg(self, MockGemini):
         # Mock WebSocket
         websocket = AsyncMock()
@@ -42,7 +44,7 @@ class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
         gemini_instance = MockGemini.return_value
         gemini_instance.connect = AsyncMock()
         gemini_instance.listen = MagicMock()
-        gemini_instance.listen.return_value.__aiter__.return_value = [] # Empty generator
+        gemini_instance.listen.return_value.__aiter__.return_value = []  # Empty generator
         gemini_instance.stream_input = AsyncMock()
         gemini_instance.close = AsyncMock()
 
@@ -56,7 +58,7 @@ class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
         args, _ = gemini_instance.stream_input.call_args
         self.assertEqual(args[0], raw_jpeg)
 
-    @patch('agent.orchestrator.main.GeminiLiveClient')
+    @patch('agent.aether_orchestrator.gemini_live_client.GeminiLiveClient')
     async def test_handle_optic_nerve_metadata_jpeg(self, MockGemini):
         # Mock WebSocket
         websocket = AsyncMock()
@@ -96,10 +98,11 @@ class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
         args, _ = gemini_instance.stream_input.call_args
         self.assertEqual(args[0], jpeg_data)
 
-    @patch('agent.orchestrator.main.GeminiLiveClient')
+    @patch('agent.aether_orchestrator.gemini_live_client.GeminiLiveClient')
     async def test_handle_optic_nerve_drift_detected(self, MockGemini):
         # Set a small drift threshold for testing
         self.orchestrator.drift_threshold_ms = 100.0
+        self.orchestrator.task_executor.drift_threshold_ms = 100.0
 
         # Mock WebSocket
         websocket = AsyncMock()
@@ -135,6 +138,7 @@ class TestOrchestrator(unittest.IsolatedAsyncioTestCase):
 
         # Verify stream_input was NOT called due to drift
         gemini_instance.stream_input.assert_not_called()
+
 
 if __name__ == '__main__':
     unittest.main()

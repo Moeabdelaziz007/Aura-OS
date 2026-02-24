@@ -135,8 +135,6 @@ AetherOS does not ask you to type complex prompts. Using **Gemini Live**, it fus
 
 Instead of sequential steps, AetherOS is a Just-In-Time (JIT) compiler. It synthesizes a swarm of single-purpose Nano-Agents and deploys them in parallel.
 
-بدلاً من الخطوات المتسلسلة، AetherOS هو مترجم JIT. يقوم بتوليف سرب من纳米代理 ذات غرض واحد ونشرها بشكل متوازٍ.
-
 - **Speed:** The first agent to return a valid payload wins.
 - **Proof of Data:** A secondary agent mathematically verifies the payload before presenting it.
 

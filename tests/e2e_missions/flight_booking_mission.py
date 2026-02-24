@@ -8,8 +8,8 @@ import asyncio
 import json
 import time
 
-from agent.orchestrator.memory_parser import AetherNavigator
-from agent.orchestrator.cognitive_router import HyperMindRouter
+from agent.aether_orchestrator.memory_parser import AetherNavigator
+from agent.aether_orchestrator.cognitive_router import HyperMindRouter
 
 # stub visual deltas as simple contexts
 SCENARIO_FRAMES = [

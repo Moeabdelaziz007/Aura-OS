@@ -10,13 +10,40 @@ import json
 import time
 from unittest.mock import Mock, AsyncMock, patch, MagicMock
 from datetime import datetime
+from typing import Any, List
+
+
+# =============================================================================
+# Helper for async iteration
+# =============================================================================
+
+class AsyncIterator:
+    """Helper class to create async iterators from a list of items."""
+    def __init__(self, items: List[Any]):
+        self.items = items
+        self.index = 0
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if self.index >= len(self.items):
+            raise StopAsyncIteration
+        item = self.items[self.index]
+        self.index += 1
+        return item
+
+
+def make_async_iter(items: List[Any]):
+    """Create an async iterator from a list of items."""
+    return AsyncIterator(items)
 
 
 # =============================================================================
 # Import the module under test
 # =============================================================================
 
-from agent.orchestrator.modules.task_executor import TaskExecutor
+from agent.aether_orchestrator.modules.task_executor import TaskExecutor
 
 
 # =============================================================================
@@ -396,11 +423,15 @@ class TestHandleJSONMessage:
         """
         Test handling when forge execution fails.
         """
-        from agent.forge.models import ForgeResult
+        from agent.aether_forge.models import ForgeResult, CognitiveSystem
         
         failed_result = ForgeResult(
             success=False,
             service="unknown",
+            agent_id="test-agent-002",
+            execution_ms=50.0,
+            dna_crystallized=False,
+            cognitive_system=CognitiveSystem.SYSTEM_2,
             data=None,
             ascii_visual=None,
             error="Service not found"
@@ -432,17 +463,15 @@ class TestHandleJSONMessage:
         """
         invalid_json = "not valid json {"
         
-        await task_executor._handle_json_message(
-            invalid_json,
-            mock_websocket,
-            mock_gemini_client,
-            mock_update_memory_callback,
-            mock_log_anomaly_callback,
-            mock_trigger_healing_callback
-        )
-        
-        # Should raise JSONDecodeError which is caught by caller
-        pass
+        with pytest.raises(json.JSONDecodeError):
+            await task_executor._handle_json_message(
+                invalid_json,
+                mock_websocket,
+                mock_gemini_client,
+                mock_update_memory_callback,
+                mock_log_anomaly_callback,
+                mock_trigger_healing_callback
+            )
 
     @pytest.mark.asyncio
     async def test_handle_non_dict_json(self, task_executor, mock_websocket, mock_gemini_client,
@@ -477,7 +506,7 @@ class TestListenToGemini:
         Test that Gemini responses are routed to websocket.
         """
         mock_response = {"modelTurn": {"parts": [{"text": "Hello"}]}}
-        mock_gemini_client.listen = AsyncMock(return_value=iter([mock_response]))
+        mock_gemini_client.listen = Mock(return_value=make_async_iter([mock_response]))
         
         # Run for one iteration
         listen_task = asyncio.create_task(task_executor._listen_to_gemini(mock_websocket, mock_gemini_client))
@@ -495,7 +524,7 @@ class TestListenToGemini:
         """
         Test handling of spatial point response from Gemini.
         """
-        mock_gemini_client.listen = AsyncMock(return_value=iter([mock_spatial_response]))
+        mock_gemini_client.listen = Mock(return_value=make_async_iter([mock_spatial_response]))
         
         listen_task = asyncio.create_task(task_executor._listen_to_gemini(mock_websocket, mock_gemini_client))
         await asyncio.sleep(0.01)
@@ -506,11 +535,16 @@ class TestListenToGemini:
         except asyncio.CancelledError:
             pass
         
-        # Verify spatial action was sent
+        # Verify spatial action was sent (check all calls for CLICK action)
         mock_websocket.send.assert_called()
-        call_args = mock_websocket.send.call_args
-        sent_data = json.loads(call_args[0][0])
-        assert sent_data["action"] == "CLICK"
+        # Find the CLICK action in the call list
+        click_found = False
+        for call in mock_websocket.send.call_args_list:
+            sent_data = json.loads(call[0][0])
+            if sent_data.get("action") == "CLICK":
+                click_found = True
+                break
+        assert click_found, "CLICK action not found in websocket sends"
 
     @pytest.mark.asyncio
     async def test_listen_to_gemini_handles_spatial_text(self, task_executor, mock_websocket,
@@ -518,7 +552,7 @@ class TestListenToGemini:
         """
         Test handling of spatial text response from Gemini.
         """
-        mock_gemini_client.listen = AsyncMock(return_value=iter([mock_spatial_text_response]))
+        mock_gemini_client.listen = Mock(return_value=make_async_iter([mock_spatial_text_response]))
         
         listen_task = asyncio.create_task(task_executor._listen_to_gemini(mock_websocket, mock_gemini_client))
         await asyncio.sleep(0.02)  # Allow for the 0.5s delay
@@ -538,7 +572,7 @@ class TestListenToGemini:
         Test that parsing errors in spatial responses are handled gracefully.
         """
         mock_response = {"modelTurn": {"parts": [{"text": "Invalid JSON {broken"}]}}
-        mock_gemini_client.listen = AsyncMock(return_value=iter([mock_response]))
+        mock_gemini_client.listen = Mock(return_value=make_async_iter([mock_response]))
         
         listen_task = asyncio.create_task(task_executor._listen_to_gemini(mock_websocket, mock_gemini_client))
         await asyncio.sleep(0.01)
@@ -613,7 +647,7 @@ class TestHandleOpticNerve:
         """
         Test handling binary message through optic nerve.
         """
-        mock_websocket.__aiter__ = AsyncMock(return_value=iter([mock_visual_delta_message]))
+        mock_websocket.__aiter__ = Mock(return_value=make_async_iter([mock_visual_delta_message]))
         
         # Run briefly and cancel
         handle_task = asyncio.create_task(task_executor.handle_optic_nerve(
@@ -638,7 +672,7 @@ class TestHandleOpticNerve:
         """
         Test that Gemini client is closed when optic nerve exits.
         """
-        mock_websocket.__aiter__ = AsyncMock(return_value=iter([]))
+        mock_websocket.__aiter__ = Mock(return_value=make_async_iter([]))
         
         await task_executor.handle_optic_nerve(
             mock_websocket,

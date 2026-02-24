@@ -1,6 +1,6 @@
 import asyncio
 import os
-from agent.orchestrator.aether_evolve import monitor, evolve_engine
+from agent.aether_orchestrator.aether_evolve import monitor, evolve_engine
 
 async def main():
     print("🔬 Starting AetherEvolve Standalone Test...")

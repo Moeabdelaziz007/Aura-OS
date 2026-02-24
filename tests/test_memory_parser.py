@@ -1,5 +1,5 @@
 import unittest
-from agent.orchestrator.memory_parser import AetherNavigator
+from agent.aether_orchestrator.memory_parser import AetherNavigator
 
 class TestMemoryParser(unittest.TestCase):
     def test_parse_blocks_multiple_yaml(self):

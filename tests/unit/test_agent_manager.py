@@ -15,7 +15,7 @@ from datetime import datetime
 # Import the module under test
 # =============================================================================
 
-from agent.orchestrator.modules.agent_manager import AgentManager
+from agent.aether_orchestrator.modules.agent_manager import AgentManager
 
 
 # =============================================================================

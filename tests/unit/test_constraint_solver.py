@@ -13,8 +13,8 @@ from datetime import datetime
 # Import the module under test
 # =============================================================================
 
-from agent.forge.constraint_solver import (
-    ConstraintSolver,
+from agent.aether_forge.constraint_solver import (
+    AetherConstraintSolver as ConstraintSolver,
     IntentTemplate,
     MemorySignal,
     compute_tau,
@@ -26,7 +26,7 @@ from agent.forge.constraint_solver import (
     TAU_MIN,
     TAU_MAX
 )
-from agent.forge.models import (
+from agent.aether_forge.models import (
     VoiceFeatures,
     ScreenContext,
     TimeContext,
@@ -946,7 +946,7 @@ class TestBuildTimeContext:
         """
         Test weekend detection in time context.
         """
-        with patch('agent.forge.constraint_solver.datetime') as mock_dt:
+        with patch('agent.aether_forge.constraint_solver.datetime') as mock_dt:
             # Saturday (day 5)
             mock_dt.utcnow.return_value = datetime(2024, 1, 6, 12, 0, 0)
             ctx = build_time_context()
@@ -961,7 +961,7 @@ class TestBuildTimeContext:
         """
         Test market hours detection in time context.
         """
-        with patch('agent.forge.constraint_solver.datetime') as mock_dt:
+        with patch('agent.aether_forge.constraint_solver.datetime') as mock_dt:
             # During market hours (15:00 UTC, Monday)
             mock_dt.utcnow.return_value = datetime(2024, 1, 1, 15, 0, 0)
             ctx = build_time_context()

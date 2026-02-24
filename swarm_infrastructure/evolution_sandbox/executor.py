@@ -23,7 +23,7 @@ class EvolutionExecutor:
     Implements the self-healing circuit from EVOLVE.md.
     """
     
-    def __init__(self, skills_path: str = "agent/memory/SKILLS.md"):
+    def __init__(self, skills_path: str = "agent/aether_memory/SKILLS.md"):
         """Initialize executor with path to SKILLS.md."""
         self.skills_path = skills_path
         self._stable_state = None

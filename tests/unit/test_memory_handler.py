@@ -12,9 +12,33 @@ from unittest.mock import Mock
 # Import the module under test
 # =============================================================================
 
-from agent.orchestrator.modules.memory_handler import MemoryHandler
-from agent.forge.constraint_solver import MemorySignal
-from agent.forge.models import ForgeResult
+from agent.aether_orchestrator.modules.memory_handler import MemoryHandler
+from agent.aether_forge.constraint_solver import MemorySignal
+from agent.aether_forge.models import ForgeResult, CognitiveSystem
+
+
+# =============================================================================
+# Helper function for creating ForgeResult
+# =============================================================================
+
+def make_forge_result(
+    service: str,
+    data: dict = None,
+    success: bool = True,
+    error: str = None
+) -> ForgeResult:
+    """Helper to create ForgeResult with all required fields."""
+    return ForgeResult(
+        success=success,
+        service=service,
+        agent_id="test_agent",
+        execution_ms=100.0,
+        dna_crystallized=False,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
+        data=data or {},
+        ascii_visual=None,
+        error=error
+    )
 
 
 # =============================================================================
@@ -47,9 +71,14 @@ def coingecko_forge_result():
     """
     Create a ForgeResult for CoinGecko service.
     """
+    from agent.aether_forge.models import CognitiveSystem
     return ForgeResult(
         success=True,
         service="coingecko",
+        agent_id="test_agent",
+        execution_ms=100.0,
+        dna_crystallized=True,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
         data={"BTC": {"price": 50000, "change": 2.5}, "trend_data": []},
         ascii_visual="BTC: $50,000 (+2.5%)",
         error=None
@@ -61,9 +90,14 @@ def github_forge_result():
     """
     Create a ForgeResult for GitHub service.
     """
+    from agent.aether_forge.models import CognitiveSystem
     return ForgeResult(
         success=True,
         service="github",
+        agent_id="test_agent",
+        execution_ms=150.0,
+        dna_crystallized=False,
+        cognitive_system=CognitiveSystem.SYSTEM_2,
         data={"Query": "aetheros", "stars": 100, "forks": 20},
         ascii_visual="⭐ aetheros: 100 stars",
         error=None
@@ -75,10 +109,15 @@ def weather_forge_result():
     """
     Create a ForgeResult for Weather service.
     """
+    from agent.aether_forge.models import CognitiveSystem
     return ForgeResult(
         success=True,
         service="weather",
-        data={"City": "Cairo", "Temperature": 30, "Condition": "Sunny"},
+        agent_id="test_agent",
+        execution_ms=80.0,
+        dna_crystallized=True,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
+        data={"City": "Cairo", "temperature": 30, "condition": "Sunny"},
         ascii_visual="🌤️ Cairo: 30°C, Sunny",
         error=None
     )
@@ -89,9 +128,14 @@ def forge_result_with_none_data():
     """
     Create a ForgeResult with None data.
     """
+    from agent.aether_forge.models import CognitiveSystem
     return ForgeResult(
         success=True,
         service="unknown",
+        agent_id="test_agent",
+        execution_ms=50.0,
+        dna_crystallized=False,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
         data=None,
         ascii_visual=None,
         error=None
@@ -103,9 +147,14 @@ def forge_result_with_empty_data():
     """
     Create a ForgeResult with empty data dict.
     """
+    from agent.aether_forge.models import CognitiveSystem
     return ForgeResult(
         success=True,
         service="unknown",
+        agent_id="test_agent",
+        execution_ms=50.0,
+        dna_crystallized=False,
+        cognitive_system=CognitiveSystem.SYSTEM_1,
         data={},
         ascii_visual=None,
         error=None
@@ -192,7 +241,7 @@ class TestUpdateMemory:
         
         assert "unknown" in memory_handler.memory_signal.recent_assets
 
-    def test_update_memory_multiple_times_increments_query_count(self, memory_handler, coingecko_forge_result):
+    def test_update_memory_multiple_times_increments_query_count(self, memory_handler, coingecko_forge_result, github_forge_result, weather_forge_result):
         """
         Test that query count increments with multiple updates.
         """
@@ -211,13 +260,7 @@ class TestUpdateMemory:
         """
         # Add 7 different services
         for i in range(7):
-            result = ForgeResult(
-                success=True,
-                service=f"service_{i}",
-                data={},
-                ascii_visual=None,
-                error=None
-            )
+            result = make_forge_result(service=f"service_{i}")
             memory_handler.update_memory(result)
         
         # Should only have last 5
@@ -233,12 +276,9 @@ class TestUpdateMemory:
         """
         # Add 7 different assets
         for i in range(7):
-            result = ForgeResult(
-                success=True,
+            result = make_forge_result(
                 service="coingecko",
-                data={f"ASSET_{i}": {"price": i * 100}},
-                ascii_visual=None,
-                error=None
+                data={f"ASSET_{i}": {"price": i * 100}}
             )
             memory_handler.update_memory(result)
         
@@ -253,12 +293,9 @@ class TestUpdateMemory:
         """
         Test updating memory when data only contains trend_data.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"trend_data": [1, 2, 3]},
-            ascii_visual=None,
-            error=None
+            data={"trend_data": [1, 2, 3]}
         )
         memory_handler.update_memory(result)
         
@@ -271,13 +308,7 @@ class TestUpdateMemory:
         """
         services = ["service_a", "service_b", "service_c"]
         for service in services:
-            result = ForgeResult(
-                success=True,
-                service=service,
-                data={},
-                ascii_visual=None,
-                error=None
-            )
+            result = make_forge_result(service=service)
             memory_handler.update_memory(result)
         
         assert memory_handler.memory_signal.recent_services == services
@@ -286,12 +317,9 @@ class TestUpdateMemory:
         """
         Test updating memory with same service multiple times.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"BTC": {"price": 50000}},
-            ascii_visual=None,
-            error=None
+            data={"BTC": {"price": 50000}}
         )
         
         memory_handler.update_memory(result)
@@ -320,13 +348,7 @@ class TestGetRecentServices:
         """
         Test getting recent services with data present.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         services = memory_handler.get_recent_services()
@@ -336,13 +358,7 @@ class TestGetRecentServices:
         """
         Test that get_recent_services returns a copy, not reference.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         services = memory_handler.get_recent_services()
@@ -357,13 +373,7 @@ class TestGetRecentServices:
         """
         services = ["service_a", "service_b", "service_c"]
         for service in services:
-            result = ForgeResult(
-                success=True,
-                service=service,
-                data={},
-                ascii_visual=None,
-                error=None
-            )
+            result = make_forge_result(service=service)
             memory_handler.update_memory(result)
         
         retrieved = memory_handler.get_recent_services()
@@ -388,12 +398,9 @@ class TestGetRecentAssets:
         """
         Test getting recent assets with data present.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"BTC": {"price": 50000}},
-            ascii_visual=None,
-            error=None
+            data={"BTC": {"price": 50000}}
         )
         memory_handler.update_memory(result)
         
@@ -404,12 +411,9 @@ class TestGetRecentAssets:
         """
         Test that get_recent_assets returns a copy, not reference.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"BTC": {"price": 50000}},
-            ascii_visual=None,
-            error=None
+            data={"BTC": {"price": 50000}}
         )
         memory_handler.update_memory(result)
         
@@ -425,12 +429,9 @@ class TestGetRecentAssets:
         """
         assets = ["BTC", "ETH", "SOL"]
         for asset in assets:
-            result = ForgeResult(
-                success=True,
+            result = make_forge_result(
                 service="coingecko",
-                data={asset: {"price": 50000}},
-                ascii_visual=None,
-                error=None
+                data={asset: {"price": 50000}}
             )
             memory_handler.update_memory(result)
         
@@ -456,13 +457,7 @@ class TestGetLastAction:
         """
         Test getting last action after update.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         action = memory_handler.get_last_action()
@@ -472,20 +467,8 @@ class TestGetLastAction:
         """
         Test that last action updates with each new update.
         """
-        result1 = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
-        result2 = ForgeResult(
-            success=True,
-            service="github",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result1 = make_forge_result(service="coingecko")
+        result2 = make_forge_result(service="github")
         
         memory_handler.update_memory(result1)
         assert memory_handler.get_last_action() == "coingecko"
@@ -513,13 +496,7 @@ class TestGetQueryCount:
         Test getting query count after multiple updates.
         """
         for i in range(5):
-            result = ForgeResult(
-                success=True,
-                service=f"service_{i}",
-                data={},
-                ascii_visual=None,
-                error=None
-            )
+            result = make_forge_result(service=f"service_{i}")
             memory_handler.update_memory(result)
         
         count = memory_handler.get_query_count()
@@ -529,13 +506,7 @@ class TestGetQueryCount:
         """
         Test that query count increments by 1 each update.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         
         initial_count = memory_handler.get_query_count()
         memory_handler.update_memory(result)
@@ -562,13 +533,7 @@ class TestResetQueryCount:
         """
         Test resetting query count from non-zero value.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         memory_handler.update_memory(result)
         
@@ -580,13 +545,7 @@ class TestResetQueryCount:
         """
         Test that reset can be called multiple times.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         memory_handler.reset_query_count()
@@ -615,12 +574,9 @@ class TestEdgeCases:
         """
         Test updating memory when CoinGecko returns multiple assets.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"BTC": {"price": 50000}, "ETH": {"price": 3000}, "trend_data": []},
-            ascii_visual=None,
-            error=None
+            data={"BTC": {"price": 50000}, "ETH": {"price": 3000}, "trend_data": []}
         )
         memory_handler.update_memory(result)
         
@@ -631,13 +587,7 @@ class TestEdgeCases:
         """
         Test that get_recent_services returns a list type.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         services = memory_handler.get_recent_services()
@@ -647,12 +597,9 @@ class TestEdgeCases:
         """
         Test that get_recent_assets returns a list type.
         """
-        result = ForgeResult(
-            success=True,
+        result = make_forge_result(
             service="coingecko",
-            data={"BTC": {"price": 50000}},
-            ascii_visual=None,
-            error=None
+            data={"BTC": {"price": 50000}}
         )
         memory_handler.update_memory(result)
         
@@ -663,13 +610,7 @@ class TestEdgeCases:
         """
         Test that get_last_action returns a string type when set.
         """
-        result = ForgeResult(
-            success=True,
-            service="coingecko",
-            data={},
-            ascii_visual=None,
-            error=None
-        )
+        result = make_forge_result(service="coingecko")
         memory_handler.update_memory(result)
         
         action = memory_handler.get_last_action()

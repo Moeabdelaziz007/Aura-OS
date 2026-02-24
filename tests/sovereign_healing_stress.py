@@ -11,10 +11,10 @@ sys.path.append(str(PROJECT_ROOT))
 
 # Attempt imports with fallback/mocking for the demo environment if needed
 try:
-    from agent.forge.aether_forge import AetherForge
-    from agent.orchestrator.aether_evolve import MutationGenerator, AetherNeuralMonitor, AetherHeuristicSandbox
-    from agent.orchestrator.cognitive_router import HyperMindRouter
-    from agent.forge.models import ForgeResult
+    from agent.aether_forge.aether_forge import AetherForge
+    from agent.aether_orchestrator.aether_evolve import MutationGenerator, AetherNeuralMonitor, AetherHeuristicSandbox
+    from agent.aether_orchestrator.cognitive_router import HyperMindRouter
+    from agent.aether_forge.models import ForgeResult
 except ImportError as e:
     print(f"⚠️ Import Error: {e}. Ensure you are running from project root.")
 

@@ -7,7 +7,7 @@ The main entry point for the real-time Multimodal Live Bridge.
 import asyncio
 import os
 import logging
-from agent.forge.live_bridge_v2 import GeminiLiveBridgeV2
+from agent.aether_forge.live_bridge_v2 import AetherGeminiLiveBridgeV2
 
 # Configure logging for the Sensory Cortex
 logging.basicConfig(
