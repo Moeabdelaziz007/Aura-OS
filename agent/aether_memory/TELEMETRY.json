@@ -2,20 +2,20 @@
   "total_requests": 1,
   "successful_forges": 1,
   "failed_forges": 0,
-  "avg_latency_ms": 75.0,
+  "avg_latency_ms": 58.883226749992446,
   "last_active": "2026-02-23T11:08:10.720693",
   "current_state": "Reflexive (System 1)",
-  "latency_sample_count": 3,
-  "p50_latency_ms": 75.0,
+  "latency_sample_count": 4,
+  "p50_latency_ms": 62.5,
   "p95_latency_ms": 100.0,
   "p99_latency_ms": 100.0,
   "resource_metrics": {
-    "avg_cpu_percent": 0.0,
-    "avg_memory_mb": 4688.0546875,
+    "avg_cpu_percent": 29.3,
+    "avg_memory_mb": 413.6904296875,
     "total_energy_mj": 0.0,
-    "sample_count": 3
+    "sample_count": 4
   },
-  "last_latency_update": "2026-02-24T04:46:44.186319Z",
+  "last_latency_update": "2026-02-24T16:07:02.609253Z",
   "evolution_metrics": {
     "total_mutations": 1,
     "successful_mutations": 1,

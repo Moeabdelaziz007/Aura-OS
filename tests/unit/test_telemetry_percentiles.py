@@ -11,6 +11,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from agent.aether_core.aether_telemetry import AetherLatencyTracker, AetherTelemetryManager, AetherLatencyTimer
 
+# Ensure we are using the real classes, not mocks
+import agent.aether_core.aether_telemetry
+import importlib
+importlib.reload(agent.aether_core.aether_telemetry)
 
 def test_latency_tracker_basic():
     """Test basic latency tracking functionality."""
@@ -205,12 +209,18 @@ def test_latency_timer():
     """Test the LatencyTimer context manager."""
     print("\nTesting LatencyTimer context manager...")
     
+    # Reset singleton state
+    AetherTelemetryManager._latency_tracker = None
+    AetherTelemetryManager._latency_tracker_lock = None
+
     async def run_timer():
         async with AetherLatencyTimer() as timer:
             await asyncio.sleep(0.01)  # 10ms sleep
         
         # Verify latency was recorded
         tracker = await AetherTelemetryManager.aether_get_latency_tracker()
+        # Ensure we wait for the update task to complete if it's asynchronous
+        await asyncio.sleep(0.1)
         samples = tracker.aether_get_latency_samples()
         assert len(samples) >= 1
         # Should be approximately 10ms (with some overhead)
@@ -225,6 +235,10 @@ def test_telemetry_manager_integration():
     """Test TelemetryManager integration with latency tracking."""
     print("\nTesting TelemetryManager integration...")
     
+    # Reset singleton state
+    AetherTelemetryManager._latency_tracker = None
+    AetherTelemetryManager._latency_tracker_lock = None
+
     async def run_integration():
         # Clear tracker
         tracker = await AetherTelemetryManager.aether_get_latency_tracker()

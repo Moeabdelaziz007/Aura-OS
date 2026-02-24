@@ -10,7 +10,7 @@ sys.modules["firebase_admin.firestore"] = MagicMock()
 sys.modules["google"] = MagicMock()
 sys.modules["google.cloud"] = MagicMock()
 sys.modules["google.generativeai"] = MagicMock()
-sys.modules["agent.aether_core.aether_telemetry"] = MagicMock()
+# sys.modules["agent.aether_core.aether_telemetry"] = MagicMock()  # Do NOT mock this globally
 
 # Now we can import from agent.forge.models
 # Note: agent.forge.__init__ imports a lot of things.
@@ -27,7 +27,8 @@ from agent.aether_forge.models import (
     DataProof,
     CognitiveSystem
 )
-from agent.aether_core.aether_telemetry import TelemetryManager
+# Use AetherTelemetryManager, not TelemetryManager
+from agent.aether_core.aether_telemetry import AetherTelemetryManager as TelemetryManager
 
 class TestVoiceFeatures(unittest.TestCase):
     def test_urgency_score_calculation(self):
@@ -151,7 +152,7 @@ class TestForgeMetrics(unittest.TestCase):
         self.assertEqual(self.metrics.success_rate, 0.0)
         self.assertEqual(self.metrics.avg_latency_ms, 0.0)
 
-    @patch("agent.aether_core.aether_telemetry.TelemetryManager.update")
+    @patch("agent.aether_core.aether_telemetry.AetherTelemetryManager.aether_update")
     def test_record_success(self, mock_telemetry_update):
         result = MagicMock(spec=ForgeResult)
         result.success = True
@@ -171,7 +172,7 @@ class TestForgeMetrics(unittest.TestCase):
             # Verify telemetry update was scheduled
             mock_create_task.assert_called_once()
 
-    @patch("agent.aether_core.aether_telemetry.TelemetryManager.update")
+    @patch("agent.aether_core.aether_telemetry.AetherTelemetryManager.aether_update")
     def test_record_failure(self, mock_telemetry_update):
         result = MagicMock(spec=ForgeResult)
         result.success = False

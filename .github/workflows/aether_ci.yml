@@ -248,7 +248,7 @@ jobs:
         run: |
           bandit -r agent/ tests/ \
             -f screen \
-            -lll \
+            -ll \
             -s B101,B601
 
       - name: Upload Bandit report
