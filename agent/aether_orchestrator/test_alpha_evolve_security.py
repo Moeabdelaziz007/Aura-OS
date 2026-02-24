@@ -2,25 +2,46 @@
 import unittest
 import sys
 import os
-from unittest.mock import MagicMock
+import importlib
+from unittest.mock import MagicMock, patch
 
 # Add current directory to path
 sys.path.insert(0, os.getcwd())
 
-# Mock dependencies before importing alpha_evolve
-sys.modules["google"] = MagicMock()
-sys.modules["google.generativeai"] = MagicMock()
-sys.modules["dotenv"] = MagicMock()
-
-from agent.aether_orchestrator.alpha_evolve import MutationGenerator
-
 class TestAlphaEvolveSecurity(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Setup mocks
+        cls.mock_google = MagicMock()
+        cls.mock_genai = MagicMock()
+        cls.mock_dotenv = MagicMock()
+
+        # Patch sys.modules
+        cls.modules_patcher = patch.dict(sys.modules, {
+            "google": cls.mock_google,
+            "google.generativeai": cls.mock_genai,
+            "dotenv": cls.mock_dotenv
+        })
+        cls.modules_patcher.start()
+
+        # Reload modules
+        import agent.aether_orchestrator.alpha_evolve
+        importlib.reload(agent.aether_orchestrator.alpha_evolve)
+
+        from agent.aether_orchestrator.alpha_evolve import MutationGenerator
+        cls.MutationGenerator = MutationGenerator
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.modules_patcher.stop()
+
     def test_secret_redaction(self):
         """Test secret redaction in MutationGenerator (alpha_evolve)."""
         print("\n🧪 Testing Secret Redaction in alpha_evolve...")
 
-        generator = MutationGenerator(use_gemini=False)
+        generator = self.MutationGenerator(use_gemini=False)
 
+        # nosec - Testing redaction of fake secrets
         secret_code = """
     def connect():
         api_key = "sk-1234567890abcdef"
@@ -29,7 +50,7 @@ class TestAlphaEvolveSecurity(unittest.TestCase):
         regular_var = "not_a_secret"
         short_secret = "pass"
         secret_with_spaces   =   "spaced_secret"
-    """
+    """ # nosec
 
         # Test Redaction
         redacted, secret_map = generator._redact_secrets(secret_code)
