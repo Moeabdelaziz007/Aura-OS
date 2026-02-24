@@ -11,11 +11,11 @@ import types
 from typing import Any, Dict, Optional, Callable
 
 # Whitelisted modules for dynamic agents
-import httpx
 import json
 import re
 import math
 import datetime
+from .secure_http import SafeHTTPXModule
 
 logger = logging.getLogger("AetherSandbox")
 
@@ -27,6 +27,7 @@ class AetherExecutionResult:
 
 class AetherNanoSandbox:
     def __init__(self):
+        self.secure_httpx = SafeHTTPXModule()
         self.globals = {
             "__builtins__": {
                 "print": print,
@@ -53,7 +54,7 @@ class AetherNanoSandbox:
                 "enumerate": enumerate,
                 "zip": zip,
             },
-            "httpx": httpx,
+            "httpx": self.secure_httpx,
             "json": json,
             "re": re,
             "math": math,
@@ -64,9 +65,13 @@ class AetherNanoSandbox:
         # Add safe import
         def safe_import(name, globals=None, locals=None, fromlist=(), level=0):
             whitelist = {"httpx", "json", "re", "math", "datetime", "asyncio", "typing"}
-            if name in whitelist:
-                return __import__(name, globals, locals, fromlist, level)
-            raise ImportError(f"Import of '{name}' is not allowed in sandbox.")
+            if name not in whitelist:
+                raise ImportError(f"Import of '{name}' is not allowed in sandbox.")
+
+            if name == "httpx":
+                return self.secure_httpx
+
+            return __import__(name, globals, locals, fromlist, level)
 
         self.globals["__builtins__"]["__import__"] = safe_import
 
@@ -84,12 +89,12 @@ class AetherNanoSandbox:
 
             # Check if 'execute' function exists
             if "execute" not in local_scope:
-                return ExecutionResult(False, error="Code must define an 'execute(params)' function.")
+                return AetherExecutionResult(False, error="Code must define an 'execute(params)' function.")
 
             func = local_scope["execute"]
 
             if not callable(func):
-                return ExecutionResult(False, error="'execute' is not callable.")
+                return AetherExecutionResult(False, error="'execute' is not callable.")
 
             # Run the agent function
             if asyncio.iscoroutinefunction(func):
@@ -98,9 +103,9 @@ class AetherNanoSandbox:
                 # Allow sync functions too, run in thread to avoid blocking
                 result = await asyncio.to_thread(func, params)
 
-            return ExecutionResult(True, data=result)
+            return AetherExecutionResult(True, data=result)
 
         except Exception as e:
             tb = traceback.format_exc()
             logger.error(f"Sandbox Execution Failed: {e}\n{tb}")
-            return ExecutionResult(False, error=str(e))
+            return AetherExecutionResult(False, error=str(e))

@@ -4,4 +4,3 @@
     "endpoints": [
       "/simple/price",
       "/coins/list",
-      "https://api.coingecko.com/api/v3",
