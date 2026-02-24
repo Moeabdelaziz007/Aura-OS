@@ -182,7 +182,7 @@ class AetherForge:
         # ─────────────────────────────────────────────────────────────────────────────
         # Cloud Nexus Initialization (The Global Nervous System)
         # ─────────────────────────────────────────────────────────────────────────────
-        project_id = os.getenv("GOOGLE_CLOUD_PROJECT", "notional-armor-456623-e8")
+        project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
         key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", ".idx/aether-key.json")
         self.cloud = None
         if os.path.exists(key_path):

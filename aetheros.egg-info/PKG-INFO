@@ -1,0 +1,130 @@
+Metadata-Version: 2.4
+Name: aetheros
+Version: 0.1.0
+Summary: AetherOS Agentic Orchestrator
+Author-email: AetherOS Team <team@aetheros.ai>
+License: MIT
+Project-URL: Homepage, https://github.com/Moeabdelaziz007/AetherOS
+Project-URL: Bug Tracker, https://github.com/Moeabdelaziz007/AetherOS/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: httpx
+Requires-Dist: python-dotenv
+Requires-Dist: cryptography
+Requires-Dist: psutil
+Requires-Dist: pydantic
+Requires-Dist: PyYAML
+Requires-Dist: websockets
+Requires-Dist: numpy
+Requires-Dist: google-generativeai
+Requires-Dist: google-cloud-aiplatform
+Requires-Dist: firebase-admin
+Requires-Dist: firebase-functions
+Requires-Dist: google-cloud-firestore
+Requires-Dist: google-cloud-storage
+Requires-Dist: google-cloud-logging
+Requires-Dist: google-cloud-monitoring
+
+# AetherOS
+
+<div align="center">
+  <img src="assets/aetheros_logo.png" alt="AetherOS Logo" width="200" height="200" />
+  <br />
+  <h1>AetherOS</h1>
+  <p><strong>من العدم، الأثير يُبدع — Power from Nothing</strong></p>
+  <br />
+</div>
+
+---
+
+## 🌌 What is AetherOS?
+
+AetherOS is a **Voice-Native Operating System** built for the era of generative AI. Unlike traditional operating systems that rely on point-and-click interfaces, AetherOS is designed to be spoken to. It bridges the gap between natural language intent and sovereign execution.
+
+At its core, AetherOS is a "Voice-to-Code" engine that listens to your commands, synthesizes ephemeral software agents (Nano-Agents) on the fly, and executes them to manipulate the digital world. It is the realization of a fluid, multimodal interface where your voice is the only peripheral you need.
+
+---
+
+## 🏗️ Architecture Overview
+
+AetherOS is built on a sophisticated 6-layer architecture designed for resilience, adaptability, and speed:
+
+1.  **Sensory Cortex (Gemini Live Bridge v2.0):** The multimodal input layer that processes real-time audio and visual streams using Google's Gemini Live API. It handles "Visual Delta" packets and high-fidelity audio input.
+2.  **Motor Cortex:** The action dispatch engine. It translates high-level intents into concrete API calls, DOM manipulations, or system commands.
+3.  **Aether Forge (The Core):** The heart of the system. It implements the **4-Phase Forge Protocol**:
+    -   **Deconstruct:** Analyzes intent and identifies required capabilities.
+    -   **Synthesize:** Compiles dynamic Python code (Nano-Agents) for new tasks.
+    -   **Deploy:** Executes agents in parallel swarms with circuit breaker protection.
+    -   **Harvest:** Collects results and updates the system memory.
+4.  **Aether Nexus:** The global synaptic record. It stores crystallized execution patterns ("DNA") that have proven successful, allowing the system to learn and become faster over time.
+5.  **Constraint Solver:** A Bayesian inference engine that resolves ambiguous user intents by weighing voice urgency, screen context, and historical patterns.
+6.  **Aether Evolve:** A self-healing mechanism that monitors system anomalies and autonomously patches its own code to fix bugs and optimize performance.
+
+---
+
+## 🚀 Quick Start
+
+To start the AetherOS Synaptic Bridge:
+
+### Prerequisites
+- Python 3.10+
+- A Google Cloud Project with Gemini API enabled
+- `ffmpeg` (for audio processing)
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Antigravity-AI/AetherOS.git
+    cd AetherOS
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Configure Environment:**
+    Create a `.env` file in the root directory:
+    ```bash
+    GOOGLE_API_KEY=your_gemini_api_key_here
+    GOOGLE_CLOUD_PROJECT=your_project_id
+    ```
+
+4.  **Ignite the System:**
+    ```bash
+    python -m agent.aether_orchestrator.main
+    ```
+
+The system will start the WebSocket server on `ws://127.0.0.1:8000` and begin listening for incoming sensory data.
+
+---
+
+## 🛠️ Technology Stack
+
+-   **Core Intelligence:** Google Gemini Live API (Multimodal Streaming)
+-   **Orchestration:** Python (AsyncIO)
+-   **Memory & State:** Firebase / Firestore
+-   **Frontend:** React (Vite)
+-   **Protocol:** WebSockets (Custom Synaptic Protocol with Binary Packets)
+
+---
+
+## 👥 Team
+
+-   **Moe** — Creator & Architect
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+  <sub>Built with 💜 by Antigravity AI</sub>
+</div>

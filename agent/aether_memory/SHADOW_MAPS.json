@@ -1,7 +1,3 @@
 {
   "coingecko": {
-    "base_url": "https://api.coingecko.com/api/v3",
     "endpoints": [
-      "/simple/price",
-      "/coins/list",
-      "https://api.coingecko.com/api/v3",

@@ -1,5 +1,6 @@
 import pytest
 import asyncio
+import os
 from unittest.mock import AsyncMock, Mock, patch, MagicMock
 from agent.aether_forge.aether_forge import AetherForge
 from agent.aether_forge.models import ForgeResult, CognitiveSystem
@@ -125,3 +126,34 @@ async def test_nano_agent_lifecycle(forge):
     assert result.service == "dynamic_calc"
     assert result.cognitive_system == CognitiveSystem.SYSTEM_2
     assert result.data == {"val": 4}
+
+def test_cloud_nexus_initialization_no_hardcoded_id():
+    """Verify that AetherForge does not use a hardcoded Project ID if env var is missing."""
+    with patch.dict(os.environ, {}, clear=True), \
+         patch('agent.aether_forge.aether_forge.AetherCloudNexus') as MockCloudNexus, \
+         patch('agent.aether_forge.aether_forge.AetherNexus'), \
+         patch('agent.aether_forge.aether_forge.httpx.AsyncClient'), \
+         patch('agent.aether_forge.aether_forge.AetherAgentParliament'), \
+         patch('agent.aether_forge.aether_forge.AetherTemporalMemoryTides'), \
+         patch('agent.aether_forge.aether_forge.ForgeMetrics'), \
+         patch('agent.aether_forge.aether_forge.AetherMicroVisualizer'), \
+         patch('agent.aether_forge.aether_forge.AetherConstraintSolver'), \
+         patch('agent.aether_forge.aether_forge.get_circuit_breaker'), \
+         patch('agent.aether_forge.aether_forge.AetherNanoAgentCompiler'), \
+         patch('agent.aether_forge.aether_forge.AetherNanoSandbox'):
+
+        # We need os.path.exists to return True for the key file check
+        # But os.path.exists is also used by other things.
+        # We can target the specific call or just let it proceed if key file actually exists.
+        # But we cleared env vars, so key path defaults to .idx/aether-key.json.
+        # That file exists in repo. So os.path.exists should return True.
+        # But if we want to be robust against file system:
+        with patch('os.path.exists', return_value=True):
+             AetherForge(automated_tides=False)
+
+        if MockCloudNexus.called:
+            args, _ = MockCloudNexus.call_args
+            # args[0] is project_id
+            assert args[0] is None, f"Project ID should be None, got {args[0]}"
+        else:
+            pytest.fail("AetherCloudNexus was not initialized (likely key file check failed)")

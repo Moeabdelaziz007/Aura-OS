@@ -1,0 +1,16 @@
+httpx
+python-dotenv
+cryptography
+psutil
+pydantic
+PyYAML
+websockets
+numpy
+google-generativeai
+google-cloud-aiplatform
+firebase-admin
+firebase-functions
+google-cloud-firestore
+google-cloud-storage
+google-cloud-logging
+google-cloud-monitoring
