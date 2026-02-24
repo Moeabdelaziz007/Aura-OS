@@ -289,6 +289,43 @@ class MutationGenerator:
 
         return text.strip()
 
+    def _redact_secrets(self, source_code: str) -> Tuple[str, Dict[str, str]]:
+        """Redacts potential secrets from source code."""
+        # Regex to capture sensitive variable assignments
+        # Handles single and double quotes, looks for key terms like password, secret, api_key, token
+        # Also handles basic type hints: var: str = "value"
+        secret_pattern = r'(?i)((?:[a-z0-9_]*(?:api_?key|secret|password|token|auth(?:_?token)?)[a-z0-9_]*)(?:\s*:\s*[^=]+?)?\s*=\s*)([\'"])(.*?)\2'
+
+        redacted_code = source_code
+        secret_map = {}
+        counter = 0
+
+        def replacement(match):
+            nonlocal counter
+            prefix = match.group(1)
+            quote = match.group(2)
+            value = match.group(3)
+
+            # Skip empty strings or very short strings (likely not secrets)
+            if len(value) < 4:
+                return match.group(0)
+
+            placeholder = f"__SECRET_REDACTED_{counter}__"
+            secret_map[placeholder] = value
+            counter += 1
+
+            return f"{prefix}{quote}{placeholder}{quote}"
+
+        redacted_code = re.sub(secret_pattern, replacement, source_code)
+        return redacted_code, secret_map
+
+    def _restore_secrets(self, source_code: str, secret_map: Dict[str, str]) -> str:
+        """Restores redacted secrets to source code."""
+        restored_code = source_code
+        for placeholder, original_value in secret_map.items():
+            restored_code = restored_code.replace(placeholder, original_value)
+        return restored_code
+
     def generate_template_mutation(self, anomaly: Dict[str, Any], source_code: str) -> Optional[str]:
         """
         Generate a mutation using predefined templates.
@@ -318,6 +355,12 @@ class MutationGenerator:
         if not self.model:
             return None
 
+        # Redact secrets
+        redacted_source, secret_map = self._redact_secrets(source_code)
+
+        if secret_map:
+            print(f"🔒 MutationGenerator: Redacted {len(secret_map)} potential secrets from source code")
+
         s_component = self._sanitize_input(anomaly.get('component', 'Unknown'), 100)
         s_error_type = self._sanitize_input(anomaly.get('error_type', 'Unknown'), 100)
         s_message = self._sanitize_input(anomaly.get('message', 'No message'), 2000)
@@ -335,7 +378,7 @@ class MutationGenerator:
         
         Current Source Code:
         ```python
-        {source_code}
+        {redacted_source}
         ```
         
         <TASK>
@@ -349,6 +392,7 @@ class MutationGenerator:
         - Do NOT add eval() or exec() calls
         - Do NOT add any network requests unless fixing a connection error
         - Keep fix minimal and focused on the reported error
+        - Do NOT change the redacted secret placeholders (e.g., __SECRET_REDACTED_0__)
         </TASK>
         """
         
@@ -357,12 +401,23 @@ class MutationGenerator:
             response = await asyncio.to_thread(self.model.generate_content, prompt)
             raw_text = response.text
             
+            patch = raw_text
             if "```" in raw_text:
-                patch = raw_text.split("```")[1]
-                if patch.startswith("python"):
-                    patch = patch[len("python"):].strip()
-                return patch
-            return raw_text.strip()
+                parts = raw_text.split("```")
+                if len(parts) > 1:
+                    patch = parts[1]
+                    if patch.startswith("python"):
+                        patch = patch[len("python"):].strip()
+                else:
+                    patch = raw_text.strip()
+
+            patch = patch.strip()
+
+            # Restore secrets
+            if secret_map:
+                patch = self._restore_secrets(patch, secret_map)
+
+            return patch
         except Exception as e:
             print(f"❌ MutationGenerator: Patch generation failed: {e}")
             return None
