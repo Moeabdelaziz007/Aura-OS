@@ -7,6 +7,7 @@ Pattern: Command + Proxy (with constraints).
 
 import asyncio
 import logging
+import shlex
 from typing import Any, Dict
 from ..registry import AetherSuperpower
 
@@ -31,8 +32,9 @@ class AetherTerminalExecutor(AetherSuperpower):
         logger.info(f"🐚 Executing: {command}")
         
         try:
-            process = await asyncio.create_subprocess_shell(
-                command,
+            cmd_args = shlex.split(command)
+            process = await asyncio.create_subprocess_exec(
+                *cmd_args,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
