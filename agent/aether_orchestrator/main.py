@@ -8,7 +8,6 @@ This module has been refactored to use modular components for better maintainabi
 """
 
 import asyncio
-import json
 import os
 import websockets
 from dotenv import load_dotenv
