@@ -110,15 +110,18 @@ class AetherUIServer:
             return
 
         payload = json.dumps(message)
-        dead_clients = set()
+        clients_list = list(self._clients)
 
-        for ws in self._clients:
-            try:
-                await ws.send(payload)
-            except websockets.exceptions.ConnectionClosed:
+        # Broadcast concurrently using asyncio.gather
+        tasks = [ws.send(payload) for ws in clients_list]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        dead_clients = set()
+        for ws, result in zip(clients_list, results):
+            if isinstance(result, websockets.exceptions.ConnectionClosed):
                 dead_clients.add(ws)
-            except Exception as e:
-                logger.error(f"❌ Broadcast error: {e}")
+            elif isinstance(result, Exception):
+                logger.error(f"❌ Broadcast error: {result}")
                 dead_clients.add(ws)
 
         # Clean up dead connections
